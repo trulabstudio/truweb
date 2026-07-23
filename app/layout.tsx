@@ -22,12 +22,9 @@ export const metadata: Metadata = {
   keywords: [...seoConfig.keywords],
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: [
-      { url: siteConfig.assets.logo, type: "image/png" },
-      { url: siteConfig.assets.logoLight, type: "image/png", media: "(prefers-color-scheme: dark)" },
-    ],
-    apple: [{ url: siteConfig.assets.logo, type: "image/png" }],
-    shortcut: [siteConfig.assets.logo],
+    icon: [{ url: "/favicon.png", type: "image/png" }],
+    apple: [{ url: "/favicon.png", type: "image/png" }],
+    shortcut: ["/favicon.png"],
   },
   robots: {
     index: true,
