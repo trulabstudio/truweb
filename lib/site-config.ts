@@ -3,8 +3,8 @@ import type { SiteConfig } from "@/lib/types/site";
 export const siteConfig = {
   name: "Trulab Production",
   slug: "trulab",
-  domain: "trulabstudio.com",
-  url: "https://trulabstudio.com",
+  domain: "truweb.vercel.app",
+  url: "https://truweb.vercel.app",
   email: "trulabstudio@gmail.com",
   phoneDisplay: "0176982032",
   whatsapp: "60176982032",
