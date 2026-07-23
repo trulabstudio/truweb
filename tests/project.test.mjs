@@ -52,6 +52,19 @@ test("production integration remains server-side", () => {
   assert.doesNotMatch(route, /NEXT_PUBLIC_RESEND_API_KEY/);
 });
 
+test("Supabase health cron is scheduled and protected", () => {
+  const route = read("app/api/cron/supabase-health/route.ts");
+  const vercelConfig = JSON.parse(read("vercel.json"));
+  const cron = vercelConfig.crons?.find(
+    (entry) => entry.path === "/api/cron/supabase-health",
+  );
+
+  assert.match(route, /CRON_SECRET/);
+  assert.match(route, /SUPABASE_SERVICE_ROLE_KEY/);
+  assert.doesNotMatch(route, /NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY/);
+  assert.equal(cron?.schedule, "0 3 1,6,11,16,21,26 * *");
+});
+
 test("secret environment files stay ignored", () => {
   assert.match(read(".gitignore"), /^\.env\*\.local$/m);
   assert.equal(existsSync(url(".env.local")), true, ".env.local must be included in the source package");
