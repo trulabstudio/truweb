@@ -1,12 +1,14 @@
 import StatusState from "@/components/shared/StatusState";
-import { siteConfig } from "@/lib/site-config";
+import { editableSite } from "@/lib/EDIT-SITE-HERE";
 
 export default function Loading() {
+  const content = editableSite.statusPages.loading;
+
   return (
     <main className="pt-16">
       <StatusState
-        title={`Loading ${siteConfig.name}.`}
-        description="Preparing the page and production tools."
+        title={content.title}
+        description={content.description}
         variant="loading"
       />
     </main>

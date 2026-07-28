@@ -1,23 +1,26 @@
+import { editableSite } from "@/lib/EDIT-SITE-HERE";
 import type { SiteConfig } from "@/lib/types/site";
 
+const { company, images, seo } = editableSite;
+
 export const siteConfig = {
-  name: "Trulab Production",
-  slug: "trulab",
-  domain: "truweb.vercel.app",
-  url: "https://truweb.vercel.app",
-  email: "trulabstudio@gmail.com",
-  phoneDisplay: "0176982032",
-  whatsapp: "60176982032",
-  address: "",
-  socialLinks: [],
-  title: "Trulab Production | Professional Podcast Production Malaysia",
-  description:
-    "Trulab Production provides professional podcast production, video podcast, multi-camera recording, editing, Shorts/Reels, and livestream podcast services for brands, organisations, SMEs, creators, and government bodies in Malaysia.",
+  name: company.name,
+  slug: company.slug,
+  domain: company.domain,
+  url: company.websiteUrl,
+  email: company.email,
+  phoneDisplay: company.phoneDisplay,
+  whatsapp: company.whatsappNumber,
+  address: company.address,
+  socialLinks: company.socialLinks,
+  title: seo.defaultTitle,
+  description: seo.description,
   assets: {
-    logo: "/logo.png",
-    logoLight: "/logo-white.png",
-    logoFull: "/full-logo.png",
-    socialImage: "/og-image.jpg",
+    logo: images.brand.logoMain.src,
+    logoLight: images.brand.logoWhite.src,
+    logoFull: images.brand.logoFull.src,
+    favicon: images.brand.favicon.src,
+    socialImage: images.social.openGraph.src,
   },
 } satisfies SiteConfig;
 
@@ -25,5 +28,4 @@ export function buildWhatsAppUrl(message: string) {
   return `https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(message)}`;
 }
 
-export const defaultWhatsAppMessage =
-  "Hi Trulab Production, I’m interested in producing a podcast. Could you share the next steps for a consultation?";
+export const defaultWhatsAppMessage = company.defaultWhatsAppMessage;

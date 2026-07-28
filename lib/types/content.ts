@@ -19,6 +19,7 @@ export type FaqItem = {
 export type ClientLogo = {
   name: string;
   src: string;
+  alt: string;
 };
 
 export type HomeSectionContent = {

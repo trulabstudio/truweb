@@ -1,16 +1,9 @@
+import { editableSite } from "@/lib/EDIT-SITE-HERE";
 import type { NavigationLink } from "@/lib/types/site";
 
-export const navLinks = [
-  { label: "Services", href: "#services" },
-  { label: "Why Trulab", href: "#why-trulab" },
-  { label: "Process", href: "#process" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Contact", href: "#contact" },
-] satisfies ReadonlyArray<NavigationLink>;
+export const navLinks = editableSite.navigation.navbarLinks satisfies ReadonlyArray<NavigationLink>;
 
-export const toolLinks = [
-  { label: "QR Generator", href: "/qr-generator" },
-  { label: "BG Remover", href: "/background-remover" },
-] satisfies ReadonlyArray<NavigationLink>;
+export const toolLinks = editableSite.navigation.toolLinks satisfies ReadonlyArray<NavigationLink>;
 
-export const navigationCta = { label: "Book Consultation", href: "/#contact" } satisfies NavigationLink;
+export const navigationCta = editableSite.navigation.mainCta satisfies NavigationLink;
+export const navigationAccessibility = editableSite.navigation.accessibility;

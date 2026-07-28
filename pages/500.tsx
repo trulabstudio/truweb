@@ -1,18 +1,20 @@
 import Link from "next/link";
 import { brandTheme } from "@/lib/brand-theme";
+import { editableSite } from "@/lib/EDIT-SITE-HERE";
 import { siteFont } from "@/lib/fonts";
 import { siteConfig } from "@/lib/site-config";
+
+const content = editableSite.statusPages.serverError;
+const common = editableSite.statusPages.common;
 
 export default function Custom500() {
   return (
     <main className={`error-page ${siteFont.className}`}>
       <section className="error-shell">
-        <p className="eyebrow">500 / {siteConfig.name}</p>
-        <h1>Internal server error.</h1>
-        <p>
-          The server could not complete this request. Please try again later or return to the homepage.
-        </p>
-        <Link href="/">Back to homepage</Link>
+        <p className="eyebrow">{content.code} / {siteConfig.name}</p>
+        <h1>{content.title}</h1>
+        <p>{content.description}</p>
+        <Link href="/">{common.backToHomepage}</Link>
       </section>
       <style jsx>{`
         .error-page {
@@ -55,9 +57,9 @@ export default function Custom500() {
 
         a {
           align-items: center;
-          background: ${brandTheme.ink};
+          background: ${brandTheme.buttonPrimaryBackground};
           border-radius: 999px;
-          color: #ffffff;
+          color: ${brandTheme.buttonPrimaryText};
           display: inline-flex;
           font-size: 0.92rem;
           font-weight: 700;

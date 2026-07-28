@@ -42,7 +42,7 @@ export default function QrGeneratorTool() {
   const displayUrl = cleanUrl.replace(/^https?:\/\//, "");
   const qrColor = {
     dark: brandTheme.ink,
-    light: transparent && format !== "jpg" ? "#0000" : "#ffffff",
+    light: transparent && format !== "jpg" ? "#0000" : brandTheme.surface,
   };
 
   async function generatePreview() {
@@ -126,11 +126,11 @@ export default function QrGeneratorTool() {
         const context = canvas.getContext("2d");
 
         if (!context) {
-          setError("Failed to prepare JPG file.");
+          setError(copy.prepareJpgError);
           return;
         }
 
-        context.fillStyle = "#ffffff";
+        context.fillStyle = brandTheme.surface;
         context.fillRect(0, 0, size, size);
         context.drawImage(image, 0, 0, size, size);
 
@@ -147,7 +147,7 @@ export default function QrGeneratorTool() {
   }
 
   return (
-    <section className="overflow-hidden rounded-[28px] border border-black/8 bg-white p-5 shadow-soft sm:p-8">
+    <section className="overflow-hidden rounded-[28px] border border-trulab-border/8 bg-trulab-surface p-5 shadow-soft sm:p-8">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-start gap-4">
           <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-trulab-accent/20 text-trulab-ink">
@@ -161,7 +161,7 @@ export default function QrGeneratorTool() {
           </div>
         </div>
 
-        <div className="inline-flex items-center gap-2 self-start rounded-full border border-black/8 bg-trulab-bg px-3 py-2 text-xs font-semibold text-trulab-muted">
+        <div className="inline-flex items-center gap-2 self-start rounded-full border border-trulab-border/8 bg-trulab-bg px-3 py-2 text-xs font-semibold text-trulab-muted">
           <Sparkles size={14} aria-hidden />
           {copy.noLoginLabel}
         </div>
@@ -184,7 +184,7 @@ export default function QrGeneratorTool() {
                   void generatePreview();
                 }
               }}
-              className="focus-ring rounded-2xl border border-black/10 bg-trulab-bg px-4 py-3 font-normal"
+              className="focus-ring rounded-2xl border border-trulab-border/10 bg-trulab-bg px-4 py-3 font-normal"
             />
           </label>
 
@@ -201,7 +201,7 @@ export default function QrGeneratorTool() {
                     setTransparent(false);
                   }
                 }}
-                className="focus-ring rounded-2xl border border-black/10 bg-trulab-bg px-4 py-3 font-normal"
+                className="focus-ring rounded-2xl border border-trulab-border/10 bg-trulab-bg px-4 py-3 font-normal"
               >
                 <option value="png">{copy.formats.png}</option>
                 <option value="jpg">{copy.formats.jpg}</option>
@@ -215,16 +215,16 @@ export default function QrGeneratorTool() {
                 value={size}
                 disabled={format === "svg"}
                 onChange={(event) => setSize(Number(event.target.value))}
-                className="focus-ring rounded-2xl border border-black/10 bg-trulab-bg px-4 py-3 font-normal disabled:cursor-not-allowed disabled:opacity-55"
+                className="focus-ring rounded-2xl border border-trulab-border/10 bg-trulab-bg px-4 py-3 font-normal disabled:cursor-not-allowed disabled:opacity-55"
               >
-                <option value={1024}>1024 px</option>
-                <option value={2048}>2048 px</option>
-                <option value={4096}>4096 px</option>
+                {copy.resolutions.map((resolution) => (
+                  <option key={resolution.value} value={resolution.value}>{resolution.label}</option>
+                ))}
               </select>
             </label>
           </div>
 
-          <label className="flex items-center gap-3 rounded-2xl border border-black/8 bg-trulab-bg px-4 py-3 text-sm font-semibold text-trulab-ink">
+          <label className="flex items-center gap-3 rounded-2xl border border-trulab-border/8 bg-trulab-bg px-4 py-3 text-sm font-semibold text-trulab-ink">
             <input
               type="checkbox"
               checked={transparent}
@@ -242,7 +242,7 @@ export default function QrGeneratorTool() {
               type="button"
               onClick={generatePreview}
               disabled={loading}
-              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-trulab-ink px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-black disabled:cursor-not-allowed disabled:opacity-65"
+              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-trulab-button-primary px-6 py-3 text-sm font-semibold text-trulab-button-primary-text transition hover:-translate-y-0.5 hover:bg-trulab-button-primary-hover disabled:cursor-not-allowed disabled:opacity-65"
             >
               {loading ? <Loader2 size={17} className="animate-spin" aria-hidden /> : <QrCode size={17} aria-hidden />}
               {loading ? copy.generatingLabel : copy.generateLabel}
@@ -252,7 +252,7 @@ export default function QrGeneratorTool() {
               type="button"
               onClick={downloadQR}
               disabled={!qrPreview}
-              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-trulab-ink shadow-sm transition hover:-translate-y-0.5 hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-50"
+              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full border border-trulab-border/10 bg-trulab-button-secondary px-6 py-3 text-sm font-semibold text-trulab-button-secondary-text shadow-sm transition hover:-translate-y-0.5 hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Download size={17} aria-hidden />
               {copy.downloadLabel} {copy.formats[format]}
@@ -260,7 +260,7 @@ export default function QrGeneratorTool() {
           </div>
 
           {displayUrl ? (
-            <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-black/8 bg-trulab-bg px-4 py-3 text-xs text-trulab-muted">
+            <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-trulab-border/8 bg-trulab-bg px-4 py-3 text-xs text-trulab-muted">
               <Link2 size={16} className="shrink-0" aria-hidden />
               <span className="min-w-0 truncate font-mono">{displayUrl}</span>
             </div>
@@ -270,13 +270,13 @@ export default function QrGeneratorTool() {
         <div className="grid gap-3">
           <div
             aria-label={copy.previewAriaLabel}
-            className="aspect-square w-full overflow-hidden rounded-[24px] border border-black/8 bg-[linear-gradient(135deg,var(--trulab-bg),#ffffff)] bg-contain bg-center bg-no-repeat shadow-inner"
+            className="aspect-square w-full overflow-hidden rounded-[24px] border border-trulab-border/8 bg-[linear-gradient(135deg,var(--trulab-bg),var(--trulab-surface))] bg-contain bg-center bg-no-repeat shadow-inner"
             style={qrPreview ? { backgroundImage: `url(${qrPreview})` } : undefined}
           >
             {!qrPreview ? (
               <div className="grid h-full place-items-center p-8 text-center">
                 <div>
-                  <QrCode size={42} className="mx-auto text-black/22" aria-hidden />
+                  <QrCode size={42} className="mx-auto text-trulab-ink/22" aria-hidden />
                   <p className="mt-3 text-sm font-semibold text-trulab-muted">{copy.previewEmptyLabel}</p>
                 </div>
               </div>

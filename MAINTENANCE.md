@@ -1,69 +1,193 @@
-# Trulab Production Website Maintenance
+# Website Maintenance
 
-This handover guide explains how to update the website without reverse-engineering its components. Make the smallest possible change in the source file listed below, then validate before deployment.
+For normal website updates, open:
 
-## Common changes
+```text
+lib/EDIT-SITE-HERE.ts
+```
 
-| Change | Source of truth |
-| --- | --- |
-| Company name, slug, domain, email, phone, WhatsApp and public address | `lib/site-config.ts` |
-| Brand palette | `lib/brand-theme.ts` |
-| Shared site font | `lib/fonts.ts` |
-| Keywords, social alt, service types and structured-data details | `lib/seo-config.ts` |
-| Navbar, footer links and tools | `lib/navigation.ts` |
-| Hero, trust labels, client logos, Why Trulab, coverage, contact and footer copy | `lib/content/home.ts` |
-| Services | `lib/content/services.ts` |
-| Production process | `lib/content/process.ts` |
-| FAQ | `lib/content/faq.ts` |
-| Registrations and recognition | `lib/content/certifications.ts` |
-| Tool page headings, status pages and form interface copy | `lib/content/pages.ts` |
-| Global responsive styling | `app/globals.css` and `tailwind.config.ts` |
-| Logo and social preview image | `public/` |
-| Client logos | `public/clients/` |
-| Contact-form visible labels, feedback and form WhatsApp wording | `lib/content/pages.ts` |
-| Budget options and lead types | `lib/types/lead.ts` plus a new Supabase constraint migration |
-| Public contact details, WhatsApp number and default/footer WhatsApp message | `lib/site-config.ts` |
-| Form rendering, validation orchestration, submission and message construction | `components/home/ContactForm.tsx` |
-| Lead validation, storage and notifications | `app/api/leads/route.ts` |
-| Maintenance and protected paths | `.env.local` and `middleware.ts` |
-| Sitemap, robots and manifest | `app/sitemap.ts`, `app/robots.ts`, `app/manifest.ts` |
+Do not edit React components for routine wording, contact, package, image or SEO changes. The configuration and content files under `lib/` are technical adapters that read from the editing file.
 
-Content is intentionally separated from visual components. Edit `lib/content/*` before changing `components/home/*` when only wording or list items need to change.
+## Contents
 
-## Add, remove or reorder homepage content
+1. `01 COMPANY`
+2. `02 CONTACT`
+3. `03 BRAND COLOURS`
+4. `04 IMAGES`
+5. `05 NAVIGATION`
+6. `06 HOMEPAGE`
+7. `07 PACKAGES`
+8. `08 FAQ`
+9. `09 CONTACT FORM`
+10. `10 SEO`
+11. `11 TOOLS`
+12. `12 STATUS PAGES`
+13. `13 MARKETING`
 
-- The rendered homepage order is the component list inside `app/page.tsx` between `<main>` and `</main>`.
-- To reorder a section, move its component line in `app/page.tsx`; keep `Hero` first and `ContactForm` near the end unless the design is intentionally changing.
-- To remove a section, remove its component line and its import. Also remove every navigation link targeting that section from `lib/navigation.ts`.
-- To add another item to Services, Process, FAQ, Certifications or client logos, duplicate one object in its corresponding array and replace every value.
-- To remove an item, delete its complete object including the comma. Empty arrays are technically valid, but remove the whole rendered section when it no longer has content.
-- A new homepage section needs a content export under `lib/content/`, a component under `components/home/`, an import/render line in `app/page.tsx`, and optionally a matching navigation link.
-- Every anchor navigation target must match the section `id` exactly, including the leading `#` in `lib/navigation.ts`.
+Use the `Search: EDIT ...` comments in `lib/EDIT-SITE-HERE.ts` to jump directly to a section.
 
-## Images and assets
+## 01 Company
 
-- Keep website assets inside `public/` and use root-relative paths such as `/logo.png`.
-- `public/logo.png` is the standard logo.
-- `public/logo-white.png` is the light-on-dark variant.
-- `public/full-logo.png` is the full brand lockup.
-- `public/og-image.jpg` is the homepage hero and social sharing image.
-- Client logo slots are `public/clients/client-01.svg` through `client-06.svg`.
-- Preserve filenames to replace an asset without changing code. If a filename changes, update its path in `lib/site-config.ts` or `lib/content/home.ts`.
-- After replacing an image, check mobile, tablet and desktop layouts and confirm its alternative text is still accurate.
+Edit the company name, slug, domain and website URL in the company section.
 
-Current asset specifications:
+Example placeholders:
 
-| Asset | Current pixels | Recommended replacement | Display behavior |
-| --- | ---: | --- | --- |
-| `logo.png` | 513 × 513 | Square, at least 512 × 512 PNG/WebP | Cropped into a rounded square with `object-cover` |
-| `logo-white.png` | 2134 × 2134 | Square, at least 512 × 512 transparent PNG/WebP | Cropped into a rounded square on dark footer |
-| `full-logo.png` | 2134 × 399 | Wide transparent image near 5.35:1 | Contained inside preloader, never intentionally cropped |
-| `og-image.jpg` | 1730 × 909 | 1200 × 630 or larger, ratio 1.91:1 | Hero uses `object-cover`; social cards expect 1.91:1 |
-| `clients/client-01.svg`–`06.svg` | 360 × 140 viewBox | 360 × 140 SVG or equivalent 18:7 ratio | Contained within logo slot; transparent background preferred |
+```ts
+const companyName = "Example Company";
+const companyDomain = "example.com";
+```
 
-Asset paths are centralized in `siteConfig.assets`. If a filename changes, update the corresponding value there. Client logo paths and accessible names are in `lib/content/home.ts`.
+The website URL is generated from the domain.
 
-## Contact workflow
+## 02 Contact
+
+Edit the email, displayed phone, WhatsApp number, address, default WhatsApp message and social links in the company/contact block.
+
+```ts
+email: "hello@example.com",
+phoneDisplay: "+60 12-345 6789",
+whatsappNumber: "60123456789",
+```
+
+Use digits only for `whatsappNumber`, including the country code.
+
+## 03 Brand colours
+
+Edit six-digit hexadecimal values under `branding.colors`:
+
+```ts
+accent: "#aabbcc",
+background: "#f5f5f5",
+```
+
+Keep the leading `#`. Tailwind and the website CSS consume these values automatically.
+
+## 04 Images
+
+The editing file contains only each image's `src` and `alt`.
+
+The safest replacement process is:
+
+1. Open `public/images/IMAGE-SPECS.md`.
+2. Prepare the replacement using the listed dimensions and crop guidance.
+3. Replace the existing file using exactly the same filename.
+
+Keeping the filename means no code change is required. If the filename changes, update the matching `src` in `lib/EDIT-SITE-HERE.ts`.
+
+## 05 Navigation
+
+Edit navbar labels and destinations under `navigation`. Homepage anchors begin with `#`; tool pages begin with `/`.
+
+When changing an anchor URL, keep it matched to the corresponding homepage section ID.
+
+## 06 Homepage
+
+Homepage wording includes the hero, trust pills, services, client marquee, production coverage, process, certifications, contact section and footer.
+
+To add a service, duplicate one complete service object:
+
+```ts
+{
+  title: "Example service",
+  description: "Explain the service here.",
+  icon: "Mic2",
+},
+```
+
+To remove a service, delete its complete object, including the surrounding braces and comma.
+
+## 07 Packages
+
+Each package has a permanent technical `id`.
+
+```ts
+{
+  id: "example-package", // Never change an existing ID.
+  name: "Displayed package name",
+  price: "Displayed price",
+  formLabel: "",
+}
+```
+
+Safe fields to edit:
+
+- `name`
+- `price`
+- `priceSuffix`
+- `description`
+- `features`
+- `highlightLabel`
+- `closingText`
+- CTA wording and URL
+- `formLabel`
+- `whatsappMessage`
+
+Never change an existing `id`. The form submits that stable ID to Supabase, so changing package names, prices, descriptions, features or display labels does not require a database migration.
+
+Leave `formLabel` empty to generate the dropdown label from the current package name and price. Set it only when a custom dropdown label is required.
+
+To remove a feature, delete only that quoted feature line from the package's `features` array.
+
+Adding a genuinely new package requires a developer to assign a new permanent ID and add that ID through a new Supabase migration.
+
+## 08 FAQ
+
+Add or remove complete objects under `faq.items`:
+
+```ts
+{
+  question: "Example question?",
+  answer: "Example answer.",
+},
+```
+
+The visible FAQ and structured data use the same array.
+
+## 09 Contact form
+
+Edit field labels, placeholders, success/error wording and notification-email wording under `forms.contact`.
+
+Additional options use permanent IDs:
+
+```ts
+additionalPackageOptions: [
+  { id: "others", label: "Other enquiry" },
+],
+```
+
+Do not change an existing option ID.
+
+## 10 SEO
+
+Edit the default title, title template, description, keywords, canonical URL, social metadata and structured-data details under `seo`.
+
+Keep route paths valid when editing robots or sitemap entries.
+
+## 11 Tools
+
+The `tools` section contains client-facing wording and editable choices for the QR Generator and Background Remover. Technical canvas, MIME, file-size and model-processing logic remains in the components.
+
+## 12 Status pages
+
+Edit loading, error, 403, 404, 500 and maintenance wording under `statusPages`.
+
+## 13 Marketing
+
+Edit only the public consent wording and button labels under `marketing`. Tracking IDs remain environment variables.
+
+## Validation after normal edits
+
+Run:
+
+```bash
+npm run validate
+```
+
+Then check the homepage, navigation, package cards, package dropdown, FAQ, images, tools, contact form, WhatsApp links, status pages and metadata.
+
+## Advanced developer notes
+
+### Contact workflow
 
 ```text
 Contact form
@@ -74,92 +198,40 @@ Contact form
 -> WhatsApp prefilled message
 ```
 
-The Supabase service-role key, Turnstile secret and Resend API key are server-only. Never expose them in client components or prefix them with `NEXT_PUBLIC_`.
+The UI uses `packageId`. The API maps that value into the existing database column named `budget` for backward compatibility. Components do not use the legacy database name.
 
-## Environment variables
+Notification emails and WhatsApp messages resolve the stable ID back to the current human-readable package label.
 
-| Variable | Purpose | Visibility |
-| --- | --- | --- |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Renders the Turnstile widget | Browser-safe |
-| `TURNSTILE_SECRET_KEY` | Verifies Turnstile tokens | Server only |
-| `SUPABASE_URL` | Supabase project URL | Server only in this project |
-| `SUPABASE_SERVICE_ROLE_KEY` | Inserts leads through the API | Secret, server only |
-| `RESEND_API_KEY` | Sends lead notifications | Secret, server only |
-| `LEAD_NOTIFICATION_EMAIL` | Receives lead notifications | Server only |
-| `LEAD_FROM_EMAIL` | Verified Resend sender | Server only |
-| `MAINTENANCE_MODE` | Enables maintenance routing | Server only |
-| `MAINTENANCE_RETRY_AFTER` | Retry-After value in seconds | Server only |
-| `FORBIDDEN_PATHS` | Comma-separated protected paths | Server only |
+### Supabase migrations
 
-Optional marketing variables are `NEXT_PUBLIC_GTM_ID`, `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_GOOGLE_ADS_ID`, `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_TIKTOK_PIXEL_ID`, `NEXT_PUBLIC_LINKEDIN_PARTNER_ID`, `NEXT_PUBLIC_X_PIXEL_ID`, `NEXT_PUBLIC_PINTEREST_TAG_ID` and `NEXT_PUBLIC_SNAP_PIXEL_ID`.
+- Never modify a migration that may already have run.
+- `20260715143601_create_leads.sql` is the original schema history.
+- Later migrations update the package constraint while retaining historical values.
+- New package names and prices do not need migrations.
+- A genuinely new permanent package ID requires a new timestamped migration.
 
-In the packaged release, open `../../Documentation/index.html` for every variable's expected format, provider source, required/optional status, blank-value behavior and safe placeholder.
+The leads table remains private: browser code never receives the Supabase service-role key.
 
-`.env.local` is the source of truth. Do not create or commit `.env.example`. Create matching variables in the hosting platform without copying secrets into documentation, source code, screenshots or messages.
+### Environment variables
 
-## Supabase
+Environment variable names used by the project include:
 
-- Create or select the buyer's own Supabase project.
-- Table: `public.leads`.
-- Schema migration: `supabase/migrations/20260715143601_create_leads.sql`.
-- Row Level Security is enabled and public roles do not receive direct table access.
-- Website inserts must continue through `/api/leads` with the server-side service role.
+```text
+NEXT_PUBLIC_TURNSTILE_SITE_KEY
+TURNSTILE_SECRET_KEY
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+RESEND_API_KEY
+LEAD_NOTIFICATION_EMAIL
+LEAD_FROM_EMAIL
+CRON_SECRET
+MAINTENANCE_MODE
+MAINTENANCE_RETRY_AFTER
+FORBIDDEN_PATHS
+```
 
-When changing the schema, create a new timestamped migration. Do not rewrite production migration history.
+Optional marketing variables remain documented in the deployment environment. Store real values only in `.env.local` or the hosting provider. Never commit or share `.env.local`.
 
-## Turnstile and Resend
+### Clean handover
 
-- Keep the production hostname registered in Cloudflare Turnstile.
-- A Turnstile token is single-use and expires; failed submissions reset the widget.
-- Do not bypass Turnstile in the production API.
-- Verify the domain used by `LEAD_FROM_EMAIL` in Resend.
-- `LEAD_NOTIFICATION_EMAIL` receives new lead notifications.
-- Visitor email is used as `reply_to`; never send notifications to visitor-controlled recipients.
-- A lead remains stored if email delivery fails. Check server and Resend logs when a notification is missing.
-
-## Routes
-
-| Route | Purpose |
-| --- | --- |
-| `/` | Homepage and consultation form |
-| `/qr-generator` | QR generator tool |
-| `/background-remover` | Browser-based background remover |
-| `/403` | Forbidden state |
-| `/maintenance` | Maintenance state |
-| `/api/leads` | Lead submission endpoint |
-| `/robots.txt` | Search engine rules |
-| `/sitemap.xml` | Search engine sitemap |
-| `/manifest.webmanifest` | Web app metadata |
-
-Unknown routes use `app/not-found.tsx`. Runtime errors use App Router error boundaries, with `pages/500.tsx` as the legacy 500 fallback.
-
-## Safe editing and release workflow
-
-1. Find the source-of-truth file in the table above.
-2. Change content without modifying component structure when no layout change is required.
-3. Keep all secrets in `.env.local` or the deployment platform.
-4. Run `npm run validate`.
-5. Test the homepage, navigation, tools, form, Turnstile and WhatsApp redirect.
-6. For a real form test, confirm the lead in Supabase and email in Resend.
-7. Update `CHANGELOG.md` for a production release.
-
-## Production checklist
-
-- All public routes load without important console errors.
-- Desktop, tablet and mobile layouts remain usable.
-- Navbar, mobile menu, footer and anchor links work.
-- Logo, client logos and OG image load correctly.
-- Turnstile verifies the deployed hostname.
-- A test lead reaches Supabase.
-- Resend accepts notification from a verified sender domain.
-- WhatsApp opens with submitted details prefilled.
-- Robots, sitemap and manifest use the production domain.
-- `npm run validate` passes.
-
-## Recovery notes
-
-- Local build cache issue: stop the server, delete only `.next`, then rebuild.
-- Lead saved but email missing: check Resend domain verification and delivery logs.
-- Turnstile rejection: check hostname and matching key pair.
-- Supabase rejection: check project URL, service-role key, migration and grants.
-- Unexpected maintenance page: check `MAINTENANCE_MODE` locally and in production.
+Read `HANDOVER-CHECKLIST.md` before creating a client ZIP. Exclude secrets, Git history, dependencies, build output, logs and temporary files.

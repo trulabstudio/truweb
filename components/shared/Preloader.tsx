@@ -63,7 +63,7 @@ export default function Preloader() {
           }}
         />
 
-        <div className="h-1.5 w-44 overflow-hidden rounded-full bg-black/8 sm:w-56">
+        <div className="h-1.5 w-44 overflow-hidden rounded-full bg-trulab-border/8 sm:w-56">
           <div className="h-full w-full origin-left animate-preloader-bar rounded-full bg-trulab-accent" />
         </div>
       </div>

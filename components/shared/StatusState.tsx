@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AlertTriangle, ArrowLeft, Home, Loader2, ShieldAlert } from "lucide-react";
+import { editableSite } from "@/lib/EDIT-SITE-HERE";
 import { siteConfig } from "@/lib/site-config";
 
 type StatusStateProps = {
@@ -21,6 +22,7 @@ const iconMap = {
   empty: Home,
   blocked: ShieldAlert,
 };
+const common = editableSite.statusPages.common;
 
 export default function StatusState({
   eyebrow = siteConfig.name,
@@ -29,7 +31,7 @@ export default function StatusState({
   code,
   variant = "default",
   primaryHref = "/",
-  primaryLabel = "Back to homepage",
+  primaryLabel = common.backToHomepage,
   secondaryHref,
   secondaryLabel,
 }: StatusStateProps) {
@@ -39,7 +41,7 @@ export default function StatusState({
   return (
     <section className="section-shell flex min-h-[70vh] items-center py-24 sm:py-28">
       <div className="w-full max-w-3xl">
-        <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-black/10 bg-white text-trulab-ink shadow-sm">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-trulab-border/10 bg-trulab-surface text-trulab-ink shadow-sm">
           <Icon className={isLoading ? "h-5 w-5 animate-spin" : "h-5 w-5"} aria-hidden />
         </div>
         <p className="mt-6 text-sm font-semibold uppercase tracking-[0.12em] text-trulab-muted">
@@ -55,7 +57,7 @@ export default function StatusState({
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href={primaryHref}
-              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-trulab-ink px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-black"
+              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-trulab-button-primary px-6 py-3.5 text-sm font-semibold text-trulab-button-primary-text shadow-sm transition hover:-translate-y-0.5 hover:bg-trulab-button-primary-hover"
             >
               <Home size={17} aria-hidden />
               {primaryLabel}
@@ -63,7 +65,7 @@ export default function StatusState({
             {secondaryHref && secondaryLabel ? (
               <Link
                 href={secondaryHref}
-                className="focus-ring inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3.5 text-sm font-semibold text-trulab-ink shadow-sm transition hover:-translate-y-0.5 hover:shadow-lift"
+                className="focus-ring inline-flex items-center justify-center gap-2 rounded-full border border-trulab-border/10 bg-trulab-button-secondary px-6 py-3.5 text-sm font-semibold text-trulab-button-secondary-text shadow-sm transition hover:-translate-y-0.5 hover:shadow-lift"
               >
                 <ArrowLeft size={17} aria-hidden />
                 {secondaryLabel}

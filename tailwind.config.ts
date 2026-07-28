@@ -15,14 +15,23 @@ const config: Config = {
           accent: brandTheme.accent,
           ink: brandTheme.ink,
           muted: brandTheme.muted,
+          surface: brandTheme.surface,
+          border: brandTheme.border,
+          dark: brandTheme.darkSection,
+          "on-dark": brandTheme.onDark,
+          "button-primary": brandTheme.buttonPrimaryBackground,
+          "button-primary-hover": brandTheme.buttonPrimaryHoverBackground,
+          "button-primary-text": brandTheme.buttonPrimaryText,
+          "button-secondary": brandTheme.buttonSecondaryBackground,
+          "button-secondary-text": brandTheme.buttonSecondaryText,
         },
       },
       fontFamily: {
         sans: ["var(--font-site)", "ui-sans-serif", "system-ui"],
       },
       boxShadow: {
-        soft: "0 24px 80px rgba(23, 23, 23, 0.08)",
-        lift: "0 18px 45px rgba(23, 23, 23, 0.10)",
+        soft: "0 24px 80px rgb(var(--trulab-ink-rgb) / 0.08)",
+        lift: "0 18px 45px rgb(var(--trulab-ink-rgb) / 0.10)",
       },
       keyframes: {
         marquee: {

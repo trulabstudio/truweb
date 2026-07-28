@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Script from "next/script";
-import { siteConfig } from "@/lib/site-config";
+import { editableSite } from "@/lib/EDIT-SITE-HERE";
 
 function cleanEnv(value: string | undefined) {
   return value?.trim() || "";
@@ -28,7 +28,8 @@ const hasConfiguredPixel = [
   pinterestTagId,
   snapPixelId,
 ].some(Boolean);
-const consentKey = "trulab_marketing_consent";
+const copy = editableSite.marketing.consent;
+const consentKey = copy.storageKey;
 
 export default function MarketingPixels() {
   const [consent, setConsent] = useState<"accepted" | "rejected" | null>(null);
@@ -70,7 +71,7 @@ export default function MarketingPixels() {
               height="0"
               width="0"
               style={{ display: "none", visibility: "hidden" }}
-              title="Google Tag Manager"
+              title={copy.googleTagManagerTitle}
             />
           </noscript>
         </>
@@ -201,25 +202,24 @@ export default function MarketingPixels() {
       ) : null}
 
       {consent === null ? (
-        <div className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-3xl rounded-2xl border border-black/10 bg-white p-4 shadow-lift sm:flex sm:items-center sm:justify-between sm:gap-5">
+        <div className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-3xl rounded-2xl border border-trulab-border/10 bg-trulab-surface p-4 shadow-lift sm:flex sm:items-center sm:justify-between sm:gap-5">
           <p className="text-sm leading-6 text-trulab-muted">
-            {siteConfig.name} uses optional marketing pixels to measure campaigns. You can accept or reject
-            ad tracking.
+            {copy.message}
           </p>
           <div className="mt-3 flex shrink-0 gap-2 sm:mt-0">
             <button
               type="button"
               onClick={() => saveConsent("rejected")}
-              className="focus-ring rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-trulab-ink"
+              className="focus-ring rounded-full border border-trulab-border/10 bg-trulab-button-secondary px-4 py-2 text-sm font-semibold text-trulab-button-secondary-text"
             >
-              Reject
+              {copy.rejectLabel}
             </button>
             <button
               type="button"
               onClick={() => saveConsent("accepted")}
-              className="focus-ring rounded-full bg-trulab-ink px-4 py-2 text-sm font-semibold text-white"
+              className="focus-ring rounded-full bg-trulab-button-primary px-4 py-2 text-sm font-semibold text-trulab-button-primary-text"
             >
-              Accept
+              {copy.acceptLabel}
             </button>
           </div>
         </div>

@@ -5,21 +5,24 @@ import { useState } from "react";
 import Container from "@/components/ui/Container";
 import { logoMarqueeContent } from "@/lib/content/home";
 
-function LogoTile({ name, src, duplicate = false }: { name: string; src: string; duplicate?: boolean }) {
+function LogoTile({ name, src, alt, duplicate = false }: { name: string; src: string; alt: string; duplicate?: boolean }) {
   const [failed, setFailed] = useState(false);
-  const initials = name.replace("Client logo slot ", "Logo ");
+  const initials = name.replace(
+    logoMarqueeContent.fallbackNamePrefix,
+    logoMarqueeContent.fallbackLabelPrefix,
+  );
 
   return (
     <div
-      className={`mx-3 flex h-24 w-44 shrink-0 items-center justify-center rounded-lg border border-black/8 bg-white px-6 shadow-[0_12px_36px_rgba(23,23,23,0.05)] sm:w-52 ${duplicate ? "logo-duplicate" : ""}`}
+      className={`mx-3 flex h-24 w-44 shrink-0 items-center justify-center rounded-lg border border-trulab-border/8 bg-trulab-surface px-6 shadow-[0_12px_36px_rgb(var(--trulab-ink-rgb)/0.05)] sm:w-52 ${duplicate ? "logo-duplicate" : ""}`}
       aria-hidden={duplicate || undefined}
     >
       {failed ? (
-        <span className="text-center text-xs font-semibold uppercase tracking-normal text-black/38">{initials}</span>
+        <span className="text-center text-xs font-semibold uppercase tracking-normal text-trulab-ink/38">{initials}</span>
       ) : (
         <Image
           src={src}
-          alt={duplicate ? "" : name}
+          alt={duplicate ? "" : alt}
           width={220}
           height={120}
           className="max-h-12 w-auto object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
@@ -34,7 +37,7 @@ export default function LogoMarquee() {
   return (
     <section aria-labelledby="logo-marquee-title" className="py-8 sm:py-12">
       <Container>
-        <p id="logo-marquee-title" className="mb-6 text-center text-sm font-semibold text-black/54">
+        <p id="logo-marquee-title" className="mb-6 text-center text-sm font-semibold text-trulab-ink/54">
           {logoMarqueeContent.title}
         </p>
       </Container>

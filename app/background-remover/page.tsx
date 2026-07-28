@@ -3,6 +3,7 @@ import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import BackgroundRemoverTool from "@/components/tools/BackgroundRemoverTool";
 import { toolPageContent } from "@/lib/content/pages";
+import { seoConfig } from "@/lib/seo-config";
 import { siteConfig } from "@/lib/site-config";
 
 const content = toolPageContent.backgroundRemover;
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: seoConfig.twitterCard,
     title: `${content.title} | ${siteConfig.name}`,
     description: content.socialDescription,
     images: [siteConfig.assets.socialImage],

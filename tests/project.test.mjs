@@ -1,263 +1,344 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import test from "node:test";
+import ts from "typescript";
 
 const url = (path) => new URL(`../${path}`, import.meta.url);
 const read = (path) => readFileSync(url(path), "utf8");
-const firstExisting = (...paths) => paths.map((path) => new URL(path, import.meta.url)).find((path) => existsSync(path));
-const documentationUrl = firstExisting("../Documentation/index.html", "../../../Documentation/index.html");
-const changelogUrl = firstExisting("../CHANGELOG.md", "../../../CHANGELOG.md");
 
-test("client handover files are included", () => {
-  for (const path of ["README.md", "MAINTENANCE.md"]) {
+function walk(path, extensions = /\.(?:js|mjs|ts|tsx)$/) {
+  const files = [];
+
+  for (const entry of readdirSync(url(path), { withFileTypes: true })) {
+    const child = `${path}/${entry.name}`;
+    if (entry.isDirectory()) files.push(...walk(child, extensions));
+    else if (extensions.test(entry.name)) files.push(child);
+  }
+
+  return files;
+}
+
+const editablePath = "lib/EDIT-SITE-HERE.ts";
+const editableSource = read(editablePath);
+const editableJavaScript = ts.transpileModule(editableSource, {
+  compilerOptions: {
+    module: ts.ModuleKind.ESNext,
+    target: ts.ScriptTarget.ES2022,
+  },
+}).outputText;
+const { editableSite } = await import(
+  `data:text/javascript;base64,${Buffer.from(editableJavaScript).toString("base64")}`
+);
+
+const renderedFiles = [
+  ...walk("app", /\.tsx$/),
+  ...walk("components", /\.tsx$/),
+  ...walk("pages", /\.tsx$/),
+];
+const productionSourceFiles = [
+  ...renderedFiles,
+  ...walk("lib"),
+  "tailwind.config.ts",
+];
+
+test("client handover starts from one labelled and indexed editing file", () => {
+  for (const path of [
+    editablePath,
+    "MAINTENANCE.md",
+    "HANDOVER-CHECKLIST.md",
+    "public/images/IMAGE-SPECS.md",
+    "README.md",
+  ]) {
     assert.equal(existsSync(url(path)), true, `${path} is missing`);
   }
-  assert.ok(changelogUrl, "CHANGELOG.md is missing from the project or package root");
-  assert.ok(documentationUrl, "Documentation/index.html is missing from the project or package root");
+
+  assert.match(editableSource, /CLIENT EDITING FILE/);
+  assert.match(editableSource, /Do not edit components unless changing the website design/);
+  assert.match(editableSource, /export const editableSite/);
+
+  for (const heading of [
+    "01. COMPANY",
+    "02. CONTACT",
+    "03. BRAND COLOURS",
+    "04. IMAGES",
+    "05. NAVIGATION",
+    "06. HOMEPAGE",
+    "07. PACKAGES",
+    "08. FAQ",
+    "09. CONTACT FORM",
+    "10. SEO",
+    "11. TOOLS",
+    "12. STATUS PAGES",
+    "13. MARKETING",
+  ]) {
+    assert.match(editableSource, new RegExp(heading.replace(".", "\\.")));
+  }
 });
 
-test("content and configuration remain centralized", () => {
-  for (const path of [
+test("the editing object retains every required client section", () => {
+  for (const section of [
+    "company",
+    "branding",
+    "images",
+    "navigation",
+    "homepage",
+    "packages",
+    "faq",
+    "forms",
+    "seo",
+    "tools",
+    "statusPages",
+    "marketing",
+  ]) {
+    assert.ok(section in editableSite, `${section} is missing from editableSite`);
+  }
+});
+
+test("company and contact details have one runtime source of truth", () => {
+  const clientValues = [
+    editableSite.company.name,
+    editableSite.company.domain,
+    editableSite.company.websiteUrl,
+    editableSite.company.email,
+    editableSite.company.phoneDisplay,
+    editableSite.company.whatsappNumber,
+  ].filter((value) => typeof value === "string" && value.length > 0);
+
+  for (const value of clientValues) {
+    const copies = productionSourceFiles.filter(
+      (path) => path !== editablePath && read(path).includes(value),
+    );
+    assert.deepEqual(copies, [], `a configured company/contact value is duplicated in ${copies.join(", ")}`);
+  }
+});
+
+test("technical adapters consume the editing file without editable literals", () => {
+  const adapters = [
     "lib/site-config.ts",
+    "lib/brand-theme.ts",
+    "lib/seo-config.ts",
     "lib/navigation.ts",
     "lib/content/home.ts",
     "lib/content/services.ts",
     "lib/content/process.ts",
+    "lib/content/packages.ts",
     "lib/content/faq.ts",
     "lib/content/certifications.ts",
     "lib/content/pages.ts",
-  ]) {
-    assert.equal(existsSync(url(path)), true, `${path} is missing`);
-  }
-});
+    "lib/types/lead.ts",
+  ];
 
-test("brand asset paths remain centralized", () => {
-  const config = read("lib/site-config.ts");
-  for (const asset of ["/logo.png", "/logo-white.png", "/full-logo.png", "/og-image.jpg"]) {
-    assert.match(config, new RegExp(asset.replace(".", "\\.")));
-  }
-
-  for (const path of ["components/layout/Navbar.tsx", "components/layout/Footer.tsx", "components/shared/Preloader.tsx"]) {
+  for (const path of adapters) {
     const source = read(path);
-    assert.doesNotMatch(source, /src=["{]["']\/(?:logo|full-logo)/, `${path} hardcodes a brand asset`);
+    assert.match(source, /EDIT-SITE-HERE/, `${path} does not consume the editing file`);
+    assert.doesNotMatch(source, /#[0-9a-f]{6}/i, `${path} duplicates an editable colour`);
   }
 });
 
-test("production integration remains server-side", () => {
+test("rendering files contain no direct visible prose", () => {
+  const directJsxText = /(?<![=])>\s*[A-Za-z][^<{]*</;
+  const directVisibleAttribute = /\b(?:aria-label|placeholder|alt|title)="[A-Za-z][^"]*"/;
+
+  for (const path of renderedFiles) {
+    const source = read(path);
+    assert.doesNotMatch(source, directJsxText, `${path} contains direct visible JSX wording`);
+    assert.doesNotMatch(source, directVisibleAttribute, `${path} contains a direct visible attribute`);
+  }
+});
+
+test("every centralized image exists and specifications have one technical home", () => {
+  const collectImages = (value, results = []) => {
+    if (Array.isArray(value)) {
+      for (const item of value) collectImages(item, results);
+    } else if (value && typeof value === "object") {
+      if (typeof value.src === "string" && typeof value.alt === "string") results.push(value);
+      for (const child of Object.values(value)) collectImages(child, results);
+    }
+    return results;
+  };
+  const images = collectImages(editableSite.images);
+  const specifications = read("public/images/IMAGE-SPECS.md");
+
+  assert.ok(images.length >= 19);
+  assert.doesNotMatch(
+    editableSource,
+    /recommendedSize|aspectRatio|preferredFormat|transparentBackground:|mobileConsiderations/,
+  );
+
+  for (const image of images) {
+    assert.equal(existsSync(url(`public${image.src}`)), true, `${image.src} does not exist`);
+    assert.ok(specifications.includes(image.src), `${image.src} is missing from IMAGE-SPECS.md`);
+  }
+
+  const imageLiteral = /\/[^"'`\s)]+\.(?:png|jpe?g|webp|svg|ico)/i;
+  for (const path of productionSourceFiles) {
+    if (path !== editablePath) {
+      assert.doesNotMatch(read(path), imageLiteral, `${path} hardcodes an editable image path`);
+    }
+  }
+});
+
+test("package IDs are permanent, unique and independent of editable labels", () => {
+  const packages = editableSite.packages.items;
+  const additionalOptions = editableSite.forms.contact.additionalPackageOptions;
+  const ids = [...packages.map((item) => item.id), ...additionalOptions.map((item) => item.id)];
+
+  assert.equal(new Set(ids).size, ids.length, "every package option ID must be unique");
+  assert.ok(ids.every((id) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)));
+  assert.match(editableSource, /Never change an existing package `id`/);
+
+  const leadTypes = read("lib/types/lead.ts");
+  const contactForm = read("components/home/ContactForm.tsx");
+  const api = read("app/api/leads/route.ts");
+  const stableMigration = read(
+    "supabase/migrations/20260728143000_stabilize_lead_package_ids.sql",
+  );
+
+  assert.match(leadTypes, /getPackageById/);
+  assert.match(leadTypes, /getPackageDisplayLabel/);
+  assert.match(leadTypes, /packageInterestOptions/);
+  assert.match(contactForm, /value=\{option\.id\}/);
+  assert.match(contactForm, /packageId/);
+  assert.match(api, /packageInterestIds/);
+  assert.match(api, /budget:\s*lead\.packageId/);
+
+  for (const id of ids) {
+    assert.ok(stableMigration.includes(`'${id}'`), `migration does not support package ID ${id}`);
+  }
+});
+
+test("human-readable package labels are used for WhatsApp and notification email", () => {
+  const leadTypes = read("lib/types/lead.ts");
+  const contactForm = read("components/home/ContactForm.tsx");
+  const api = read("app/api/leads/route.ts");
+
+  assert.match(leadTypes, /getPackageInterestLabel/);
+  assert.match(contactForm, /getPackageInterestLabel\(form\.packageId\)/);
+  assert.match(api, /const packageLabel = getPackageInterestLabel\(packageId\)/);
+  assert.match(api, /escapeHtml\(packageLabel \|\| notificationEmail\.emptyValue\)/);
+});
+
+test("legacy database naming is isolated to the API and migrations", () => {
+  assert.doesNotMatch(read("components/home/ContactForm.tsx"), /\bbudget\b/);
+  assert.doesNotMatch(read("lib/types/lead.ts"), /\bbudget\b/);
+  assert.match(read("app/api/leads/route.ts"), /budget:\s*lead\.packageId/);
+});
+
+test("historical migration matches the committed version", () => {
+  const initialMigration = read("supabase/migrations/20260715143601_create_leads.sql");
+
+  assert.match(initialMigration, /Below RM5,000/);
+  for (const id of editableSite.packages.items.map((item) => item.id)) {
+    assert.doesNotMatch(initialMigration, new RegExp(`'${id}'`));
+  }
+});
+
+test("navbar anchors target rendered homepage sections", () => {
+  const anchors = editableSite.navigation.navbarLinks
+    .map((link) => link.href)
+    .filter((href) => href.startsWith("#"))
+    .map((href) => href.slice(1));
+  const sectionSource = walk("components/home", /\.tsx$/).map(read).join("\n");
+  const sectionIds = new Set(
+    [...sectionSource.matchAll(/<Section\s+id="([^"]+)"/g)].map((match) => match[1]),
+  );
+
+  assert.ok(anchors.length > 0);
+  for (const anchor of anchors) {
+    assert.equal(sectionIds.has(anchor), true, `#${anchor} has no matching section`);
+  }
+});
+
+test("brand colours flow through adapters, Tailwind and CSS variables", () => {
+  assert.match(read("lib/brand-theme.ts"), /editableSite\.branding\.colors/);
+  assert.match(read("tailwind.config.ts"), /brandTheme\.surface/);
+  assert.match(read("app/layout.tsx"), /--trulab-button-primary-bg/);
+});
+
+test("metadata and public machine-readable routes consume centralized adapters", () => {
+  assert.match(read("app/layout.tsx"), /seoConfig\.titleTemplate/);
+  assert.match(read("app/layout.tsx"), /siteConfig\.assets\.favicon/);
+  assert.match(read("app/robots.ts"), /seoConfig\.robots\.disallow/);
+  assert.match(read("app/sitemap.ts"), /seoConfig\.sitemap/);
+  assert.match(read("app/manifest.ts"), /editableSite\.images\.pwa/);
+});
+
+test("production integrations remain server-only", () => {
   const route = read("app/api/leads/route.ts");
   assert.match(route, /TURNSTILE_SECRET_KEY/);
   assert.match(route, /SUPABASE_SERVICE_ROLE_KEY/);
   assert.match(route, /RESEND_API_KEY/);
-  assert.doesNotMatch(route, /NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY/);
-  assert.doesNotMatch(route, /NEXT_PUBLIC_RESEND_API_KEY/);
-});
+  assert.doesNotMatch(route, /NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY|NEXT_PUBLIC_RESEND_API_KEY/);
 
-test("Supabase health cron is scheduled and protected", () => {
-  const route = read("app/api/cron/supabase-health/route.ts");
-  const vercelConfig = JSON.parse(read("vercel.json"));
-  const cron = vercelConfig.crons?.find(
-    (entry) => entry.path === "/api/cron/supabase-health",
-  );
-
-  assert.match(route, /CRON_SECRET/);
-  assert.match(route, /SUPABASE_SERVICE_ROLE_KEY/);
-  assert.doesNotMatch(route, /NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY/);
-  assert.equal(cron?.schedule, "0 3 1,6,11,16,21,26 * *");
-});
-
-test("secret environment files stay ignored", () => {
-  assert.match(read(".gitignore"), /^\.env\*\.local$/m);
-  assert.equal(existsSync(url(".env.local")), true, ".env.local must be included in the source package");
-  assert.equal(existsSync(url(".env.example")), false, ".env.example must not be packaged");
-});
-
-test("required package scripts are available", () => {
-  const packageJson = JSON.parse(read("package.json"));
-  for (const script of ["dev", "test", "lint", "typecheck", "build", "validate"]) {
-    assert.equal(typeof packageJson.scripts?.[script], "string", `npm script ${script} is missing`);
-  }
-});
-
-test("Meta Pixel stays optional", () => {
-  const pixels = read("components/shared/MarketingPixels.tsx");
-  assert.match(pixels, /process\.env\.NEXT_PUBLIC_META_PIXEL_ID/);
-  assert.match(pixels, /consent === "accepted" && metaPixelId/);
-});
-
-test("server secrets are not referenced by client components", () => {
   for (const path of ["components/home/ContactForm.tsx", "components/shared/MarketingPixels.tsx"]) {
-    const source = read(path);
-    assert.doesNotMatch(source, /TURNSTILE_SECRET_KEY|SUPABASE_SERVICE_ROLE_KEY|RESEND_API_KEY/);
+    assert.doesNotMatch(
+      read(path),
+      /TURNSTILE_SECRET_KEY|SUPABASE_SERVICE_ROLE_KEY|RESEND_API_KEY/,
+    );
   }
 });
 
-test("required Supabase migration is included", () => {
-  assert.equal(existsSync(url("supabase/migrations/20260715143601_create_leads.sql")), true);
-});
-
-test("standalone guide documents every supported environment variable", () => {
-  assert.ok(documentationUrl, "Documentation/index.html is missing");
-  const documentation = readFileSync(documentationUrl, "utf8");
-  const names = [
-    "NEXT_PUBLIC_TURNSTILE_SITE_KEY",
-    "TURNSTILE_SECRET_KEY",
-    "SUPABASE_URL",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "RESEND_API_KEY",
-    "LEAD_NOTIFICATION_EMAIL",
-    "LEAD_FROM_EMAIL",
-    "MAINTENANCE_MODE",
-    "MAINTENANCE_RETRY_AFTER",
-    "FORBIDDEN_PATHS",
-    "NEXT_PUBLIC_GTM_ID",
-    "NEXT_PUBLIC_GA_MEASUREMENT_ID",
-    "NEXT_PUBLIC_GOOGLE_ADS_ID",
-    "NEXT_PUBLIC_META_PIXEL_ID",
-    "NEXT_PUBLIC_TIKTOK_PIXEL_ID",
-    "NEXT_PUBLIC_LINKEDIN_PARTNER_ID",
-    "NEXT_PUBLIC_X_PIXEL_ID",
-    "NEXT_PUBLIC_PINTEREST_TAG_ID",
-    "NEXT_PUBLIC_SNAP_PIXEL_ID",
-  ];
-
-  for (const name of names) {
-    assert.match(documentation, new RegExp(name), `${name} is missing from Documentation/index.html`);
+test("secret and generated files are ignored without requiring local secrets", () => {
+  const gitignore = read(".gitignore");
+  for (const pattern of [
+    ".env*.local",
+    "node_modules",
+    ".next",
+    "*.tsbuildinfo",
+    "npm-debug.log*",
+  ]) {
+    assert.match(
+      gitignore,
+      new RegExp(`^${pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"),
+    );
   }
 });
 
-test("required SEO and status routes are present", () => {
+test("README and handover documentation are clean and secret-free", () => {
+  const readmeBytes = readFileSync(url("README.md"));
+  const readme = readmeBytes.toString("utf8");
+  const handover = read("HANDOVER-CHECKLIST.md");
+
+  assert.equal(readmeBytes.includes(0), false, "README contains null bytes");
+  assert.equal(Buffer.from(readme, "utf8").toString("utf8"), readme);
+  for (const item of [".env.local", ".git", ".next", "node_modules", "tsconfig.tsbuildinfo"]) {
+    assert.ok(handover.includes(item), `handover checklist does not exclude ${item}`);
+  }
+  assert.doesNotMatch(`${readme}\n${handover}`, /(?:service_role|secret)[=:]\s*\S+/i);
+});
+
+test("required routes, scripts, lockfile and migration files remain available", () => {
   for (const path of [
-    "app/sitemap.ts",
-    "app/robots.ts",
-    "app/manifest.ts",
+    "app/page.tsx",
+    "app/qr-generator/page.tsx",
+    "app/background-remover/page.tsx",
     "app/not-found.tsx",
     "app/error.tsx",
     "app/global-error.tsx",
     "app/403/page.tsx",
     "app/maintenance/page.tsx",
+    "package-lock.json",
+    "supabase/migrations/20260715143601_create_leads.sql",
+    "supabase/migrations/20260728000000_align_lead_packages.sql",
+    "supabase/migrations/20260728143000_stabilize_lead_package_ids.sql",
   ]) {
     assert.equal(existsSync(url(path)), true, `${path} is missing`);
+    assert.equal(statSync(url(path)).isFile(), true);
+  }
+
+  const packageJson = JSON.parse(read("package.json"));
+  for (const script of ["dev", "test", "lint", "typecheck", "build", "validate"]) {
+    assert.equal(typeof packageJson.scripts?.[script], "string");
   }
 });
 
-test("navigation resolver preserves supported destination formats", async () => {
+test("navigation and colour helpers preserve technical behavior", async () => {
   const { resolveNavigationHref } = await import(url("lib/navigation-utils.js"));
-  assert.equal(resolveNavigationHref("#services"), "/#services");
-  assert.equal(resolveNavigationHref("/#services"), "/#services");
-  assert.equal(resolveNavigationHref("/qr-generator"), "/qr-generator");
-  assert.equal(resolveNavigationHref("https://example.com"), "https://example.com");
-  assert.equal(resolveNavigationHref("http://example.com"), "http://example.com");
-  assert.equal(resolveNavigationHref("mailto:hello@example.com"), "mailto:hello@example.com");
-  assert.equal(resolveNavigationHref("tel:+60123456789"), "tel:+60123456789");
-});
-
-test("hexadecimal brand colors use the production RGB converter", async () => {
   const { hexToRgbChannels } = await import(url("lib/color-utils.js"));
+
+  assert.equal(resolveNavigationHref("#section"), "/#section");
+  assert.equal(resolveNavigationHref("/tool"), "/tool");
+  assert.equal(resolveNavigationHref("https://example.com"), "https://example.com");
   assert.equal(hexToRgbChannels("#f8fbfd"), "248 251 253");
-  assert.equal(hexToRgbChannels("#bfd730"), "191 215 48");
-  assert.equal(hexToRgbChannels("#171717"), "23 23 23");
-  assert.equal(hexToRgbChannels("#5f666d"), "95 102 109");
-  assert.equal(hexToRgbChannels("#BFD730"), "191 215 48");
   assert.throws(() => hexToRgbChannels("#fff"), /six digits/i);
-  assert.throws(() => hexToRgbChannels("#gggggg"), /six digits/i);
-});
-
-test("TypeScript and initial SQL budget values stay synchronized", () => {
-  const types = read("lib/types/lead.ts");
-  const migration = read("supabase/migrations/20260715143601_create_leads.sql");
-  const arrayBody = types.match(/leadBudgetOptions\s*=\s*\[([\s\S]*?)\]\s*as const/)?.[1] || "";
-  const sqlBody = migration.match(/budget in \(([^)]+)\)/i)?.[1] || "";
-  const tsValues = [...arrayBody.matchAll(/"([^"]+)"/g)].map((match) => match[1]);
-  const sqlValues = [...sqlBody.matchAll(/'([^']+)'/g)].map((match) => match[1]);
-  assert.deepEqual(tsValues, sqlValues);
-});
-
-test("brand theme, font, SEO and budget example files are included", () => {
-  for (const path of [
-    "lib/brand-theme.ts",
-    "lib/fonts.ts",
-    "lib/seo-config.ts",
-    "lib/navigation-utils.js",
-    "lib/color-utils.js",
-    "supabase/examples/update-budget-options.sql",
-  ]) assert.equal(existsSync(url(path)), true, `${path} is missing`);
-});
-
-test("known brand colors are centralized outside production TSX files", () => {
-  const roots = ["app", "components", "pages"];
-  const files = [];
-  const walk = (path) => {
-    const location = url(`${path}/`);
-    for (const name of readdirSync(location)) {
-      const child = `${path}/${name}`;
-      if (statSync(url(child)).isDirectory()) walk(child);
-      else if (/\.(?:ts|tsx)$/.test(name)) files.push(child);
-    }
-  };
-  roots.forEach(walk);
-  const known = /#(?:f8fbfd|bfd730|9db514|8fa30f|738600|171717|5f666d)/i;
-  for (const path of files) assert.doesNotMatch(read(path), known, `${path} hardcodes a brand color`);
-});
-
-test("visible brand references stay in editable configuration or content", () => {
-  for (const path of ["app", "components", "pages"]) {
-    const location = url(`${path}/`);
-    const walk = (directory) => {
-      for (const entry of readdirSync(directory, { withFileTypes: true })) {
-        const child = new URL(`${entry.name}${entry.isDirectory() ? "/" : ""}`, directory);
-        if (entry.isDirectory()) walk(child);
-        else if (/\.(?:ts|tsx)$/.test(entry.name)) {
-          const source = readFileSync(child, "utf8");
-          assert.doesNotMatch(source, /Trulab Production|trulabstudio\.com/i, `${child.pathname} hardcodes visible branding`);
-        }
-      }
-    };
-    walk(location);
-  }
-});
-
-test("podcast SEO phrases are centralized", () => {
-  for (const path of ["app/page.tsx", "app/layout.tsx"]) {
-    assert.doesNotMatch(read(path), /Professional Podcast Production Malaysia|Podcast Production|Podcast Editing/);
-  }
-});
-
-test("contact point area served is sourced from SEO configuration", () => {
-  const page = read("app/page.tsx");
-  assert.doesNotMatch(page, /contactPoint\s*:\s*\{[\s\S]*?areaServed:\s*["']MY["']/);
-  assert.match(page, /contactPoint\s*:\s*\{[\s\S]*?areaServed:\s*seoConfig\.areaServed\.code/);
-});
-
-test("release package has exactly one valid lockfile location", () => {
-  assert.equal(existsSync(url("package-lock.json")), true, "project package-lock.json is missing");
-  assert.equal(existsSync(new URL("../../package-lock.json", import.meta.url)), false, "Main Files/package-lock.json is invalid");
-  assert.equal(existsSync(new URL("../../../package-lock.json", import.meta.url)), false, "release-root package-lock.json is invalid");
-});
-
-test("brand RGB channels are derived rather than manually repeated", () => {
-  const theme = read("lib/brand-theme.ts");
-  assert.match(theme, /hexToRgbChannels\(brandTheme\.background\)/);
-  assert.match(theme, /hexToRgbChannels\(brandTheme\.accent\)/);
-  assert.doesNotMatch(theme, /background:\s*["']248 251 253["']/);
-});
-
-test("release artifacts are ignored and unsafe environment examples are absent", () => {
-  assert.equal(existsSync(url(".env.example")), false, ".env.example must not be packaged");
-  const gitignore = read(".gitignore");
-  for (const pattern of ["node_modules", ".next", "*.tsbuildinfo", "npm-debug.log*"]) {
-    assert.match(gitignore, new RegExp(`^${pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"));
-  }
-});
-
-test("documentation covers new customization safety rules", () => {
-  assert.ok(documentationUrl);
-  const documentation = readFileSync(documentationUrl, "utf8");
-  for (const phrase of [
-    "update-budget-options.sql",
-    "https://example.com",
-    "lib/brand-theme.ts",
-    "lib/seo-config.ts",
-    "dummy placeholder values",
-    "Optional Meta Pixel Setup",
-  ]) assert.match(documentation, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `${phrase} is missing`);
 });

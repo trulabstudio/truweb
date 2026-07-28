@@ -25,7 +25,7 @@ body {
   min-height: 100vh;
   background:
     radial-gradient(circle at 20% 0%, rgb(var(--trulab-accent-rgb) / 0.12), transparent 32rem),
-    linear-gradient(180deg, var(--trulab-bg) 0%, #ffffff 48%, var(--trulab-bg) 100%);
+    linear-gradient(180deg, var(--trulab-bg) 0%, var(--trulab-surface) 48%, var(--trulab-bg) 100%);
   color: var(--trulab-ink);
   text-rendering: geometricPrecision;
 }
@@ -55,15 +55,15 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid rgba(23, 23, 23, 0.08);
-  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgb(var(--trulab-border-rgb) / 0.08);
+  background: rgb(var(--trulab-surface-rgb) / 0.72);
   color: var(--trulab-muted);
   border-radius: 999px;
   padding: 8px 12px;
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0;
-  box-shadow: 0 10px 30px rgba(23, 23, 23, 0.05);
+  box-shadow: 0 10px 30px rgb(var(--trulab-ink-rgb) / 0.05);
 }
 
 .focus-ring {
@@ -78,8 +78,8 @@ textarea {
 .tool-input {
   width: 100%;
   border-radius: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  background: #ffffff;
+  border: 1px solid rgb(var(--trulab-border-rgb) / 0.1);
+  background: var(--trulab-surface);
   padding: 0.75rem 1rem;
   color: var(--trulab-ink);
   font-size: 0.875rem;

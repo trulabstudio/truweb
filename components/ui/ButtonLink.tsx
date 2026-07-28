@@ -6,8 +6,8 @@ type ButtonLinkProps = ComponentProps<typeof Link> & {
 };
 
 const variants = {
-  primary: "bg-trulab-ink text-white shadow-sm hover:-translate-y-0.5 hover:bg-black",
-  secondary: "border border-black/10 bg-white text-trulab-ink shadow-sm hover:-translate-y-0.5 hover:shadow-lift",
+  primary: "bg-trulab-button-primary text-trulab-button-primary-text shadow-sm hover:-translate-y-0.5 hover:bg-trulab-button-primary-hover",
+  secondary: "border border-trulab-border/10 bg-trulab-button-secondary text-trulab-button-secondary-text shadow-sm hover:-translate-y-0.5 hover:shadow-lift",
 };
 
 export default function ButtonLink({ className = "", variant = "primary", ...props }: ButtonLinkProps) {

@@ -28,25 +28,25 @@ export default function Hero() {
           </div>
 
           <div className="reveal relative lg:pl-6" style={{ animationDelay: "120ms" }}>
-            <div className="relative overflow-hidden rounded-[26px] border border-black/8 bg-white p-2.5 shadow-soft sm:rounded-[30px] sm:p-3">
+            <div className="relative overflow-hidden rounded-[26px] border border-trulab-border/8 bg-trulab-surface p-2.5 shadow-soft sm:rounded-[30px] sm:p-3">
               <Image
                 src={heroContent.image.src}
                 alt={heroContent.image.alt}
-                width={1200}
-                height={630}
+                width={1536}
+                height={1024}
                 sizes="(min-width: 1024px) 56vw, (min-width: 640px) calc(100vw - 32px), calc(100vw - 32px)"
-                className="aspect-[4/3] w-full rounded-[19px] object-cover sm:aspect-[16/10] sm:rounded-[22px]"
+                className="aspect-[4/3] w-full rounded-[19px] object-cover object-center sm:aspect-[16/10] sm:rounded-[22px]"
                 priority
               />
             </div>
           </div>
         </div>
 
-        <div className="reveal mt-7 rounded-[24px] border border-black/8 bg-white/72 p-2 shadow-[0_18px_60px_rgba(23,23,23,0.06)] backdrop-blur-xl sm:mt-8 sm:rounded-[26px]" style={{ animationDelay: "180ms" }}>
+        <div className="reveal mt-7 rounded-[24px] border border-trulab-border/8 bg-trulab-surface/72 p-2 shadow-[0_18px_60px_rgb(var(--trulab-ink-rgb)/0.06)] backdrop-blur-xl sm:mt-8 sm:rounded-[26px]" style={{ animationDelay: "180ms" }}>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {trustPills.map((pill) => (
               <div key={pill} className="flex min-h-14 items-center gap-3 rounded-[20px] bg-trulab-bg px-4 py-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[rgb(var(--trulab-accent-rgb)/0.35)] bg-white text-[var(--trulab-accent-icon)]">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[rgb(var(--trulab-accent-rgb)/0.35)] bg-trulab-surface text-[var(--trulab-accent-icon)]">
                   <CheckCircle2 size={16} aria-hidden />
                 </span>
                 <span className="text-sm font-semibold text-trulab-ink">{pill}</span>

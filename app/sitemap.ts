@@ -1,13 +1,12 @@
 import type { MetadataRoute } from "next";
+import { seoConfig } from "@/lib/seo-config";
 import { siteConfig } from "@/lib/site-config";
 
-const routes = ["", "/qr-generator", "/background-remover"];
-
 export default function sitemap(): MetadataRoute.Sitemap {
-  return routes.map((route) => ({
-    url: `${siteConfig.url}${route}`,
+  return seoConfig.sitemap.map((route) => ({
+    url: `${siteConfig.url}${route.path}`,
     lastModified: new Date(),
-    changeFrequency: route ? "monthly" : "weekly",
-    priority: route ? 0.7 : 1,
+    changeFrequency: route.changeFrequency,
+    priority: route.priority,
   }));
 }

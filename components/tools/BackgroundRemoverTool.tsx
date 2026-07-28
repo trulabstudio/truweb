@@ -2,6 +2,7 @@
 
 import { ChangeEvent, DragEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { Download, ImageIcon, Loader2, Upload, Wand2, X } from "lucide-react";
+import { brandTheme } from "@/lib/brand-theme";
 import { toolInterfaceContent } from "@/lib/content/pages";
 
 const copy = toolInterfaceContent.backgroundRemover;
@@ -16,13 +17,7 @@ type Preset =
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
 
-const presets: Preset[] = [
-  { name: copy.presets.original, size: "original" },
-  { name: copy.presets.instagram, size: "custom", width: 1080, height: 1080 },
-  { name: copy.presets.profile, size: "custom", width: 512, height: 512 },
-  { name: copy.presets.banner, size: "custom", width: 1920, height: 1080 },
-  { name: copy.presets.square4k, size: "custom", width: 4096, height: 4096 },
-];
+const presets = copy.presets satisfies ReadonlyArray<Preset>;
 
 function loadImage(src: string) {
   return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -51,7 +46,7 @@ export default function BackgroundRemoverTool() {
   const [quality, setQuality] = useState(0.92);
   const [shadow, setShadow] = useState<ShadowOption>("none");
   const [bgOption, setBgOption] = useState<BgOption>("transparent");
-  const [bgColor, setBgColor] = useState("#ffffff");
+  const [bgColor, setBgColor] = useState<string>(brandTheme.surface);
   const [contrast, setContrast] = useState(100);
   const [brightness, setBrightness] = useState(100);
   const [saturation, setSaturation] = useState(100);
@@ -244,7 +239,7 @@ export default function BackgroundRemoverTool() {
       context.imageSmoothingQuality = "high";
 
       if (bgOption === "solid" || format === "jpeg") {
-        context.fillStyle = bgOption === "solid" ? bgColor : "#ffffff";
+        context.fillStyle = bgOption === "solid" ? bgColor : brandTheme.surface;
         context.fillRect(0, 0, canvas.width, canvas.height);
       }
 
@@ -275,10 +270,10 @@ export default function BackgroundRemoverTool() {
   }
 
   const checkerboardBg =
-    "bg-[linear-gradient(45deg,#eef1f3_25%,transparent_25%),linear-gradient(-45deg,#eef1f3_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#eef1f3_75%),linear-gradient(-45deg,transparent_75%,#eef1f3_75%)] bg-[length:18px_18px] bg-[position:0_0,0_9px,9px_-9px,-9px_0px]";
+    "bg-[linear-gradient(45deg,var(--trulab-checkerboard)_25%,transparent_25%),linear-gradient(-45deg,var(--trulab-checkerboard)_25%,transparent_25%),linear-gradient(45deg,transparent_75%,var(--trulab-checkerboard)_75%),linear-gradient(-45deg,transparent_75%,var(--trulab-checkerboard)_75%)] bg-[length:18px_18px] bg-[position:0_0,0_9px,9px_-9px,-9px_0px]";
 
   return (
-    <section className="overflow-hidden rounded-[28px] border border-black/8 bg-white p-5 shadow-soft sm:p-8">
+    <section className="overflow-hidden rounded-[28px] border border-trulab-border/8 bg-trulab-surface p-5 shadow-soft sm:p-8">
       <div className="flex items-start gap-4">
         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-trulab-accent/20 text-trulab-ink">
           <Wand2 size={24} aria-hidden />
@@ -303,7 +298,7 @@ export default function BackgroundRemoverTool() {
             }}
             onDragLeave={() => setIsDragging(false)}
             className={`rounded-[24px] border border-dashed p-5 transition ${
-              isDragging ? "border-trulab-ink bg-trulab-accent/10" : "border-black/12 bg-trulab-bg"
+              isDragging ? "border-trulab-ink bg-trulab-accent/10" : "border-trulab-border/12 bg-trulab-bg"
             }`}
           >
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
@@ -317,7 +312,7 @@ export default function BackgroundRemoverTool() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="focus-ring mt-4 inline-flex rounded-full bg-trulab-ink px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-black"
+                  className="focus-ring mt-4 inline-flex rounded-full bg-trulab-button-primary px-5 py-2.5 text-sm font-semibold text-trulab-button-primary-text transition hover:bg-trulab-button-primary-hover"
                 >
                   {copy.chooseFileLabel}
                 </button>
@@ -326,12 +321,12 @@ export default function BackgroundRemoverTool() {
           </div>
 
           {file ? (
-            <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border border-black/8 bg-trulab-bg px-4 py-3">
+            <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border border-trulab-border/8 bg-trulab-bg px-4 py-3">
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-trulab-ink">{file.name}</p>
-                <p className="text-xs text-trulab-muted">{Math.max(1, Math.round(file.size / 1024))} KB</p>
+                <p className="text-xs text-trulab-muted">{Math.max(1, Math.round(file.size / 1024))} {copy.fileSizeUnit}</p>
               </div>
-              <button type="button" onClick={resetAll} className="rounded-full p-2 text-trulab-muted transition hover:bg-white hover:text-trulab-ink">
+              <button type="button" onClick={resetAll} className="rounded-full p-2 text-trulab-muted transition hover:bg-trulab-surface hover:text-trulab-ink">
                 <X size={17} aria-hidden />
               </button>
             </div>
@@ -342,7 +337,7 @@ export default function BackgroundRemoverTool() {
               type="button"
               onClick={removeBackground}
               disabled={loading || !originalUrl}
-              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-trulab-ink px-6 py-3 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-trulab-button-primary px-6 py-3 text-sm font-semibold text-trulab-button-primary-text transition hover:bg-trulab-button-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? <Loader2 size={17} className="animate-spin" aria-hidden /> : <Wand2 size={17} aria-hidden />}
               {loading ? progress || copy.processingLabel : removedUrl ? copy.regenerateLabel : copy.removeLabel}
@@ -352,7 +347,7 @@ export default function BackgroundRemoverTool() {
               type="button"
               onClick={downloadImage}
               disabled={!removedBlob}
-              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-trulab-ink shadow-sm transition hover:-translate-y-0.5 hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-50"
+              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full border border-trulab-border/10 bg-trulab-button-secondary px-6 py-3 text-sm font-semibold text-trulab-button-secondary-text shadow-sm transition hover:-translate-y-0.5 hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Download size={17} aria-hidden />
               {copy.downloadLabel}
@@ -361,7 +356,7 @@ export default function BackgroundRemoverTool() {
 
           {loading ? (
             <div>
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-black/8">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-trulab-border/8">
                 <div className="h-full w-full animate-pulse rounded-full bg-trulab-accent" />
               </div>
               <p className="mt-2 text-xs text-trulab-muted">{progress || copy.processingImageLabel}</p>
@@ -371,10 +366,10 @@ export default function BackgroundRemoverTool() {
 
         <PreviewPanel title={copy.originalLabel} src={originalUrl} />
 
-        <div className="min-w-0 rounded-[24px] border border-black/8 bg-trulab-bg p-3">
+        <div className="min-w-0 rounded-[24px] border border-trulab-border/8 bg-trulab-bg p-3">
           <p className="mb-3 text-sm font-semibold text-trulab-ink">{copy.resultLabel}</p>
           <div
-            className={`flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-black/8 bg-white ${
+            className={`flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-trulab-border/8 bg-trulab-surface ${
               removedUrl && bgOption === "transparent" ? checkerboardBg : ""
             }`}
             style={removedUrl && bgOption === "solid" ? { backgroundColor: bgColor } : undefined}
@@ -382,18 +377,18 @@ export default function BackgroundRemoverTool() {
             {removedUrl ? (
               <img src={removedUrl} alt={copy.removedImageAlt} className="max-h-full max-w-full object-contain" style={{ filter: getPreviewFilter() }} />
             ) : (
-              <ImageIcon className="h-10 w-10 text-black/22" />
+              <ImageIcon className="h-10 w-10 text-trulab-ink/22" />
             )}
           </div>
         </div>
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-black/8 bg-trulab-bg p-5">
+      <div className="mt-6 rounded-[24px] border border-trulab-border/8 bg-trulab-bg p-5">
         <p className="text-sm font-semibold text-trulab-ink">{copy.exportSettingsLabel}</p>
 
         <div className="mt-4 flex flex-wrap gap-2">
           {presets.map((preset) => (
-            <button key={preset.name} type="button" onClick={() => applyPreset(preset)} className="rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-semibold text-trulab-muted transition hover:text-trulab-ink">
+            <button key={preset.name} type="button" onClick={() => applyPreset(preset)} className="rounded-full border border-trulab-border/10 bg-trulab-surface px-4 py-2 text-xs font-semibold text-trulab-muted transition hover:text-trulab-ink">
               {preset.name}
             </button>
           ))}
@@ -464,7 +459,7 @@ export default function BackgroundRemoverTool() {
           </label>
 
           <Field label={copy.fields.backgroundColor}>
-            <div className="flex overflow-hidden rounded-2xl border border-black/10 bg-white">
+            <div className="flex overflow-hidden rounded-2xl border border-trulab-border/10 bg-trulab-surface">
               <input type="color" value={bgColor} onChange={(event) => setBgColor(event.target.value)} className="h-12 w-14 cursor-pointer border-0 bg-transparent p-1" />
               <input value={bgColor} onChange={(event) => setBgColor(event.target.value)} className="min-w-0 flex-1 bg-transparent px-3 text-sm outline-none" />
             </div>
@@ -489,10 +484,10 @@ export default function BackgroundRemoverTool() {
 
 function PreviewPanel({ title, src }: { title: string; src: string }) {
   return (
-    <div className="min-w-0 rounded-[24px] border border-black/8 bg-trulab-bg p-3">
+    <div className="min-w-0 rounded-[24px] border border-trulab-border/8 bg-trulab-bg p-3">
       <p className="mb-3 text-sm font-semibold text-trulab-ink">{title}</p>
-      <div className="flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-black/8 bg-white">
-        {src ? <img src={src} alt={title} className="max-h-full max-w-full object-contain" /> : <ImageIcon className="h-10 w-10 text-black/22" />}
+      <div className="flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-trulab-border/8 bg-trulab-surface">
+        {src ? <img src={src} alt={title} className="max-h-full max-w-full object-contain" /> : <ImageIcon className="h-10 w-10 text-trulab-ink/22" />}
       </div>
     </div>
   );

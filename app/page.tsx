@@ -4,6 +4,7 @@ import ContactForm from "@/components/home/ContactForm";
 import FAQ from "@/components/home/FAQ";
 import Hero from "@/components/home/Hero";
 import LogoMarquee from "@/components/home/LogoMarquee";
+import Packages from "@/components/home/Packages";
 import Process from "@/components/home/Process";
 import RichSeo from "@/components/home/RichSeo";
 import Services from "@/components/home/Services";
@@ -58,7 +59,7 @@ const professionalServiceSchema = {
   contactPoint: {
     "@type": "ContactPoint",
     telephone: `+${siteConfig.whatsapp}`,
-    contactType: "consultation",
+    contactType: seoConfig.contactType,
     areaServed: seoConfig.areaServed.code,
     availableLanguage: seoConfig.availableLanguages,
   },
@@ -76,6 +77,7 @@ export default function Home() {
         <Hero />
         <LogoMarquee />
         <Services />
+        <Packages />
         <WhyTrulab />
         <Process />
         <Certifications />

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.title,
-    template: `%s | ${siteConfig.name}`,
+    template: seoConfig.titleTemplate,
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
   keywords: [...seoConfig.keywords],
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: [{ url: "/favicon.png", type: "image/png" }],
-    apple: [{ url: "/favicon.png", type: "image/png" }],
-    shortcut: ["/favicon.png"],
+    icon: [{ url: siteConfig.assets.favicon, type: "image/png" }],
+    apple: [{ url: siteConfig.assets.favicon, type: "image/png" }],
+    shortcut: [siteConfig.assets.favicon],
   },
   robots: {
     index: true,
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "en_MY",
+    locale: seoConfig.locale,
     url: siteConfig.url,
     siteName: siteConfig.name,
     title: siteConfig.title,
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: seoConfig.twitterCard,
     title: siteConfig.title,
     description: siteConfig.description,
     images: [siteConfig.assets.socialImage],
@@ -75,7 +75,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en-MY"
+      lang={seoConfig.locale.replace("_", "-")}
       className={siteFont.variable}
       style={{
         "--trulab-bg": brandTheme.background,
@@ -85,10 +85,21 @@ export default function RootLayout({
         "--trulab-accent-text": brandTheme.accentText,
         "--trulab-ink": brandTheme.ink,
         "--trulab-muted": brandTheme.muted,
+        "--trulab-surface": brandTheme.surface,
+        "--trulab-border": brandTheme.border,
+        "--trulab-dark-section": brandTheme.darkSection,
+        "--trulab-on-dark": brandTheme.onDark,
+        "--trulab-button-primary-bg": brandTheme.buttonPrimaryBackground,
+        "--trulab-button-primary-text": brandTheme.buttonPrimaryText,
+        "--trulab-button-secondary-bg": brandTheme.buttonSecondaryBackground,
+        "--trulab-button-secondary-text": brandTheme.buttonSecondaryText,
+        "--trulab-checkerboard": brandTheme.checkerboard,
         "--trulab-bg-rgb": brandThemeRgb.background,
         "--trulab-accent-rgb": brandThemeRgb.accent,
         "--trulab-ink-rgb": brandThemeRgb.ink,
         "--trulab-muted-rgb": brandThemeRgb.muted,
+        "--trulab-surface-rgb": brandThemeRgb.surface,
+        "--trulab-border-rgb": brandThemeRgb.border,
       } as CSSProperties}
     >
       <body className="font-sans antialiased">

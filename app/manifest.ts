@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { brandTheme } from "@/lib/brand-theme";
+import { editableSite } from "@/lib/EDIT-SITE-HERE";
 import { siteConfig } from "@/lib/site-config";
 
 export default function manifest(): MetadataRoute.Manifest {
@@ -14,19 +15,19 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: brandTheme.background,
     icons: [
       {
-        src: "/pwa-icon-192.png",
+        src: editableSite.images.pwa.icon192.src,
         sizes: "192x192",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/pwa-icon-512.png",
+        src: editableSite.images.pwa.icon512.src,
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/pwa-maskable-512.png",
+        src: editableSite.images.pwa.maskable512.src,
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",

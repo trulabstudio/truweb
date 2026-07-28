@@ -14,6 +14,7 @@ export type SiteConfig = {
     logo: string;
     logoLight: string;
     logoFull: string;
+    favicon: string;
     socialImage: string;
   };
 };

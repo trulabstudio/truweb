@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { editableSite } from "@/lib/EDIT-SITE-HERE";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+const copy = editableSite.statusPages.api;
 
 export async function GET(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
   const authorization = request.headers.get("authorization");
 
   if (!cronSecret || authorization !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: copy.unauthorized }, { status: 401 });
   }
 
   const supabaseUrl = process.env.SUPABASE_URL;
@@ -16,7 +18,7 @@ export async function GET(request: NextRequest) {
 
   if (!supabaseUrl || !serviceKey) {
     return NextResponse.json(
-      { error: "Supabase health check is not configured." },
+      { error: copy.healthCheckUnavailable },
       { status: 503 },
     );
   }
@@ -41,7 +43,7 @@ export async function GET(request: NextRequest) {
         await response.text(),
       );
       return NextResponse.json(
-        { error: "Supabase health check failed." },
+        { error: copy.healthCheckFailed },
         { status: 502 },
       );
     }
@@ -53,7 +55,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Supabase health check request failed", error);
     return NextResponse.json(
-      { error: "Supabase health check request failed." },
+      { error: copy.healthCheckRequestFailed },
       { status: 502 },
     );
   }

@@ -24,7 +24,7 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <Section id="faq" className="bg-white">
+    <Section id="faq" className="bg-trulab-surface">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Container>
         <SectionHeading {...faqContent} />
@@ -36,7 +36,7 @@ export default function FAQ() {
             const buttonId = `faq-button-${index}`;
 
             return (
-              <article key={faq.question} className={`rounded-3xl border border-black/8 p-5 transition duration-200 ${isOpen ? "bg-white shadow-soft" : "bg-trulab-bg hover:border-black/12"}`}>
+              <article key={faq.question} className={`rounded-3xl border border-trulab-border/8 p-5 transition duration-200 ${isOpen ? "bg-trulab-surface shadow-soft" : "bg-trulab-bg hover:border-trulab-border/12"}`}>
                 <h3>
                   <button
                     id={buttonId}
@@ -47,7 +47,7 @@ export default function FAQ() {
                     className="focus-ring flex w-full items-center justify-between gap-4 rounded-xl text-left text-base font-semibold text-trulab-ink"
                   >
                     <span>{faq.question}</span>
-                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white transition ${isOpen ? "rotate-180 bg-trulab-accent" : ""}`}>
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-trulab-surface transition ${isOpen ? "rotate-180 bg-trulab-accent" : ""}`}>
                       <ChevronDown size={17} aria-hidden />
                     </span>
                   </button>
