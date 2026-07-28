@@ -25,7 +25,7 @@ function LogoTile({ name, src, alt, duplicate = false }: { name: string; src: st
           alt={duplicate ? "" : alt}
           width={220}
           height={120}
-          className="max-h-12 w-auto object-contain opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0"
+          className="max-h-12 w-auto object-contain"
           onError={() => setFailed(true)}
         />
       )}
