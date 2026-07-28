@@ -19,7 +19,7 @@ export type SiteConfig = {
   };
 };
 
-export type SocialLink = {
+type SocialLink = {
   label: string;
   href: string;
 };

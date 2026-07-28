@@ -4,8 +4,8 @@ type EditablePackage = (typeof editableSite.packages.items)[number];
 type AdditionalPackageOption =
   (typeof editableSite.forms.contact.additionalPackageOptions)[number];
 
-export type PackageId = EditablePackage["id"];
-export type PackageInterestId = PackageId | AdditionalPackageOption["id"];
+type PackageId = EditablePackage["id"];
+type PackageInterestId = PackageId | AdditionalPackageOption["id"];
 
 export type PackageInterestOption = {
   id: PackageInterestId;
@@ -32,11 +32,7 @@ export type LeadInput = {
   website?: unknown;
 };
 
-export function getPackageById(id: string) {
-  return editableSite.packages.items.find((item) => item.id === id);
-}
-
-export function getPackageDisplayLabel(packageItem: EditablePackage) {
+function getPackageDisplayLabel(packageItem: EditablePackage) {
   const customLabel = packageItem.formLabel.trim();
 
   if (customLabel) {

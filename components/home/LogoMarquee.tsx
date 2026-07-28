@@ -34,6 +34,8 @@ function LogoTile({ name, src, alt, duplicate = false }: { name: string; src: st
 }
 
 export default function LogoMarquee() {
+  const animationDuration = `${Math.max(logoMarqueeContent.logos.length * 5.3, 32)}s`;
+
   return (
     <section aria-labelledby="logo-marquee-title" className="py-8 sm:py-12">
       <Container>
@@ -42,7 +44,10 @@ export default function LogoMarquee() {
         </p>
       </Container>
       <div className="marquee-mask overflow-hidden">
-        <div className="logo-track flex w-max animate-marquee hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]">
+        <div
+          className="logo-track flex w-max animate-marquee hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]"
+          style={{ animationDuration }}
+        >
           {logoMarqueeContent.logos.map((logo) => (
             <LogoTile key={logo.name} {...logo} />
           ))}

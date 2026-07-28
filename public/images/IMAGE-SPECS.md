@@ -17,22 +17,32 @@ Do not stretch a replacement to the listed size. Crop or export it at the recomm
 | Maskable PWA icon | `/images/brand/pwa-maskable-512.png` | Web app manifest on devices that mask launcher icons | 512 px | 512 px | 1:1 | PNG | No | Contain | Keep the logo within the maskable safe zone so circular or rounded masks do not crop it. |
 | Social sharing image | `/images/social/social-og-image.jpg` | Open Graph and Twitter/X previews for every public page | 1200 px | 630 px | 1.91:1 | JPG or PNG | No | Cover | Keep important text and logos away from the outer edges used by social-card crops. |
 | Homepage hero | `/images/hero/hero-founder-cinematic.png` | Homepage hero image | 1536 px | 1024 px | 3:2 | PNG, JPG or WebP | No | Cover | Desktop displays a 16:10 crop and mobile displays a 4:3 crop; keep the main speaker near the centre. |
-| Client logo 01 | `/images/clients/client-01.svg` | Homepage client-logo marquee | 360 px | 140 px | 18:7 | SVG | Yes | Contain | Use a simple horizontal logo that stays readable inside a 176 px-wide mobile tile. |
-| Client logo 02 | `/images/clients/client-02.svg` | Homepage client-logo marquee | 360 px | 140 px | 18:7 | SVG | Yes | Contain | Use a simple horizontal logo that stays readable inside a 176 px-wide mobile tile. |
-| Client logo 03 | `/images/clients/client-03.svg` | Homepage client-logo marquee | 360 px | 140 px | 18:7 | SVG | Yes | Contain | Use a simple horizontal logo that stays readable inside a 176 px-wide mobile tile. |
-| Client logo 04 | `/images/clients/client-04.svg` | Homepage client-logo marquee | 360 px | 140 px | 18:7 | SVG | Yes | Contain | Use a simple horizontal logo that stays readable inside a 176 px-wide mobile tile. |
-| Client logo 05 | `/images/clients/client-05.svg` | Homepage client-logo marquee | 360 px | 140 px | 18:7 | SVG | Yes | Contain | Use a simple horizontal logo that stays readable inside a 176 px-wide mobile tile. |
-| Client logo 06 | `/images/clients/client-06.svg` | Homepage client-logo marquee | 360 px | 140 px | 18:7 | SVG | Yes | Contain | Use a simple horizontal logo that stays readable inside a 176 px-wide mobile tile. |
-
-## Optional image library
-
-These files are centralized in `lib/EDIT-SITE-HERE.ts` but are not currently rendered. They can be selected as a future hero or production image without moving or recompressing them.
-
-| Purpose | Path | Where it appears | Recommended width | Recommended height | Aspect ratio | Preferred format | Transparent background required | Display behaviour | Mobile considerations |
-| --- | --- | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| Founder hero alternative 01 | `/images/hero/hero-founder-cinematic-alt-01.png` | Not currently rendered; available as a hero alternative | 1586 px | 992 px | 1.6:1 | PNG, JPG or WebP | No | Cover | Keep the speaker centred for a possible 4:3 mobile crop. |
-| Founder hero alternative 02 | `/images/hero/hero-founder-cinematic-alt-02.png` | Not currently rendered; available as a hero alternative | 1536 px | 1024 px | 3:2 | PNG, JPG or WebP | No | Cover | Keep the speaker centred for a possible 4:3 mobile crop. |
-| Podcast production alternative | `/images/hero/hero-podcast-production.png` | Not currently rendered; available as a hero alternative | 1570 px | 1001 px | 1.57:1 | PNG, JPG or WebP | No | Cover | Keep both speakers inside the central 4:3 crop. |
-| Production equipment cutout | `/images/production/production-equipment.png` | Not currently rendered; available for a production section | 1536 px | 1024 px | 3:2 | Transparent PNG or WebP | Yes | Contain | Keep all equipment within the central safe area for narrow screens. |
-
-The same recommendations are stored beside each image entry in `lib/EDIT-SITE-HERE.ts` so a client can see the required size while changing a path or alt text.
+| Client logo 01 | `/images/clients/Client-01.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 02 | `/images/clients/Client-02.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 03 | `/images/clients/Client-03.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 04 | `/images/clients/Client-04.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 05 | `/images/clients/Client-05.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 06 | `/images/clients/Client-06.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 07 | `/images/clients/Client-07.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 08 | `/images/clients/Client-08.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 09 | `/images/clients/Client-09.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 10 | `/images/clients/Client-10.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 11 | `/images/clients/Client-11.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 12 | `/images/clients/Client-12.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 13 | `/images/clients/Client-13.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 14 | `/images/clients/Client-14.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 15 | `/images/clients/Client-15.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 16 | `/images/clients/Client-16.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 17 | `/images/clients/Client-17.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 18 | `/images/clients/Client-18.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 19 | `/images/clients/Client-19.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 20 | `/images/clients/Client-20.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 21 | `/images/clients/Client-21.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 22 | `/images/clients/Client-22.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 23 | `/images/clients/Client-23.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 24 | `/images/clients/Client-24.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 25 | `/images/clients/Client-25.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 26 | `/images/clients/Client-26.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 27 | `/images/clients/Client-27.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 28 | `/images/clients/Client-28.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |
+| Client logo 29 | `/images/clients/Client-29.png` | Homepage client-logo marquee | 1500 px | 584 px | 375:146 | Transparent PNG | Yes | Contain | Keep the complete logo inside the transparent canvas. |

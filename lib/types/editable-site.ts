@@ -1,9 +1,9 @@
-export type EditableImage = {
+type EditableImage = {
   src: string;
   alt: string;
 };
 
-export type EditableLink = {
+type EditableLink = {
   label: string;
   href: string;
 };
@@ -49,7 +49,6 @@ export type EditableSite = {
     social: Record<string, EditableImage>;
     hero: Record<string, EditableImage>;
     clients: ReadonlyArray<EditableImage & { name: string }>;
-    production: Record<string, EditableImage>;
   };
   seo: {
     defaultTitle: string;

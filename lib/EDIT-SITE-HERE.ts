@@ -134,59 +134,155 @@ const heroImages = {
     src: "/images/hero/hero-founder-cinematic.png",
     alt: "Founder speaking during a cinematic multi-camera podcast interview",
   },
-  founderAlternativeOne: {
-    src: "/images/hero/hero-founder-cinematic-alt-01.png",
-    alt: "Founder speaking in a cinematic podcast interview",
-  },
-  founderAlternativeTwo: {
-    src: "/images/hero/hero-founder-cinematic-alt-02.png",
-    alt: "Founder speaking into a podcast microphone during an interview",
-  },
-  podcastProductionAlternative: {
-    src: "/images/hero/hero-podcast-production.png",
-    alt: "Professional two-person podcast production setup",
-  },
 } as const;
 
 const clientImages = [
   {
-    name: "Client logo slot 01",
-    src: "/images/clients/client-01.svg",
-    alt: "Client logo slot 01",
+    name: "Client 01",
+    src: "/images/clients/Client-01.png",
+    alt: "Client 01 logo",
   },
   {
-    name: "Client logo slot 02",
-    src: "/images/clients/client-02.svg",
-    alt: "Client logo slot 02",
+    name: "Client 02",
+    src: "/images/clients/Client-02.png",
+    alt: "Client 02 logo",
   },
   {
-    name: "Client logo slot 03",
-    src: "/images/clients/client-03.svg",
-    alt: "Client logo slot 03",
+    name: "Client 03",
+    src: "/images/clients/Client-03.png",
+    alt: "Client 03 logo",
   },
   {
-    name: "Client logo slot 04",
-    src: "/images/clients/client-04.svg",
-    alt: "Client logo slot 04",
+    name: "Client 04",
+    src: "/images/clients/Client-04.png",
+    alt: "Client 04 logo",
   },
   {
-    name: "Client logo slot 05",
-    src: "/images/clients/client-05.svg",
-    alt: "Client logo slot 05",
+    name: "Client 05",
+    src: "/images/clients/Client-05.png",
+    alt: "Client 05 logo",
   },
   {
-    name: "Client logo slot 06",
-    src: "/images/clients/client-06.svg",
-    alt: "Client logo slot 06",
+    name: "Client 06",
+    src: "/images/clients/Client-06.png",
+    alt: "Client 06 logo",
+  },
+  {
+    name: "Client 07",
+    src: "/images/clients/Client-07.png",
+    alt: "Client 07 logo",
+  },
+  {
+    name: "Client 08",
+    src: "/images/clients/Client-08.png",
+    alt: "Client 08 logo",
+  },
+  {
+    name: "Client 09",
+    src: "/images/clients/Client-09.png",
+    alt: "Client 09 logo",
+  },
+  {
+    name: "Client 10",
+    src: "/images/clients/Client-10.png",
+    alt: "Client 10 logo",
+  },
+  {
+    name: "Client 11",
+    src: "/images/clients/Client-11.png",
+    alt: "Client 11 logo",
+  },
+  {
+    name: "Client 12",
+    src: "/images/clients/Client-12.png",
+    alt: "Client 12 logo",
+  },
+  {
+    name: "Client 13",
+    src: "/images/clients/Client-13.png",
+    alt: "Client 13 logo",
+  },
+  {
+    name: "Client 14",
+    src: "/images/clients/Client-14.png",
+    alt: "Client 14 logo",
+  },
+  {
+    name: "Client 15",
+    src: "/images/clients/Client-15.png",
+    alt: "Client 15 logo",
+  },
+  {
+    name: "Client 16",
+    src: "/images/clients/Client-16.png",
+    alt: "Client 16 logo",
+  },
+  {
+    name: "Client 17",
+    src: "/images/clients/Client-17.png",
+    alt: "Client 17 logo",
+  },
+  {
+    name: "Client 18",
+    src: "/images/clients/Client-18.png",
+    alt: "Client 18 logo",
+  },
+  {
+    name: "Client 19",
+    src: "/images/clients/Client-19.png",
+    alt: "Client 19 logo",
+  },
+  {
+    name: "Client 20",
+    src: "/images/clients/Client-20.png",
+    alt: "Client 20 logo",
+  },
+  {
+    name: "Client 21",
+    src: "/images/clients/Client-21.png",
+    alt: "Client 21 logo",
+  },
+  {
+    name: "Client 22",
+    src: "/images/clients/Client-22.png",
+    alt: "Client 22 logo",
+  },
+  {
+    name: "Client 23",
+    src: "/images/clients/Client-23.png",
+    alt: "Client 23 logo",
+  },
+  {
+    name: "Client 24",
+    src: "/images/clients/Client-24.png",
+    alt: "Client 24 logo",
+  },
+  {
+    name: "Client 25",
+    src: "/images/clients/Client-25.png",
+    alt: "Client 25 logo",
+  },
+  {
+    name: "Client 26",
+    src: "/images/clients/Client-26.png",
+    alt: "Client 26 logo",
+  },
+  {
+    name: "Client 27",
+    src: "/images/clients/Client-27.png",
+    alt: "Client 27 logo",
+  },
+  {
+    name: "Client 28",
+    src: "/images/clients/Client-28.png",
+    alt: "Client 28 logo",
+  },
+  {
+    name: "Client 29",
+    src: "/images/clients/Client-29.png",
+    alt: "Client 29 logo",
   },
 ] as const;
-
-const productionImages = {
-  equipment: {
-    src: "/images/production/production-equipment.png",
-    alt: "Podcast microphones, headphones and professional video camera equipment",
-  },
-} as const;
 
 export const editableSite = {
   company,
@@ -198,7 +294,6 @@ export const editableSite = {
     social: socialImages,
     hero: heroImages,
     clients: clientImages,
-    production: productionImages,
   },
 
   // ==========================================================

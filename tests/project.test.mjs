@@ -157,9 +157,19 @@ test("every centralized image exists and specifications have one technical home"
     return results;
   };
   const images = collectImages(editableSite.images);
+  const centralizedPaths = new Set(images.map((image) => image.src));
+  const publicImagePaths = walk(
+    "public/images",
+    /\.(?:png|jpe?g|webp|svg|ico)$/i,
+  ).map((path) => path.replace(/^public/, ""));
   const specifications = read("public/images/IMAGE-SPECS.md");
 
-  assert.ok(images.length >= 19);
+  assert.ok(images.length > 0);
+  assert.deepEqual(
+    [...publicImagePaths].sort(),
+    [...centralizedPaths].sort(),
+    "public/images contains an asset that is not used by the editing object",
+  );
   assert.doesNotMatch(
     editableSource,
     /recommendedSize|aspectRatio|preferredFormat|transparentBackground:|mobileConsiderations/,
@@ -194,7 +204,6 @@ test("package IDs are permanent, unique and independent of editable labels", () 
     "supabase/migrations/20260728143000_stabilize_lead_package_ids.sql",
   );
 
-  assert.match(leadTypes, /getPackageById/);
   assert.match(leadTypes, /getPackageDisplayLabel/);
   assert.match(leadTypes, /packageInterestOptions/);
   assert.match(contactForm, /value=\{option\.id\}/);
