@@ -94,7 +94,11 @@ export default function ContactForm() {
       const response = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, turnstileToken, website: "" }),
+        body: JSON.stringify({
+          ...form,
+          "cf-turnstile-response": turnstileToken,
+          website: "",
+        }),
       });
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error || contactFormContent.submitFallbackError);
@@ -140,7 +144,7 @@ export default function ContactForm() {
             <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
           </div>
 
-          {siteKey ? <div className="turnstile-shell mt-5"><div ref={turnstileRef} className="cf-turnstile" data-sitekey={siteKey} data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired" data-error-callback="onTurnstileError" data-theme="light" /></div> : <p className="mt-5 rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-800">{contactFormContent.turnstileMissing}</p>}
+          {siteKey ? <div className="turnstile-shell mt-5"><div ref={turnstileRef} className="cf-turnstile" data-sitekey={siteKey} data-action="turnstile-spin-v2" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired" data-error-callback="onTurnstileError" data-theme="light" /></div> : <p className="mt-5 rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-800">{contactFormContent.turnstileMissing}</p>}
           <p className="mt-3 flex items-center gap-2 text-xs text-trulab-muted"><ShieldCheck size={15} aria-hidden />{contactFormContent.turnstileNotice}</p>
           {notice ? <p ref={noticeRef} tabIndex={-1} role={status === "error" ? "alert" : "status"} className={`focus-ring mt-4 rounded-2xl border px-4 py-3 text-sm ${status === "success" ? "border-lime-200 bg-lime-50 text-lime-800" : "border-red-200 bg-red-50 text-red-700"}`}>{notice}</p> : null}
           <button type="submit" disabled={status === "loading" || !siteKey} className="focus-ring mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-trulab-button-primary px-6 py-4 text-sm font-semibold text-trulab-button-primary-text disabled:cursor-not-allowed disabled:opacity-65">{status === "loading" ? <Loader2 size={18} className="animate-spin" aria-hidden /> : null}{contactFormContent.submitLabel}</button>

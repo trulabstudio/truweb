@@ -27,16 +27,25 @@ export async function POST(request: NextRequest) {
     };
     if (!lead.name || !lead.email || !lead.phone || !lead.message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email) || !allowedPackageIds.has(lead.packageId)) return NextResponse.json({ error: apiMessages.invalidFields }, { status: 422 });
 
-    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
-    const token = clean(body.turnstileToken, 2048);
-    if (!turnstileSecret || !token) return NextResponse.json({ error: apiMessages.antiSpamUnavailable }, { status: 503 });
-    const verification = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-      method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ secret: turnstileSecret, response: token, remoteip: request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "" }),
-      cache: "no-store",
-    });
-    const challenge = await verification.json() as { success?: boolean };
-    if (!challenge.success) return NextResponse.json({ error: apiMessages.antiSpamFailed }, { status: 400 });
+    const turnstileSecret = process.env.TURNSTILE_SECRET;
+    const token = clean(body["cf-turnstile-response"], 2048);
+    if (!turnstileSecret) return NextResponse.json({ error: apiMessages.antiSpamUnavailable }, { status: 503 });
+    if (!token) return NextResponse.json({ error: apiMessages.antiSpamFailed }, { status: 403 });
+
+    let challenge: { success?: boolean };
+    try {
+      const verification = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ secret: turnstileSecret, response: token, remoteip: request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "" }),
+        cache: "no-store",
+      });
+      if (!verification.ok) throw new Error(`siteverify ${verification.status}`);
+      challenge = await verification.json() as { success?: boolean };
+    } catch (error) {
+      console.error("Turnstile siteverify failed", error);
+      return NextResponse.json({ error: apiMessages.antiSpamFailed }, { status: 403 });
+    }
+    if (challenge.success !== true) return NextResponse.json({ error: apiMessages.antiSpamFailed }, { status: 403 });
 
     const supabaseUrl = process.env.SUPABASE_URL;
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

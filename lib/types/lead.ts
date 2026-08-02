@@ -28,7 +28,7 @@ export type LeadInput = {
   phone?: unknown;
   packageId?: unknown;
   message?: unknown;
-  turnstileToken?: unknown;
+  "cf-turnstile-response"?: unknown;
   website?: unknown;
 };
 

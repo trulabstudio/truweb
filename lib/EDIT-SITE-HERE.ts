@@ -33,7 +33,7 @@ import type { EditableSite } from "@/lib/types/editable-site";
 // ============================================================
 
 const companyName = "Trulab Production";
-const companyDomain = "truweb.vercel.app";
+const companyDomain = "trulabstudio,com";
 
 const company = {
   name: companyName,

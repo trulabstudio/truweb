@@ -274,7 +274,8 @@ test("metadata and public machine-readable routes consume centralized adapters",
 
 test("production integrations remain server-only", () => {
   const route = read("app/api/leads/route.ts");
-  assert.match(route, /TURNSTILE_SECRET_KEY/);
+  assert.match(route, /TURNSTILE_SECRET/);
+  assert.doesNotMatch(route, /TURNSTILE_SECRET_KEY/);
   assert.match(route, /SUPABASE_SERVICE_ROLE_KEY/);
   assert.match(route, /RESEND_API_KEY/);
   assert.doesNotMatch(route, /NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY|NEXT_PUBLIC_RESEND_API_KEY/);
@@ -282,9 +283,21 @@ test("production integrations remain server-only", () => {
   for (const path of ["components/home/ContactForm.tsx", "components/shared/MarketingPixels.tsx"]) {
     assert.doesNotMatch(
       read(path),
-      /TURNSTILE_SECRET_KEY|SUPABASE_SERVICE_ROLE_KEY|RESEND_API_KEY/,
+      /TURNSTILE_SECRET(?:_KEY)?|SUPABASE_SERVICE_ROLE_KEY|RESEND_API_KEY/,
     );
   }
+});
+
+test("Turnstile uses the canonical widget token and server-side siteverify", () => {
+  const contactForm = read("components/home/ContactForm.tsx");
+  const route = read("app/api/leads/route.ts");
+
+  assert.match(contactForm, /"cf-turnstile-response": turnstileToken/);
+  assert.match(contactForm, /data-action="turnstile-spin-v2"/);
+  assert.match(contactForm, /window\.turnstile\?\.reset/);
+  assert.match(route, /body\["cf-turnstile-response"\]/);
+  assert.match(route, /https:\/\/challenges\.cloudflare\.com\/turnstile\/v0\/siteverify/);
+  assert.match(route, /challenge\.success !== true/);
 });
 
 test("secret and generated files are ignored without requiring local secrets", () => {
