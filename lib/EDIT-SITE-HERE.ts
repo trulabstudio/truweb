@@ -589,7 +589,7 @@ export const editableSite = {
       },
     ],
     notes: [
-      "On-location recording included (Klang Valley).",
+      "On-location recording included.",
       "Studio rental available upon request.",
       "Travel charges may apply outside coverage area.",
       "Need something different? We'll prepare a custom quotation.",
