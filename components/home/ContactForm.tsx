@@ -89,6 +89,7 @@ export default function ContactForm() {
       return;
     }
 
+    const whatsappWindow = window.open("", "_blank");
     setStatus("loading");
     try {
       const response = await fetch("/api/leads", {
@@ -109,8 +110,14 @@ export default function ContactForm() {
       setForm(initialForm);
       setTurnstileToken("");
       window.turnstile?.reset(turnstileRef.current || undefined);
-      window.location.assign(whatsappUrl);
+      if (whatsappWindow) {
+        whatsappWindow.opener = null;
+        whatsappWindow.location.href = whatsappUrl;
+      } else {
+        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      }
     } catch (error) {
+      whatsappWindow?.close();
       setStatus("error");
       setNotice(error instanceof Error ? error.message : contactFormContent.unexpectedError);
       setTurnstileToken("");

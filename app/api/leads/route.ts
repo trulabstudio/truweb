@@ -71,11 +71,19 @@ export async function POST(request: NextRequest) {
     const resendKey = process.env.RESEND_API_KEY;
     const notifyEmail = process.env.LEAD_NOTIFICATION_EMAIL;
     if (resendKey && notifyEmail) {
-      const emailResponse = await fetch("https://api.resend.com/emails", {
-        method: "POST", headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json", "Idempotency-Key": `new-lead-${record.id}` },
-        body: JSON.stringify({ from: process.env.LEAD_FROM_EMAIL || notificationEmail.fallbackFrom, to: [notifyEmail], reply_to: lead.email, subject: `${notificationEmail.subjectPrefix}: ${lead.name}`, html: `<h2>${notificationEmail.heading}</h2><p><b>${notificationEmail.labels.name}:</b> ${escapeHtml(lead.name)}</p><p><b>${notificationEmail.labels.company}:</b> ${escapeHtml(lead.company || notificationEmail.emptyValue)}</p><p><b>${notificationEmail.labels.email}:</b> ${escapeHtml(lead.email)}</p><p><b>${notificationEmail.labels.phone}:</b> ${escapeHtml(lead.phone)}</p><p><b>${notificationEmail.labels.packageInterest}:</b> ${escapeHtml(packageLabel || notificationEmail.emptyValue)}</p><p><b>${notificationEmail.labels.message}:</b><br>${escapeHtml(lead.message).replace(/\n/g, "<br>")}</p>` }),
+      const from = process.env.LEAD_FROM_EMAIL || notificationEmail.fallbackFrom;
+      const detailsHtml = `<p><b>${notificationEmail.labels.name}:</b> ${escapeHtml(lead.name)}</p><p><b>${notificationEmail.labels.company}:</b> ${escapeHtml(lead.company || notificationEmail.emptyValue)}</p><p><b>${notificationEmail.labels.email}:</b> ${escapeHtml(lead.email)}</p><p><b>${notificationEmail.labels.phone}:</b> ${escapeHtml(lead.phone)}</p><p><b>${notificationEmail.labels.packageInterest}:</b> ${escapeHtml(packageLabel || notificationEmail.emptyValue)}</p><p><b>${notificationEmail.labels.message}:</b><br>${escapeHtml(lead.message).replace(/\n/g, "<br>")}</p>`;
+      const sendEmail = (body: object, idempotencyKey: string) => fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json", "Idempotency-Key": idempotencyKey },
+        body: JSON.stringify(body),
       });
-      if (!emailResponse.ok) console.error("Lead notification email failed", emailResponse.status, await emailResponse.text());
+      const [notificationResponse, customerResponse] = await Promise.all([
+        sendEmail({ from, to: [notifyEmail], reply_to: lead.email, subject: `${notificationEmail.subjectPrefix}: ${lead.name}`, html: `<h2>${notificationEmail.heading}</h2>${detailsHtml}` }, `new-lead-${record.id}`),
+        sendEmail({ from, to: [lead.email], reply_to: notifyEmail, subject: notificationEmail.customer.subject, html: `<h2>${notificationEmail.customer.heading}</h2><p>Hi ${escapeHtml(lead.name)},</p><p>${notificationEmail.customer.introduction}</p><h3>${notificationEmail.customer.detailsHeading}</h3>${detailsHtml}<p>${notificationEmail.customer.correctionNotice}</p><p>${notificationEmail.customer.signOff}</p>` }, `lead-confirmation-${record.id}`),
+      ]);
+      if (!notificationResponse.ok) console.error("Lead notification email failed", notificationResponse.status, await notificationResponse.text());
+      if (!customerResponse.ok) console.error("Lead confirmation email failed", customerResponse.status, await customerResponse.text());
     }
     return NextResponse.json({ ok: true, id: record.id }, { status: 201 });
   } catch (error) {

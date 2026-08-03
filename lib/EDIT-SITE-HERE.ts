@@ -691,6 +691,14 @@ export const editableSite = {
         fallbackFrom: "Website <onboarding@resend.dev>",
         subjectPrefix: "New website lead",
         heading: "New website enquiry",
+        customer: {
+          subject: `We received your enquiry | ${company.name}`,
+          heading: "Thank you for your enquiry",
+          introduction: `We’ve successfully received your enquiry. The ${company.name} team will review your project details and contact you shortly.`,
+          detailsHeading: "Your submitted details",
+          correctionNotice: "If any information below is incorrect, simply reply to this email and let us know.",
+          signOff: `Thank you,<br><br>Ismul Idzham<br>Managing Director<br><br>${company.name}<br><br>📞 ${company.phoneDisplay}<br>✉️ ${company.email}<br>🌐 <a href="${company.websiteUrl}">${company.websiteUrl}</a><br><br>We help brands, organisations, government bodies, SMEs, and creators<br>plan, record, edit, and publish premium podcasts.`,
+        },
         labels: {
           name: "Name",
           company: "Company",

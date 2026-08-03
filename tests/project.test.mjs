@@ -227,6 +227,24 @@ test("human-readable package labels are used for WhatsApp and notification email
   assert.match(api, /escapeHtml\(packageLabel \|\| notificationEmail\.emptyValue\)/);
 });
 
+test("successful leads send a detailed confirmation email to the customer", () => {
+  const api = read("app/api/leads/route.ts");
+
+  assert.match(api, /to: \[lead\.email\]/);
+  assert.match(api, /notificationEmail\.customer\.subject/);
+  assert.match(api, /lead-confirmation-\$\{record\.id\}/);
+  assert.match(api, /detailsHtml/);
+  assert.match(api, /reply_to: notifyEmail/);
+});
+
+test("successful contact submissions open WhatsApp without leaving the website", () => {
+  const contactForm = read("components/home/ContactForm.tsx");
+
+  assert.match(contactForm, /window\.open\("", "_blank"\)/);
+  assert.match(contactForm, /whatsappWindow\.location\.href = whatsappUrl/);
+  assert.doesNotMatch(contactForm, /window\.location\.assign\(whatsappUrl\)/);
+});
+
 test("legacy database naming is isolated to the API and migrations", () => {
   assert.doesNotMatch(read("components/home/ContactForm.tsx"), /\bbudget\b/);
   assert.doesNotMatch(read("lib/types/lead.ts"), /\bbudget\b/);
