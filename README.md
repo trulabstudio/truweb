@@ -1,6 +1,6 @@
-# Trulab Production Website
+# Trulab Studio Website
 
-This is the Trulab Production website, built with Next.js App Router, React and TypeScript. It includes the public website, production packages, contact workflow, QR Generator and Background Remover.
+This is the Trulab Studio website (a division of Trulab Production Sdn. Bhd.), built with Next.js App Router, React and TypeScript. It includes the public website, production packages, contact workflow, QR Generator and Background Remover.
 
 ## Normal website editing
 

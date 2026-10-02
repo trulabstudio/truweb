@@ -46,6 +46,10 @@ const professionalServiceSchema = {
   "@type": seoConfig.businessType,
   name: siteConfig.name,
   url: siteConfig.url,
+  parentOrganization: {
+    "@type": "Organization",
+    name: siteConfig.legalName,
+  },
   image: `${siteConfig.url}${siteConfig.assets.socialImage}`,
   logo: `${siteConfig.url}${siteConfig.assets.logo}`,
   description: siteConfig.description,

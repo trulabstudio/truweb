@@ -32,11 +32,15 @@ import type { EditableSite } from "@/lib/types/editable-site";
 // Search: EDIT COMPANY
 // ============================================================
 
-const companyName = "Trulab Production";
+const companyName = "Trulab Studio";
+const companyLegalName = "Trulab Production Sdn. Bhd.";
 const companyDomain = "trulabstudio.com";
 
 const company = {
   name: companyName,
+  // Parent company that owns the Trulab Studio brand
+  legalName: companyLegalName,
+  divisionLine: `A division of ${companyLegalName}`,
   slug: "trulab",
   domain: companyDomain,
   websiteUrl: `https://${companyDomain}`,

@@ -11,6 +11,8 @@ type EditableLink = {
 export type EditableSite = {
   company: {
     name: string;
+    legalName: string;
+    divisionLine: string;
     slug: string;
     domain: string;
     websiteUrl: string;

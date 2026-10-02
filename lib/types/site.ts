@@ -1,5 +1,7 @@
 export type SiteConfig = {
   name: string;
+  legalName: string;
+  divisionLine: string;
   slug: string;
   domain: string;
   url: string;

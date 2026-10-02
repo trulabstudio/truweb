@@ -49,7 +49,7 @@ export default function Footer() {
               {footerContent.whatsappLabel}
             </a>
           </div>
-          <p className="text-sm text-trulab-on-dark/44">{"©"} {new Date().getFullYear()} {siteConfig.name}. {footerContent.rights}</p>
+          <p className="text-sm text-trulab-on-dark/44">{"©"} {new Date().getFullYear()} {siteConfig.name} — {siteConfig.divisionLine}. {footerContent.rights}</p>
         </div>
       </Container>
     </footer>

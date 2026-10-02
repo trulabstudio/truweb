@@ -5,6 +5,8 @@ const { company, images, seo } = editableSite;
 
 export const siteConfig = {
   name: company.name,
+  legalName: company.legalName,
+  divisionLine: company.divisionLine,
   slug: company.slug,
   domain: company.domain,
   url: company.websiteUrl,
