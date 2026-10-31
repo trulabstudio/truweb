@@ -47,6 +47,9 @@ export default function Footer() {
             </a>
           </div>
           <p className="text-sm text-trulab-on-dark/44">{"©"} {new Date().getFullYear()} {siteConfig.name} — {siteConfig.divisionLine} {footerContent.rights}</p>
+          <a href={footerContent.adminLink.href} rel="nofollow" className="focus-ring rounded-md text-sm text-trulab-on-dark/70 underline underline-offset-4 transition hover:text-trulab-on-dark">
+            {footerContent.adminLink.label}
+          </a>
         </div>
       </Container>
     </footer>

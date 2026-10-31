@@ -10,10 +10,6 @@
     "label": "View Services",
     "href": "#services"
   },
-  "image": {
-    "src": "/images/hero/hero-founder-cinematic.png",
-    "alt": "Founder speaking during a cinematic multi-camera podcast interview"
-  },
   "trustPills": [
     "Remote recording",
     "On-location setup",

@@ -1,0 +1,80 @@
+{
+  "whyTrulab": {
+    "kicker": "Why Trulab",
+    "title": "A flexible production partner for serious podcast projects.",
+    "description": "Premium podcast production does not depend on visitors coming to a fixed studio. It depends on planning, technical control, clean capture, careful editing, and a workflow that fits the client.",
+    "points": [
+      "Professional podcast production workflow from planning to final delivery.",
+      "Built for government bodies, SMEs, private companies, brands, creators, and organisations.",
+      "Flexible remote, on-location, and client-site recording workflows without requiring a studio visit.",
+      "Multi-camera video podcast capability for corporate and creator-led formats.",
+      "Content repurposing for Shorts/Reels and social distribution.",
+      "Clean audio, clean visuals, and clean storytelling for audience trust.",
+      "Suitable for corporate, educational, promotional, interview, and branded content podcasts."
+    ]
+  },
+  "process": {
+    "kicker": "Process",
+    "title": "A clear production process from consultation to content delivery.",
+    "items": [
+      {
+        "title": "Consultation",
+        "description": "Clarify goals, format, audience, production requirements, and delivery needs."
+      },
+      {
+        "title": "Planning",
+        "description": "Shape episode structure, flow, talking points, schedule, and technical setup."
+      },
+      {
+        "title": "Recording",
+        "description": "Capture audio and video through remote, on-location, or flexible workflows."
+      },
+      {
+        "title": "Editing",
+        "description": "Refine pacing, clean audio, balance visuals, and prepare publish-ready assets."
+      },
+      {
+        "title": "Delivery",
+        "description": "Export final files in the right formats for platforms, teams, and campaigns."
+      },
+      {
+        "title": "Repurposing",
+        "description": "Turn the strongest moments into Shorts/Reels and supporting content assets."
+      }
+    ]
+  },
+  "certifications": {
+    "kicker": "Registrations & Industry Recognition",
+    "title": "Structured for professional and corporate procurement conversations.",
+    "items": [
+      {
+        "title": "MOF",
+        "description": "Registration"
+      },
+      {
+        "title": "FINAS",
+        "description": "Industry recognition"
+      },
+      {
+        "title": "FDAM",
+        "description": "Industry recognition"
+      }
+    ]
+  },
+  "coverage": {
+    "kicker": "Malaysia-wide production support",
+    "title": "A production workflow that adapts to your team.",
+    "paragraphs": [
+      "Whether you are based in Kuala Lumpur, Selangor, Putrajaya, Johor, Penang, Sabah, Sarawak or anywhere across Malaysia, {company} supports professional podcast projects for organisations that want high-quality audio, video, editing, and content delivery.",
+      "Whether you need a corporate podcast, a video podcast series, or editing for episodes you have already recorded, Trulab works as your podcast producer through remote, on-location, and flexible production workflows."
+    ]
+  },
+  "contact": {
+    "kicker": "Start the workflow",
+    "title": "Book a Podcast Production Consultation",
+    "description": "Tell us what you want to produce, who it is for, and how you want to record. {company} will help shape the right production workflow for your team."
+  },
+  "footer": {
+    "description": "Professional podcast production, video podcast, editing, Shorts/Reels, and livestream podcast workflows for brands, organisations, SMEs, creators, and government bodies in Malaysia."
+  }
+}

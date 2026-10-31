@@ -1,14 +1,10 @@
 import contactContent from "../content/contact.json";
 import faqContent from "../content/faq.json";
-import certificationsContent from "../content/home/certifications.json";
 import clientsContent from "../content/home/clients.json";
-import homeContactContent from "../content/home/contact.json";
-import coverageContent from "../content/home/coverage.json";
-import footerContent from "../content/home/footer.json";
+import heroImageContent from "../content/home/hero-image.json";
 import heroContent from "../content/home/hero.json";
-import processContent from "../content/home/process.json";
+import otherHomeContent from "../content/home/other.json";
 import servicesContent from "../content/home/services.json";
-import whyTrulabContent from "../content/home/why-trulab.json";
 import packagesContent from "../content/packages.json";
 import seoContent from "../content/seo.json";
 import type { ProductionPackage } from "@/lib/content/packages";
@@ -158,7 +154,7 @@ const socialImages = {
 } as const;
 
 const heroImages = {
-  main: heroContent.image,
+  main: heroImageContent.image,
 } as const;
 
 // Edited from the admin panel: content/home/clients.json
@@ -227,18 +223,20 @@ export const editableSite = {
         Omit<(typeof servicesContent.items)[number], "icon"> & { icon: ServiceIcon }
       >,
     },
-    whyTrulab: fill(whyTrulabContent),
+    whyTrulab: fill(otherHomeContent.whyTrulab),
     process: {
-      ...fill(processContent),
+      ...fill(otherHomeContent.process),
       stepAriaLabel: "Step",
     },
-    certifications: fill(certificationsContent),
-    productionCoverage: fill(coverageContent),
-    contact: fill(homeContactContent),
+    certifications: fill(otherHomeContent.certifications),
+    productionCoverage: fill(otherHomeContent.coverage),
+    contact: fill(otherHomeContent.contact),
     footer: {
-      ...fill(footerContent),
+      ...fill(otherHomeContent.footer),
       whatsappLabel: "WhatsApp",
       rights: "All rights reserved.",
+      adminLink: { label: "Admin", href: "/keystatic" },
+      adminHomeLink: { label: "Ke Website", href: "/" },
     },
   },
 
