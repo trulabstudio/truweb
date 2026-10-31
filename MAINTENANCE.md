@@ -1,6 +1,33 @@
 # Website Maintenance
 
-For normal website updates, open:
+## Admin panel
+
+Wording, contact details, packages and prices, FAQ, hero and client images, and SEO text are edited at:
+
+```text
+https://www.trulabstudio.com/keystatic
+```
+
+Log in with GitHub, edit, then press Save. Each save is a commit to `main`, and Vercel publishes it after the deployment finishes, usually in 1-2 minutes. Use `{company}` in text to insert the company name.
+
+The content is stored in `content/`. When running `npm run dev`, `/keystatic` saves to these local files instead of GitHub.
+
+Saving client logos or the hero image can rename the image files inside their folder. This is normal, and the website follows the new paths automatically.
+
+### First-time GitHub setup
+
+The panel returns 404 online until this is done, and the rest of the website is unaffected.
+
+1. Run `NEXT_PUBLIC_KEYSTATIC_STORAGE=github npm run dev`.
+2. Open `http://localhost:3000/keystatic` and follow the prompts to create the GitHub App. Keystatic writes the values to `.env`, which is ignored by Git.
+3. Install the GitHub App on the `trulabstudio/truweb` repository only.
+4. In the GitHub App settings, add this callback URL: `https://www.trulabstudio.com/api/keystatic/github/oauth/callback`.
+5. In Vercel, add these variables to Production: `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET` and `NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` from `.env`, plus `NEXT_PUBLIC_KEYSTATIC_STORAGE` set to `github`.
+6. Redeploy. Add all five together, because the build fails if GitHub storage is on without the other values.
+
+## Code editing
+
+For anything the panel does not cover, open:
 
 ```text
 lib/EDIT-SITE-HERE.ts
@@ -225,6 +252,11 @@ RESEND_API_KEY
 LEAD_NOTIFICATION_EMAIL
 LEAD_FROM_EMAIL
 CRON_SECRET
+KEYSTATIC_GITHUB_CLIENT_ID
+KEYSTATIC_GITHUB_CLIENT_SECRET
+KEYSTATIC_SECRET
+NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG
+NEXT_PUBLIC_KEYSTATIC_STORAGE
 MAINTENANCE_MODE
 MAINTENANCE_RETRY_AFTER
 FORBIDDEN_PATHS

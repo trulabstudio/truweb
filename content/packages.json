@@ -1,0 +1,133 @@
+{
+  "section": {
+    "kicker": "Production packages",
+    "title": "Choose the setup that fits your conversation.",
+    "description": "Choose the production that fits your podcast. Need recurring content? Our Monthly Partnership is built for brands producing podcasts consistently."
+  },
+  "items": [
+    {
+      "id": "solo",
+      "number": "01",
+      "layout": "card",
+      "name": "Solo",
+      "price": "RM2,800",
+      "priceSuffix": "",
+      "description": "For personal branding & solo podcast.",
+      "features": [
+        "1 Speaker",
+        "2 Professional Cameras",
+        "1 Wireless Microphone",
+        "Professional Lighting Setup",
+        "Up to 2 Hours On-site Recording",
+        "Fully Edited Podcast Episode",
+        "10 Short-form Videos",
+        "Color Grading",
+        "Social Media Subtitles",
+        "Custom Thumbnail"
+      ],
+      "featured": false,
+      "highlightLabel": "",
+      "closingText": "",
+      "cta": {
+        "label": "Request Quote",
+        "href": "#contact"
+      },
+      "formLabel": "",
+      "whatsappMessage": "Hi {company}, I’m interested in the Solo podcast package."
+    },
+    {
+      "id": "duo",
+      "number": "02",
+      "layout": "card",
+      "name": "Duo",
+      "price": "RM4,200",
+      "priceSuffix": "",
+      "description": "For interviews & business conversations.",
+      "features": [
+        "Up to 2 Speakers",
+        "3 Professional Cameras",
+        "2 Wireless Microphones",
+        "Professional Lighting Setup",
+        "Up to 2 Hours On-site Recording",
+        "Fully Edited Podcast Episode",
+        "20 Short-form Videos",
+        "Color Grading",
+        "Social Media Subtitles",
+        "Custom Thumbnail"
+      ],
+      "featured": true,
+      "highlightLabel": "Most Popular",
+      "closingText": "",
+      "cta": {
+        "label": "Request Quote",
+        "href": "#contact"
+      },
+      "formLabel": "",
+      "whatsappMessage": "Hi {company}, I’m interested in the Duo podcast package."
+    },
+    {
+      "id": "panel",
+      "number": "03",
+      "layout": "card",
+      "name": "Panel",
+      "price": "RM6,500",
+      "priceSuffix": "",
+      "description": "For panel discussions & corporate podcasts.",
+      "features": [
+        "Up to 4 Speakers",
+        "5 Professional Cameras",
+        "4 Wireless Microphones",
+        "Professional Lighting Setup",
+        "Up to 3 Hours On-site Recording",
+        "Fully Edited Podcast Episode",
+        "30 Short-form Videos",
+        "Color Grading",
+        "Social Media Subtitles",
+        "Custom Thumbnail"
+      ],
+      "featured": false,
+      "highlightLabel": "",
+      "closingText": "",
+      "cta": {
+        "label": "Request Quote",
+        "href": "#contact"
+      },
+      "formLabel": "",
+      "whatsappMessage": "Hi {company}, I’m interested in the Panel podcast package."
+    },
+    {
+      "id": "monthly-partnership",
+      "number": "04",
+      "layout": "wide",
+      "name": "Monthly Partnership",
+      "price": "Custom Quote",
+      "priceSuffix": "",
+      "description": "For brands producing podcasts consistently.",
+      "features": [
+        "Weekly or Monthly Recording Sessions",
+        "Dedicated Production Team",
+        "Multi-Camera Production",
+        "Full Podcast Editing",
+        "Social Media Repurposing",
+        "Priority Scheduling",
+        "Content Planning Support",
+        "Flexible Deliverables"
+      ],
+      "featured": false,
+      "highlightLabel": "",
+      "closingText": "Let’s build your content system.",
+      "cta": {
+        "label": "Schedule a Call",
+        "href": "#contact"
+      },
+      "formLabel": "Monthly Partnership",
+      "whatsappMessage": "Hi {company}, I’m interested in a Monthly Partnership."
+    }
+  ],
+  "notes": [
+    "On-location recording included.",
+    "Studio rental available upon request.",
+    "Travel charges may apply outside coverage area.",
+    "Need something different? We'll prepare a custom quotation."
+  ]
+}

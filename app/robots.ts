@@ -10,6 +10,5 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [...seoConfig.robots.disallow],
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
-    host: siteConfig.url,
   };
 }

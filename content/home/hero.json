@@ -1,0 +1,23 @@
+{
+  "kicker": "Podcast production for professional teams",
+  "title": "Professional Podcasts, Produced Properly.",
+  "description": "{company} helps brands, organisations, government bodies, SMEs, and creators plan, record, edit, and publish polished podcasts without needing a fixed studio visit.",
+  "primaryCta": {
+    "label": "Book Consultation",
+    "href": "#contact"
+  },
+  "secondaryCta": {
+    "label": "View Services",
+    "href": "#services"
+  },
+  "image": {
+    "src": "/images/hero/hero-founder-cinematic.png",
+    "alt": "Founder speaking during a cinematic multi-camera podcast interview"
+  },
+  "trustPills": [
+    "Remote recording",
+    "On-location setup",
+    "Multi-camera video",
+    "Editing & clips"
+  ]
+}

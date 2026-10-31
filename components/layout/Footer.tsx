@@ -19,9 +19,6 @@ export default function Footer() {
           <p className="mt-5 max-w-xl text-sm leading-7 text-trulab-on-dark/66">
             {footerContent.description}
           </p>
-          <p className="mt-3 text-sm text-trulab-on-dark/54">
-            {footerContent.domainLabel}: {siteConfig.domain}. {footerContent.domainNote}
-          </p>
           {siteConfig.address ? (
             <address className="mt-3 text-sm not-italic text-trulab-on-dark/54">{siteConfig.address}</address>
           ) : null}

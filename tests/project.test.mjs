@@ -25,7 +25,10 @@ const editableJavaScript = ts.transpileModule(editableSource, {
     module: ts.ModuleKind.ESNext,
     target: ts.ScriptTarget.ES2022,
   },
-}).outputText;
+}).outputText.replace(
+  /import (\w+) from "\.\.\/(content\/[^"]+\.json)";/g,
+  (_, name, path) => `const ${name} = ${read(path)};`,
+);
 const { editableSite } = await import(
   `data:text/javascript;base64,${Buffer.from(editableJavaScript).toString("base64")}`
 );
@@ -177,7 +180,10 @@ test("every centralized image exists and specifications have one technical home"
 
   for (const image of images) {
     assert.equal(existsSync(url(`public${image.src}`)), true, `${image.src} does not exist`);
-    assert.ok(specifications.includes(image.src), `${image.src} is missing from IMAGE-SPECS.md`);
+    // The admin panel renames hero and client images when they are saved.
+    if (!/^\/images\/(?:hero|clients)\//.test(image.src)) {
+      assert.ok(specifications.includes(image.src), `${image.src} is missing from IMAGE-SPECS.md`);
+    }
   }
 
   const imageLiteral = /\/[^"'`\s)]+\.(?:png|jpe?g|webp|svg|ico)/i;

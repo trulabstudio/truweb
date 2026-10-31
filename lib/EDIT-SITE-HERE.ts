@@ -1,10 +1,25 @@
+import contactContent from "../content/contact.json";
+import faqContent from "../content/faq.json";
+import certificationsContent from "../content/home/certifications.json";
+import clientsContent from "../content/home/clients.json";
+import homeContactContent from "../content/home/contact.json";
+import coverageContent from "../content/home/coverage.json";
+import footerContent from "../content/home/footer.json";
+import heroContent from "../content/home/hero.json";
+import processContent from "../content/home/process.json";
+import servicesContent from "../content/home/services.json";
+import whyTrulabContent from "../content/home/why-trulab.json";
+import packagesContent from "../content/packages.json";
+import seoContent from "../content/seo.json";
+import type { ProductionPackage } from "@/lib/content/packages";
 import type { EditableSite } from "@/lib/types/editable-site";
 
 /**
  * CLIENT EDITING FILE
  *
- * Update website wording, images, links, contact information,
- * packages, colours and SEO from this file.
+ * Wording, contact details, packages, hero and client images and SEO
+ * text live in content/ and are edited from the /keystatic admin panel.
+ * Update colours, navigation, tools and status pages from this file.
  *
  * Do not edit components unless changing the website design.
  */
@@ -36,6 +51,15 @@ const companyName = "Trulab Studio";
 const companyLegalName = "Trulab Production Sdn. Bhd.";
 const companyDomain = "trulabstudio.com";
 
+type ServiceIcon = "Camera" | "Clapperboard" | "Mic2" | "Radio" | "Scissors" | "Video";
+
+// Replaces the {company} token used by the admin panel content.
+function fill<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value).replaceAll("{company}", companyName)) as T;
+}
+
+const contact = fill(contactContent);
+
 const company = {
   name: companyName,
   // Parent company that owns the Trulab Studio brand
@@ -43,18 +67,18 @@ const company = {
   divisionLine: `A division of ${companyLegalName}`,
   slug: "trulab",
   domain: companyDomain,
-  websiteUrl: `https://${companyDomain}`,
+  websiteUrl: `https://www.${companyDomain}`,
 
   // ==========================================================
   // 02. CONTACT
   // Search: EDIT CONTACT
+  // Edited from the admin panel: content/contact.json
   // ==========================================================
-  email: "trulabstudio@gmail.com",
-  phoneDisplay: "0176982032",
-  whatsappNumber: "60176982032",
-  address: "",
-  defaultWhatsAppMessage:
-    `Hi ${companyName}, I’m interested in producing a podcast. Could you share the next steps for a consultation?`,
+  email: contact.email,
+  phoneDisplay: contact.phoneDisplay,
+  whatsappNumber: contact.whatsappNumber,
+  address: contact.address,
+  defaultWhatsAppMessage: contact.defaultWhatsAppMessage,
   socialLinks: [],
 } as const;
 
@@ -134,159 +158,11 @@ const socialImages = {
 } as const;
 
 const heroImages = {
-  main: {
-    src: "/images/hero/hero-founder-cinematic.png",
-    alt: "Founder speaking during a cinematic multi-camera podcast interview",
-  },
+  main: heroContent.image,
 } as const;
 
-const clientImages = [
-  {
-    name: "Client 01",
-    src: "/images/clients/Client-01.png",
-    alt: "Client 01 logo",
-  },
-  {
-    name: "Client 02",
-    src: "/images/clients/Client-02.png",
-    alt: "Client 02 logo",
-  },
-  {
-    name: "Client 03",
-    src: "/images/clients/Client-03.png",
-    alt: "Client 03 logo",
-  },
-  {
-    name: "Client 04",
-    src: "/images/clients/Client-04.png",
-    alt: "Client 04 logo",
-  },
-  {
-    name: "Client 05",
-    src: "/images/clients/Client-05.png",
-    alt: "Client 05 logo",
-  },
-  {
-    name: "Client 06",
-    src: "/images/clients/Client-06.png",
-    alt: "Client 06 logo",
-  },
-  {
-    name: "Client 07",
-    src: "/images/clients/Client-07.png",
-    alt: "Client 07 logo",
-  },
-  {
-    name: "Client 08",
-    src: "/images/clients/Client-08.png",
-    alt: "Client 08 logo",
-  },
-  {
-    name: "Client 09",
-    src: "/images/clients/Client-09.png",
-    alt: "Client 09 logo",
-  },
-  {
-    name: "Client 10",
-    src: "/images/clients/Client-10.png",
-    alt: "Client 10 logo",
-  },
-  {
-    name: "Client 11",
-    src: "/images/clients/Client-11.png",
-    alt: "Client 11 logo",
-  },
-  {
-    name: "Client 12",
-    src: "/images/clients/Client-12.png",
-    alt: "Client 12 logo",
-  },
-  {
-    name: "Client 13",
-    src: "/images/clients/Client-13.png",
-    alt: "Client 13 logo",
-  },
-  {
-    name: "Client 14",
-    src: "/images/clients/Client-14.png",
-    alt: "Client 14 logo",
-  },
-  {
-    name: "Client 15",
-    src: "/images/clients/Client-15.png",
-    alt: "Client 15 logo",
-  },
-  {
-    name: "Client 16",
-    src: "/images/clients/Client-16.png",
-    alt: "Client 16 logo",
-  },
-  {
-    name: "Client 17",
-    src: "/images/clients/Client-17.png",
-    alt: "Client 17 logo",
-  },
-  {
-    name: "Client 18",
-    src: "/images/clients/Client-18.png",
-    alt: "Client 18 logo",
-  },
-  {
-    name: "Client 19",
-    src: "/images/clients/Client-19.png",
-    alt: "Client 19 logo",
-  },
-  {
-    name: "Client 20",
-    src: "/images/clients/Client-20.png",
-    alt: "Client 20 logo",
-  },
-  {
-    name: "Client 21",
-    src: "/images/clients/Client-21.png",
-    alt: "Client 21 logo",
-  },
-  {
-    name: "Client 22",
-    src: "/images/clients/Client-22.png",
-    alt: "Client 22 logo",
-  },
-  {
-    name: "Client 23",
-    src: "/images/clients/Client-23.png",
-    alt: "Client 23 logo",
-  },
-  {
-    name: "Client 24",
-    src: "/images/clients/Client-24.png",
-    alt: "Client 24 logo",
-  },
-  {
-    name: "Client 25",
-    src: "/images/clients/Client-25.png",
-    alt: "Client 25 logo",
-  },
-  {
-    name: "Client 26",
-    src: "/images/clients/Client-26.png",
-    alt: "Client 26 logo",
-  },
-  {
-    name: "Client 27",
-    src: "/images/clients/Client-27.png",
-    alt: "Client 27 logo",
-  },
-  {
-    name: "Client 28",
-    src: "/images/clients/Client-28.png",
-    alt: "Client 28 logo",
-  },
-  {
-    name: "Client 29",
-    src: "/images/clients/Client-29.png",
-    alt: "Client 29 logo",
-  },
-] as const;
+// Edited from the admin panel: content/home/clients.json
+const clientImages = clientsContent.logos;
 
 export const editableSite = {
   company,
@@ -328,141 +204,39 @@ export const editableSite = {
   // 06. HOMEPAGE
   // Search: EDIT HOMEPAGE
   // ==========================================================
+  // Edited from the admin panel: content/home/
   homepage: {
     hero: {
-      kicker: "Podcast production for professional teams",
-      title: "Professional Podcasts, Produced Properly.",
-      description:
-        `${company.name} helps brands, organisations, government bodies, SMEs, and creators plan, record, edit, and publish polished podcasts without needing a fixed studio visit.`,
-      primaryCta: { label: "Book Consultation", href: "#contact" },
-      secondaryCta: { label: "View Services", href: "#services" },
+      kicker: heroContent.kicker,
+      title: heroContent.title,
+      description: fill(heroContent.description),
+      primaryCta: heroContent.primaryCta,
+      secondaryCta: heroContent.secondaryCta,
       image: heroImages.main,
     },
-    trustPills: ["Remote recording", "On-location setup", "Multi-camera video", "Editing & clips"],
+    trustPills: heroContent.trustPills,
     clientLogoMarquee: {
-      title: "Trusted production workflow for professional podcast projects",
+      title: clientsContent.title,
       fallbackNamePrefix: "Client logo slot ",
       fallbackLabelPrefix: "Logo ",
       logos: clientImages,
     },
     services: {
-      kicker: "Services",
-      title: "Podcast production services built around professional delivery.",
-      description:
-        `From the first conversation to publish-ready exports, ${company.name} supports the production details that help a podcast sound clear, look polished, and serve its audience.`,
-      items: [
-        {
-          title: "Podcast Production",
-          description:
-            "End-to-end production support for interview, educational, promotional, and creator-led podcast formats.",
-          icon: "Mic2",
-        },
-        {
-          title: "Video Podcast",
-          description:
-            "Professional video podcast workflows for brands and organisations that need a strong visual presence.",
-          icon: "Video",
-        },
-        {
-          title: "Multi-camera Recording",
-          description:
-            "Structured multi-angle recording for cleaner edits, better pacing, and more polished final episodes.",
-          icon: "Camera",
-        },
-        {
-          title: "Editing",
-          description:
-            "Audio cleanup, video editing, episode assembly, and delivery-ready exports for publishing channels.",
-          icon: "Scissors",
-        },
-        {
-          title: "Shorts/Reels",
-          description:
-            "Repurpose long-form episodes into short social clips designed for LinkedIn, Instagram, TikTok, and YouTube.",
-          icon: "Clapperboard",
-        },
-        {
-          title: "Livestream Podcast",
-          description:
-            "Live podcast production support for launches, panels, internal communications, and online events.",
-          icon: "Radio",
-        },
-      ],
+      ...fill(servicesContent),
+      items: fill(servicesContent.items) as ReadonlyArray<
+        Omit<(typeof servicesContent.items)[number], "icon"> & { icon: ServiceIcon }
+      >,
     },
-    whyTrulab: {
-      kicker: "Why Trulab",
-      title: "A flexible production partner for serious podcast projects.",
-      description:
-        "Premium podcast production does not depend on visitors coming to a fixed studio. It depends on planning, technical control, clean capture, careful editing, and a workflow that fits the client.",
-      points: [
-        "Professional podcast production workflow from planning to final delivery.",
-        "Built for government bodies, SMEs, private companies, brands, creators, and organisations.",
-        "Flexible remote, on-location, and client-site recording workflows without requiring a studio visit.",
-        "Multi-camera video podcast capability for corporate and creator-led formats.",
-        "Content repurposing for Shorts/Reels and social distribution.",
-        "Clean audio, clean visuals, and clean storytelling for audience trust.",
-        "Suitable for corporate, educational, promotional, interview, and branded content podcasts.",
-      ],
-    },
+    whyTrulab: fill(whyTrulabContent),
     process: {
-      kicker: "Process",
-      title: "A clear production process from consultation to content delivery.",
+      ...fill(processContent),
       stepAriaLabel: "Step",
-      items: [
-        {
-          title: "Consultation",
-          description: "Clarify goals, format, audience, production requirements, and delivery needs.",
-        },
-        {
-          title: "Planning",
-          description: "Shape episode structure, flow, talking points, schedule, and technical setup.",
-        },
-        {
-          title: "Recording",
-          description: "Capture audio and video through remote, on-location, or flexible workflows.",
-        },
-        {
-          title: "Editing",
-          description: "Refine pacing, clean audio, balance visuals, and prepare publish-ready assets.",
-        },
-        {
-          title: "Delivery",
-          description: "Export final files in the right formats for platforms, teams, and campaigns.",
-        },
-        {
-          title: "Repurposing",
-          description: "Turn the strongest moments into Shorts/Reels and supporting content assets.",
-        },
-      ],
     },
-    certifications: {
-      kicker: "Registrations & Industry Recognition",
-      title: "Structured for professional and corporate procurement conversations.",
-      items: [
-        { title: "MOF", description: "Registration" },
-        { title: "FINAS", description: "Industry recognition" },
-        { title: "FDAM", description: "Industry recognition" },
-      ],
-    },
-    productionCoverage: {
-      kicker: "Malaysia-wide production support",
-      title: "A production workflow that adapts to your team.",
-      paragraphs: [
-        `Whether you are based in Kuala Lumpur, Selangor, Putrajaya, Johor, Penang, Sabah, Sarawak or anywhere across Malaysia, ${company.name} supports professional podcast projects for organisations that want high-quality audio, video, editing, and content delivery.`,
-        `Teams searching for podcast production Malaysia, podcast producer Malaysia, video podcast Malaysia, corporate podcast Malaysia, podcast editing Malaysia, podcast recording Malaysia, podcast agency Malaysia, or a podcast production company Malaysia can work with Trulab through remote, on-location, and flexible production workflows.`,
-      ],
-    },
-    contact: {
-      kicker: "Start the workflow",
-      title: "Book a Podcast Production Consultation",
-      description:
-        `Tell us what you want to produce, who it is for, and how you want to record. ${company.name} will help shape the right production workflow for your team.`,
-    },
+    certifications: fill(certificationsContent),
+    productionCoverage: fill(coverageContent),
+    contact: fill(homeContactContent),
     footer: {
-      description:
-        "Professional podcast production, video podcast, editing, Shorts/Reels, and livestream podcast workflows for brands, organisations, SMEs, creators, and government bodies in Malaysia.",
-      domainLabel: "Domain",
-      domainNote: "Metadata is centralised in constants for future updates.",
+      ...fill(footerContent),
       whatsappLabel: "WhatsApp",
       rights: "All rights reserved.",
     },
@@ -471,6 +245,7 @@ export const editableSite = {
   // ==========================================================
   // 07. PACKAGES
   // Search: EDIT PACKAGES
+  // Edited from the admin panel: content/packages.json
   //
   // IMPORTANT: `id` is permanent technical data.
   // Never change an existing package `id`.
@@ -478,178 +253,18 @@ export const editableSite = {
   // Leave formLabel empty to generate "Name — Price" automatically.
   // ==========================================================
   packages: {
-    section: {
-      kicker: "Production packages",
-      title: "Choose the setup that fits your conversation.",
-      description:
-        "Choose the production that fits your podcast. Need recurring content? Our Monthly Partnership is built for brands producing podcasts consistently.",
-    },
-    items: [
-      {
-        id: "solo",
-        number: "01",
-        layout: "card",
-        name: "Solo",
-        price: "RM2,800",
-        priceSuffix: "",
-        description: "For personal branding & solo podcast.",
-        features: [
-          "1 Speaker",
-          "2 Professional Cameras",
-          "1 Wireless Microphone",
-          "Professional Lighting Setup",
-          "Up to 2 Hours On-site Recording",
-          "Fully Edited Podcast Episode",
-          "10 Short-form Videos",
-          "Color Grading",
-          "Social Media Subtitles",
-          "Custom Thumbnail",
-        ],
-        featured: false,
-        highlightLabel: "",
-        closingText: "",
-        cta: { label: "Request Quote", href: "#contact" },
-        formLabel: "",
-        whatsappMessage: `Hi ${company.name}, I’m interested in the Solo podcast package.`,
-      },
-      {
-        id: "duo",
-        number: "02",
-        layout: "card",
-        name: "Duo",
-        price: "RM4,200",
-        priceSuffix: "",
-        description: "For interviews & business conversations.",
-        features: [
-          "Up to 2 Speakers",
-          "3 Professional Cameras",
-          "2 Wireless Microphones",
-          "Professional Lighting Setup",
-          "Up to 2 Hours On-site Recording",
-          "Fully Edited Podcast Episode",
-          "20 Short-form Videos",
-          "Color Grading",
-          "Social Media Subtitles",
-          "Custom Thumbnail",
-        ],
-        featured: true,
-        highlightLabel: "Most Popular",
-        closingText: "",
-        cta: { label: "Request Quote", href: "#contact" },
-        formLabel: "",
-        whatsappMessage: `Hi ${company.name}, I’m interested in the Duo podcast package.`,
-      },
-      {
-        id: "panel",
-        number: "03",
-        layout: "card",
-        name: "Panel",
-        price: "RM6,500",
-        priceSuffix: "",
-        description: "For panel discussions & corporate podcasts.",
-        features: [
-          "Up to 4 Speakers",
-          "5 Professional Cameras",
-          "4 Wireless Microphones",
-          "Professional Lighting Setup",
-          "Up to 3 Hours On-site Recording",
-          "Fully Edited Podcast Episode",
-          "30 Short-form Videos",
-          "Color Grading",
-          "Social Media Subtitles",
-          "Custom Thumbnail",
-        ],
-        featured: false,
-        highlightLabel: "",
-        closingText: "",
-        cta: { label: "Request Quote", href: "#contact" },
-        formLabel: "",
-        whatsappMessage: `Hi ${company.name}, I’m interested in the Panel podcast package.`,
-      },
-      {
-        id: "monthly-partnership",
-        number: "04",
-        layout: "wide",
-        name: "Monthly Partnership",
-        price: "Custom Quote",
-        priceSuffix: "",
-        description: "For brands producing podcasts consistently.",
-        features: [
-          "Weekly or Monthly Recording Sessions",
-          "Dedicated Production Team",
-          "Multi-Camera Production",
-          "Full Podcast Editing",
-          "Social Media Repurposing",
-          "Priority Scheduling",
-          "Content Planning Support",
-          "Flexible Deliverables",
-        ],
-        featured: false,
-        highlightLabel: "",
-        closingText: "Let’s build your content system.",
-        cta: { label: "Schedule a Call", href: "#contact" },
-        formLabel: "Monthly Partnership",
-        whatsappMessage: `Hi ${company.name}, I’m interested in a Monthly Partnership.`,
-      },
-    ],
-    notes: [
-      "On-location recording included.",
-      "Studio rental available upon request.",
-      "Travel charges may apply outside coverage area.",
-      "Need something different? We'll prepare a custom quotation.",
-    ],
+    section: fill(packagesContent.section),
+    items: fill(packagesContent.items) as ReadonlyArray<ProductionPackage>,
+    notes: packagesContent.notes,
   },
 
   // ==========================================================
   // 08. FAQ
   // Search: EDIT FAQ
+  // Search: EDIT FAQ
+  // Edited from the admin panel: content/faq.json
   // ==========================================================
-  faq: {
-    kicker: "FAQ",
-    title: "Questions before starting a podcast project.",
-    items: [
-      {
-        question: "Do I need a studio to produce a podcast?",
-        answer:
-          `No. A professional podcast can be produced through a remote, on-location, or flexible recording workflow. ${company.name} helps plan the setup based on your content goals, people, environment, and delivery needs.`,
-      },
-      {
-        question: `Can ${company.name} record at our office or location?`,
-        answer:
-          "Yes. Trulab can support on-location podcast recording for companies, organisations, brands, and teams that prefer to record at their own venue or selected location.",
-      },
-      {
-        question: "Do you produce video podcasts?",
-        answer:
-          "Yes. Trulab produces video podcasts with structured camera, audio, lighting, editing, and delivery workflows for professional publishing.",
-      },
-      {
-        question: "Can you help with corporate podcasts?",
-        answer:
-          "Yes. Trulab supports corporate podcast Malaysia projects for internal communications, thought leadership, education, brand storytelling, interviews, launches, and campaigns.",
-      },
-      {
-        question: "Do you provide podcast editing?",
-        answer:
-          "Yes. Podcast editing can include audio cleanup, video editing, pacing, episode assembly, export preparation, and content formatting for publishing platforms.",
-      },
-      {
-        question: "Can you create Shorts and Reels from podcast episodes?",
-        answer:
-          "Yes. Trulab can repurpose podcast episodes into short-form clips for social media, helping each recording produce more usable content.",
-      },
-      {
-        question: "Do you support livestream podcasts?",
-        answer:
-          "Yes. Trulab can support livestream podcast workflows for panels, launches, live interviews, brand sessions, and online events.",
-      },
-      {
-        question: "How do I book a consultation?",
-        answer:
-          `Use the consultation form on this website or contact ${company.name} through WhatsApp. The form prepares your project details so the team can respond with the right next step.`,
-      },
-    ],
-  },
+  faq: fill(faqContent),
 
   // ==========================================================
   // 09. CONTACT FORM
@@ -719,23 +334,15 @@ export const editableSite = {
   // ==========================================================
   // 10. SEO
   // Search: EDIT SEO
+  // Search: EDIT SEO
+  // Titles, description and keywords are edited from the admin panel: content/seo.json
   // ==========================================================
   seo: {
-    defaultTitle: `${company.name} | Professional Podcast Production Malaysia`,
+    defaultTitle: fill(seoContent.defaultTitle),
     titleTemplate: `%s | ${company.name}`,
-    homepageTitle: "Professional Podcast Production Malaysia",
-    description:
-      `${company.name} provides professional podcast production, video podcast, multi-camera recording, editing, Shorts/Reels, and livestream podcast services for brands, organisations, SMEs, creators, and government bodies in Malaysia.`,
-    keywords: [
-      "podcast production Malaysia",
-      "podcast producer Malaysia",
-      "video podcast Malaysia",
-      "corporate podcast Malaysia",
-      "podcast editing Malaysia",
-      "podcast recording Malaysia",
-      "podcast agency Malaysia",
-      "podcast production company Malaysia",
-    ],
+    homepageTitle: seoContent.homepageTitle,
+    description: fill(seoContent.description),
+    keywords: seoContent.keywords,
     canonicalUrl: company.websiteUrl,
     locale: "en_MY",
     socialImageAlt: socialImages.openGraph.alt,
@@ -754,7 +361,7 @@ export const editableSite = {
       contactType: "consultation",
     },
     robots: {
-      disallow: ["/401", "/403", "/500", "/maintenance"],
+      disallow: ["/401", "/403", "/500", "/maintenance", "/keystatic"],
     },
     sitemap: [
       { path: "", changeFrequency: "weekly", priority: 1 },

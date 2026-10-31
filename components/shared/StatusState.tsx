@@ -37,6 +37,8 @@ export default function StatusState({
 }: StatusStateProps) {
   const Icon = iconMap[variant];
   const isLoading = variant === "loading";
+  // The loading state can appear in the homepage HTML, which has its own h1.
+  const Heading = isLoading ? "p" : "h1";
 
   return (
     <section className="section-shell flex min-h-[70vh] items-center py-24 sm:py-28">
@@ -47,9 +49,9 @@ export default function StatusState({
         <p className="mt-6 text-sm font-semibold uppercase tracking-[0.12em] text-trulab-muted">
           {code ? `${code} / ${eyebrow}` : eyebrow}
         </p>
-        <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight text-trulab-ink sm:text-6xl">
+        <Heading className="mt-4 max-w-3xl text-4xl font-semibold leading-tight text-trulab-ink sm:text-6xl">
           {title}
-        </h1>
+        </Heading>
         <p className="mt-5 max-w-2xl text-base leading-8 text-trulab-muted sm:text-lg">
           {description}
         </p>

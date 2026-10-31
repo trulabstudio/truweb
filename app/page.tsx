@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: seoConfig.twitterCard,
     title: siteConfig.title,
     description: siteConfig.description,
     images: [siteConfig.assets.socialImage],
@@ -58,6 +58,8 @@ const professionalServiceSchema = {
     name: seoConfig.areaServed.name,
     identifier: seoConfig.areaServed.code,
   },
+  email: siteConfig.email,
+  telephone: `+${siteConfig.whatsapp}`,
   serviceType: seoConfig.serviceTypes,
   ...(siteConfig.address ? { address: siteConfig.address } : {}),
   contactPoint: {
@@ -69,12 +71,23 @@ const professionalServiceSchema = {
   },
 };
 
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteConfig.name,
+  url: siteConfig.url,
+};
+
 export default function Home() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(professionalServiceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
       <Navbar />
       <main>
