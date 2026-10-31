@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/api/cron/supabase-health",
-      "schedule": "0 3 1,6,11,16,21,26 * *"
+      "schedule": "0 3 * * *"
     }
   ]
 }
