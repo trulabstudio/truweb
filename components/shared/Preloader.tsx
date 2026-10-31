@@ -1,9 +1,11 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/lib/site-config";
 
 export default function Preloader() {
+  const pathname = usePathname();
   const [isLeaving, setIsLeaving] = useState(false);
   const [isMounted, setIsMounted] = useState(true);
 
@@ -35,7 +37,7 @@ export default function Preloader() {
     };
   }, []);
 
-  if (!isMounted) {
+  if (!isMounted || pathname?.startsWith("/keystatic")) {
     return null;
   }
 

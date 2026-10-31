@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Script from "next/script";
 import { editableSite } from "@/lib/EDIT-SITE-HERE";
@@ -32,6 +33,7 @@ const copy = editableSite.marketing.consent;
 const consentKey = copy.storageKey;
 
 export default function MarketingPixels() {
+  const pathname = usePathname();
   const [consent, setConsent] = useState<"accepted" | "rejected" | null>(null);
   const gtagIds = [googleAnalyticsId, googleAdsId].filter(Boolean);
 
@@ -48,7 +50,7 @@ export default function MarketingPixels() {
     setConsent(nextConsent);
   }
 
-  if (!hasConfiguredPixel) {
+  if (!hasConfiguredPixel || pathname?.startsWith("/keystatic")) {
     return null;
   }
 
