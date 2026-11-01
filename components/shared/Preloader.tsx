@@ -37,7 +37,7 @@ export default function Preloader() {
     };
   }, []);
 
-  if (!isMounted || pathname?.startsWith("/keystatic")) {
+  if (!isMounted || pathname?.startsWith("/admin")) {
     return null;
   }
 

@@ -36,6 +36,14 @@ export default function Footer() {
                 {link.label}
               </Link>
             ))}
+            {siteConfig.socialLinks.map((link) => (
+              <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="focus-ring rounded-md transition hover:text-trulab-on-dark">
+                {link.label}
+              </a>
+            ))}
+            <Link href={footerContent.adminLink.href} rel="nofollow" className="focus-ring rounded-md transition hover:text-trulab-on-dark">
+              {footerContent.adminLink.label}
+            </Link>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             <a href={`mailto:${siteConfig.email}`} className="focus-ring rounded-full border border-trulab-on-dark/12 px-5 py-3 text-center text-sm font-semibold text-trulab-on-dark/82 transition hover:bg-trulab-on-dark/8">
@@ -46,11 +54,10 @@ export default function Footer() {
               {footerContent.whatsappLabel}
             </a>
           </div>
-          <p className="text-sm text-trulab-on-dark/44">{"©"} {new Date().getFullYear()} {siteConfig.name} — {siteConfig.divisionLine} {footerContent.rights}</p>
-          <a href={footerContent.adminLink.href} rel="nofollow" className="focus-ring rounded-md text-sm text-trulab-on-dark/70 underline underline-offset-4 transition hover:text-trulab-on-dark">
-            {footerContent.adminLink.label}
-          </a>
         </div>
+      </Container>
+      <Container className="mt-8 border-t border-trulab-on-dark/10 pt-6">
+        <p className="text-sm text-trulab-on-dark/44">{"©"} {new Date().getFullYear()} {siteConfig.name} — {siteConfig.divisionLine} {footerContent.rights}</p>
       </Container>
     </footer>
   );

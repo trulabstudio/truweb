@@ -5,202 +5,43 @@
 Wording, contact details, packages and prices, FAQ, hero and client images, and SEO text are edited at:
 
 ```text
-https://www.trulabstudio.com/keystatic
+https://www.trulabstudio.com/admin
 ```
 
-Log in with GitHub, edit, then press Save. Each save is a commit to `main`, and Vercel publishes it after the deployment finishes, usually in 1-2 minutes. Use `{company}` in text to insert the company name.
+Log in with the admin password, edit, then press Save. Each save is a commit to `main`, and Vercel publishes it after the deployment finishes, usually in 1-2 minutes. Use `{company}` in text to insert the company name.
 
-The content is stored in `content/`. When running `npm run dev`, `/keystatic` saves to these local files instead of GitHub.
+Before saving, the panel checks links, email and WhatsApp formats, `{company}` style tokens and brand colour contrast, and it refuses values that would break the website.
 
-Saving client logos or the hero image can rename the image files inside their folder. This is normal, and the website follows the new paths automatically.
+The content is stored in `content/`. When running `npm run dev` without `GITHUB_CONTENT_TOKEN`, `/admin` saves to these local files instead of GitHub.
 
-### First-time GitHub setup
+Uploaded images get generated file names, and old images stay in their folder until removed from the repository.
 
-The panel returns 404 online until this is done, and the rest of the website is unaffected.
+### First-time setup
 
-1. Run `NEXT_PUBLIC_KEYSTATIC_STORAGE=github npm run dev`.
-2. Open `http://localhost:3000/keystatic` and follow the prompts to create the GitHub App. Keystatic writes the values to `.env`, which is ignored by Git.
-3. Install the GitHub App on the `trulabstudio/truweb` repository only.
-4. In the GitHub App settings, add this callback URL: `https://www.trulabstudio.com/api/keystatic/github/oauth/callback`.
-5. In Vercel, add these variables to Production: `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET` and `NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` from `.env`, plus `NEXT_PUBLIC_KEYSTATIC_STORAGE` set to `github`.
-6. Redeploy. Add all five together, because the build fails if GitHub storage is on without the other values.
+In Vercel, add these variables to Production and redeploy:
+
+1. `ADMIN_PASSWORD`: the panel login, at least 12 characters. Changing it logs everyone out.
+2. `GITHUB_CONTENT_TOKEN`: a GitHub fine-grained token for the `trulabstudio/truweb` repository only, with the Contents read and write permission. Renew it before it expires.
+
+## What the panel covers
+
+| Group | Sections |
+| --- | --- |
+| Content | Packages and pricing, FAQ, contact details |
+| Homepage | Hero section, services, other homepage sections |
+| Media | Hero image, client logos |
+| SEO | Search engine text |
+| Brand | Company details, logos and icons, brand colours, navigation |
+| Communication | Contact form, emails |
+| Pages | Tool pages, status pages, cookie banner |
+
+Customer messages from the contact form are listed under Enquiries.
 
 ## Code editing
 
-For anything the panel does not cover, open:
+Developers only need `lib/EDIT-SITE-HERE.ts` for technical settings that are not in the panel, such as package option IDs, robots rules, the sitemap, structured data and the wording inside the QR Generator and Background Remover tools. Tracking IDs and credentials remain environment variables.
 
-```text
-lib/EDIT-SITE-HERE.ts
-```
-
-Do not edit React components for routine wording, contact, package, image or SEO changes. The configuration and content files under `lib/` are technical adapters that read from the editing file.
-
-## Contents
-
-1. `01 COMPANY`
-2. `02 CONTACT`
-3. `03 BRAND COLOURS`
-4. `04 IMAGES`
-5. `05 NAVIGATION`
-6. `06 HOMEPAGE`
-7. `07 PACKAGES`
-8. `08 FAQ`
-9. `09 CONTACT FORM`
-10. `10 SEO`
-11. `11 TOOLS`
-12. `12 STATUS PAGES`
-13. `13 MARKETING`
-
-Use the `Search: EDIT ...` comments in `lib/EDIT-SITE-HERE.ts` to jump directly to a section.
-
-## 01 Company
-
-Edit the company name, slug, domain and website URL in the company section.
-
-Example placeholders:
-
-```ts
-const companyName = "Example Company";
-const companyDomain = "example.com";
-```
-
-The website URL is generated from the domain.
-
-## 02 Contact
-
-Edit the email, displayed phone, WhatsApp number, address, default WhatsApp message and social links in the company/contact block.
-
-```ts
-email: "hello@example.com",
-phoneDisplay: "+60 12-345 6789",
-whatsappNumber: "60123456789",
-```
-
-Use digits only for `whatsappNumber`, including the country code.
-
-## 03 Brand colours
-
-Edit six-digit hexadecimal values under `branding.colors`:
-
-```ts
-accent: "#aabbcc",
-background: "#f5f5f5",
-```
-
-Keep the leading `#`. Tailwind and the website CSS consume these values automatically.
-
-## 04 Images
-
-The editing file contains only each image's `src` and `alt`.
-
-The safest replacement process is:
-
-1. Open `public/images/IMAGE-SPECS.md`.
-2. Prepare the replacement using the listed dimensions and crop guidance.
-3. Replace the existing file using exactly the same filename.
-
-Keeping the filename means no code change is required. If the filename changes, update the matching `src` in `lib/EDIT-SITE-HERE.ts`.
-
-## 05 Navigation
-
-Edit navbar labels and destinations under `navigation`. Homepage anchors begin with `#`; tool pages begin with `/`.
-
-When changing an anchor URL, keep it matched to the corresponding homepage section ID.
-
-## 06 Homepage
-
-Homepage wording includes the hero, trust pills, services, client marquee, production coverage, process, certifications, contact section and footer.
-
-To add a service, duplicate one complete service object:
-
-```ts
-{
-  title: "Example service",
-  description: "Explain the service here.",
-  icon: "Mic2",
-},
-```
-
-To remove a service, delete its complete object, including the surrounding braces and comma.
-
-## 07 Packages
-
-Each package has a permanent technical `id`.
-
-```ts
-{
-  id: "example-package", // Never change an existing ID.
-  name: "Displayed package name",
-  price: "Displayed price",
-  formLabel: "",
-}
-```
-
-Safe fields to edit:
-
-- `name`
-- `price`
-- `priceSuffix`
-- `description`
-- `features`
-- `highlightLabel`
-- `closingText`
-- CTA wording and URL
-- `formLabel`
-- `whatsappMessage`
-
-Never change an existing `id`. The form submits that stable ID to Supabase, so changing package names, prices, descriptions, features or display labels does not require a database migration.
-
-Leave `formLabel` empty to generate the dropdown label from the current package name and price. Set it only when a custom dropdown label is required.
-
-To remove a feature, delete only that quoted feature line from the package's `features` array.
-
-Adding a genuinely new package requires a developer to assign a new permanent ID and add that ID through a new Supabase migration.
-
-## 08 FAQ
-
-Add or remove complete objects under `faq.items`:
-
-```ts
-{
-  question: "Example question?",
-  answer: "Example answer.",
-},
-```
-
-The visible FAQ and structured data use the same array.
-
-## 09 Contact form
-
-Edit field labels, placeholders, success/error wording and notification-email wording under `forms.contact`.
-
-Additional options use permanent IDs:
-
-```ts
-additionalPackageOptions: [
-  { id: "others", label: "Other enquiry" },
-],
-```
-
-Do not change an existing option ID.
-
-## 10 SEO
-
-Edit the default title, title template, description, keywords, canonical URL, social metadata and structured-data details under `seo`.
-
-Keep route paths valid when editing robots or sitemap entries.
-
-## 11 Tools
-
-The `tools` section contains client-facing wording and editable choices for the QR Generator and Background Remover. Technical canvas, MIME, file-size and model-processing logic remains in the components.
-
-## 12 Status pages
-
-Edit loading, error, 403, 404, 500 and maintenance wording under `statusPages`.
-
-## 13 Marketing
-
-Edit only the public consent wording and button labels under `marketing`. Tracking IDs remain environment variables.
+A permanent package `id` must never change, and a new one requires a new Supabase migration. Adding a homepage section or page also requires updating `homepageAnchors` or `siteRoutes` in `lib/admin/schema.ts`, and the tests check that these match.
 
 ## Validation after normal edits
 
@@ -252,11 +93,8 @@ RESEND_API_KEY
 LEAD_NOTIFICATION_EMAIL
 LEAD_FROM_EMAIL
 CRON_SECRET
-KEYSTATIC_GITHUB_CLIENT_ID
-KEYSTATIC_GITHUB_CLIENT_SECRET
-KEYSTATIC_SECRET
-NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG
-NEXT_PUBLIC_KEYSTATIC_STORAGE
+ADMIN_PASSWORD
+GITHUB_CONTENT_TOKEN
 MAINTENANCE_MODE
 MAINTENANCE_RETRY_AFTER
 FORBIDDEN_PATHS

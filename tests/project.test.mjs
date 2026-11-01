@@ -168,9 +168,11 @@ test("every centralized image exists and specifications have one technical home"
   const specifications = read("public/images/IMAGE-SPECS.md");
 
   assert.ok(images.length > 0);
+  // Images uploaded from the admin panel have generated names, and replaced ones stay in their folder.
+  const isPanelUpload = (path) => /\/\d+-[0-9a-f]{6}\.(?:png|jpg|webp)$/.test(path);
   assert.deepEqual(
-    [...publicImagePaths].sort(),
-    [...centralizedPaths].sort(),
+    publicImagePaths.filter((path) => !isPanelUpload(path)).sort(),
+    [...centralizedPaths].filter((path) => !isPanelUpload(path)).sort(),
     "public/images contains an asset that is not used by the editing object",
   );
   assert.doesNotMatch(
@@ -180,8 +182,8 @@ test("every centralized image exists and specifications have one technical home"
 
   for (const image of images) {
     assert.equal(existsSync(url(`public${image.src}`)), true, `${image.src} does not exist`);
-    // The admin panel renames hero and client images when they are saved.
-    if (!/^\/images\/(?:hero|clients)\//.test(image.src)) {
+    // Client logos and the hero image are specified by the admin panel, not per file.
+    if (!/^\/images\/(?:hero|clients)\//.test(image.src) && !isPanelUpload(image.src)) {
       assert.ok(specifications.includes(image.src), `${image.src} is missing from IMAGE-SPECS.md`);
     }
   }
@@ -387,4 +389,67 @@ test("navigation and colour helpers preserve technical behavior", async () => {
   assert.equal(resolveNavigationHref("https://example.com"), "https://example.com");
   assert.equal(hexToRgbChannels("#f8fbfd"), "248 251 253");
   assert.throws(() => hexToRgbChannels("#fff"), /six digits/i);
+});
+
+test("admin panel schema accepts all current content and does not lose any field", async () => {
+  const javascript = ts.transpileModule(read("lib/admin/schema.ts"), {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const { sections, validateSection, emptyValue } = await import(
+    `data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`
+  );
+
+  for (const section of sections) {
+    const current = JSON.parse(read(section.path));
+    const { data, errors } = validateSection(section, current);
+    assert.deepEqual(errors, [], section.key);
+    assert.deepEqual(data, current, section.key);
+  }
+
+  const packages = sections.find((section) => section.key === "packages");
+  const current = JSON.parse(read(packages.path));
+  const blank = { ...current.items[0], name: " " };
+  assert.ok(validateSection(packages, { ...current, items: [blank] }).errors.length > 0, "blank required text");
+  assert.ok(validateSection(packages, { ...current, items: [current.items[0], current.items[0]] }).errors.length > 0, "duplicate id");
+  assert.ok(validateSection(packages, { ...current, items: [] }).errors.length > 0, "below minimum");
+
+  const clients = sections.find((section) => section.key === "clients");
+  const logo = { name: "A", alt: "A", src: "../../secret.png" };
+  assert.ok(validateSection(clients, { title: "T", logos: [logo] }).errors.length > 0, "unsafe image path");
+  assert.equal(typeof emptyValue(packages.fields.items.item).name, "string");
+
+  const errorsFor = (key, change) => {
+    const section = sections.find((item) => item.key === key);
+    const value = JSON.parse(read(section.path));
+    change(value);
+    return validateSection(section, value).errors;
+  };
+  assert.ok(errorsFor("navigation", (value) => { value.mainCta.href = "#missing"; }).length > 0, "unknown anchor");
+  assert.ok(errorsFor("navigation", (value) => { value.mainCta.href = "/missing"; }).length > 0, "unknown route");
+  assert.ok(errorsFor("navigation", (value) => { value.mainCta.href = "javascript:alert(1)"; }).length > 0, "script link");
+  assert.deepEqual(errorsFor("navigation", (value) => { value.mainCta.href = "https://example.com/page"; }), []);
+  assert.ok(errorsFor("navigation", (value) => { value.navbarLinks[1].href = value.navbarLinks[0].href; }).length > 0, "duplicate link");
+  assert.ok(errorsFor("contact", (value) => { value.whatsappNumber = "017-698"; }).length > 0, "bad WhatsApp number");
+  assert.ok(errorsFor("contact", (value) => { value.email = "not-an-email"; }).length > 0, "bad email");
+  assert.ok(errorsFor("company", (value) => { value.domain = "https://www.example.com"; }).length > 0, "bad domain");
+  assert.ok(errorsFor("company", (value) => { value.socialLinks = [{ label: "IG", href: "instagram.com" }]; }).length > 0, "bad social link");
+  assert.ok(errorsFor("faq", (value) => { value.title = "Hello {compny}"; }).length > 0, "unknown token");
+  assert.ok(errorsFor("emails", (value) => { value.customer.signOff = "<script>x</script>"; }).length > 0, "script in email");
+  assert.ok(errorsFor("brand-colors", (value) => { value.text = "#f8fbfd"; }).length > 0, "unreadable text");
+  assert.deepEqual(errorsFor("brand-colors", (value) => { value.accent = "#ffd700"; }), []);
+});
+
+test("admin link checks match the real homepage sections and routes", async () => {
+  const javascript = ts.transpileModule(read("lib/admin/schema.ts"), {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const { homepageAnchors, siteRoutes } = await import(
+    `data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`
+  );
+  const sectionSource = walk("components/home", /\.tsx$/).map(read).join("\n");
+  const sectionIds = [...sectionSource.matchAll(/<Section\s+id="([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual([...homepageAnchors].sort(), [...sectionIds].sort());
+  for (const route of siteRoutes) {
+    assert.ok(existsSync(url(`app${route === "/" ? "" : route}/page.tsx`)), `${route} has no page`);
+  }
 });

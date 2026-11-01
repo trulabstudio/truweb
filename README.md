@@ -4,19 +4,7 @@ This is the Trulab Studio website (a division of Trulab Production Sdn. Bhd.), b
 
 ## Normal website editing
 
-Start normal content updates in:
-
-```text
-lib/EDIT-SITE-HERE.ts
-```
-
-That file contains the client-editable company details, contact information, colours, images, navigation, homepage wording, packages, FAQ, form wording, SEO and tool-page content.
-
-See:
-
-- `MAINTENANCE.md` for editing instructions.
-- `public/images/IMAGE-SPECS.md` for replacement-image dimensions.
-- `HANDOVER-CHECKLIST.md` before preparing a client ZIP.
+Content, images, colours, navigation and emails are edited in the `/admin` panel. See `MAINTENANCE.md` for setup and for the technical settings that stay in `lib/EDIT-SITE-HERE.ts`.
 
 ## Install and run
 

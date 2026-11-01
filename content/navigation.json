@@ -1,0 +1,42 @@
+{
+  "navbarLinks": [
+    {
+      "label": "Services",
+      "href": "#services"
+    },
+    {
+      "label": "Packages",
+      "href": "#packages"
+    },
+    {
+      "label": "Why Trulab",
+      "href": "#why-trulab"
+    },
+    {
+      "label": "Process",
+      "href": "#process"
+    },
+    {
+      "label": "FAQ",
+      "href": "#faq"
+    },
+    {
+      "label": "Contact",
+      "href": "#contact"
+    }
+  ],
+  "toolLinks": [
+    {
+      "label": "QR Generator",
+      "href": "/qr-generator"
+    },
+    {
+      "label": "BG Remover",
+      "href": "/background-remover"
+    }
+  ],
+  "mainCta": {
+    "label": "Book Consultation",
+    "href": "/#contact"
+  }
+}

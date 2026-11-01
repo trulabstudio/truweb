@@ -1,6 +1,6 @@
 # Trulab Website Image Specifications
 
-For normal image replacements, keep the same filename and replace the file in place. When the filename stays the same, no code change is required. If a filename must change, update its `src` in `lib/EDIT-SITE-HERE.ts`.
+Replace images from the `/admin` panel, which shows the recommended size for each image.
 
 Do not stretch a replacement to the listed size. Crop or export it at the recommended aspect ratio so the subject remains natural.
 

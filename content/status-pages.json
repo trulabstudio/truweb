@@ -1,0 +1,40 @@
+{
+  "common": {
+    "backToHomepage": "Back to homepage",
+    "tryAgain": "Try again"
+  },
+  "loading": {
+    "title": "Loading {company}.",
+    "description": "Preparing the page and production tools."
+  },
+  "error": {
+    "title": "Something went wrong.",
+    "description": "The page could not finish loading. Try again, or return to the homepage if the issue continues."
+  },
+  "globalError": {
+    "title": "Critical application error.",
+    "description": "The application shell could not render. Try loading the site again."
+  },
+  "serverError": {
+    "title": "Internal server error.",
+    "description": "The server could not complete this request. Please try again later or return to the homepage."
+  },
+  "forbidden": {
+    "metadataTitle": "403 Forbidden",
+    "metadataDescription": "Access to this {company} page is restricted.",
+    "title": "Access is restricted.",
+    "description": "You do not have permission to view this page."
+  },
+  "notFound": {
+    "metadataTitle": "404 Not Found",
+    "metadataDescription": "The page you are looking for could not be found on {company}.",
+    "title": "Page not found.",
+    "description": "The page may have moved, expired, or been typed incorrectly. Return to the homepage to continue browsing {company}."
+  },
+  "maintenance": {
+    "metadataTitle": "Maintenance",
+    "metadataDescription": "{company} is temporarily offline for maintenance.",
+    "title": "Site maintenance in progress.",
+    "description": "{company} is temporarily offline while updates are being completed. Please check again shortly."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "primary": "#171717",
+  "accent": "#bfd730",
+  "accentStrong": "#9db514",
+  "accentIcon": "#8fa30f",
+  "accentText": "#738600",
+  "background": "#f8fbfd",
+  "surface": "#ffffff",
+  "text": "#171717",
+  "mutedText": "#5f666d",
+  "border": "#171717",
+  "darkSection": "#171717",
+  "onDark": "#ffffff",
+  "buttonPrimaryBackground": "#171717",
+  "buttonPrimaryHoverBackground": "#000000",
+  "buttonPrimaryText": "#ffffff",
+  "buttonSecondaryBackground": "#ffffff",
+  "buttonSecondaryText": "#171717",
+  "checkerboard": "#eef1f3"
+}

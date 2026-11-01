@@ -1,21 +1,30 @@
+import brandAssets from "../content/brand/assets.json";
+import brandColors from "../content/brand/colors.json";
+import companyContent from "../content/company.json";
 import contactContent from "../content/contact.json";
+import cookieBannerContent from "../content/cookie-banner.json";
 import faqContent from "../content/faq.json";
 import clientsContent from "../content/home/clients.json";
+import contactFormContent from "../content/forms/contact.json";
+import emailContent from "../content/forms/email.json";
 import heroImageContent from "../content/home/hero-image.json";
 import heroContent from "../content/home/hero.json";
 import otherHomeContent from "../content/home/other.json";
+import navigationContent from "../content/navigation.json";
 import servicesContent from "../content/home/services.json";
 import packagesContent from "../content/packages.json";
 import seoContent from "../content/seo.json";
+import statusPagesContent from "../content/status-pages.json";
+import toolsContent from "../content/tools.json";
 import type { ProductionPackage } from "@/lib/content/packages";
 import type { EditableSite } from "@/lib/types/editable-site";
 
 /**
  * CLIENT EDITING FILE
  *
- * Wording, contact details, packages, hero and client images and SEO
- * text live in content/ and are edited from the /keystatic admin panel.
- * Update colours, navigation, tools and status pages from this file.
+ * Company details, wording, images, colours, navigation and SEO text
+ * live in content/ and are edited from the /admin panel.
+ * This file combines them with the technical settings below.
  *
  * Do not edit components unless changing the website design.
  */
@@ -43,15 +52,28 @@ import type { EditableSite } from "@/lib/types/editable-site";
 // Search: EDIT COMPANY
 // ============================================================
 
-const companyName = "Trulab Studio";
-const companyLegalName = "Trulab Production Sdn. Bhd.";
-const companyDomain = "trulabstudio.com";
+// Edited from the admin panel: content/company.json
+const companyName = companyContent.name;
+const companyLegalName = companyContent.legalName;
+const companyDomain = companyContent.domain;
+const companyWebsite = `https://www.${companyDomain}`;
 
 type ServiceIcon = "Camera" | "Clapperboard" | "Mic2" | "Radio" | "Scissors" | "Video";
 
-// Replaces the {company} token used by the admin panel content.
+// Replaces the {company}, {phone}, {email} and {website} tokens used by the admin panel content.
+const tokens: Record<string, string> = {
+  "{company}": companyName,
+  "{phone}": contactContent.phoneDisplay,
+  "{email}": contactContent.email,
+  "{website}": companyWebsite,
+};
+
 function fill<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value).replaceAll("{company}", companyName)) as T;
+  let text = JSON.stringify(value);
+  for (const [token, replacement] of Object.entries(tokens)) {
+    text = text.replaceAll(token, JSON.stringify(replacement).slice(1, -1));
+  }
+  return JSON.parse(text) as T;
 }
 
 const contact = fill(contactContent);
@@ -63,7 +85,7 @@ const company = {
   divisionLine: `A division of ${companyLegalName}`,
   slug: "trulab",
   domain: companyDomain,
-  websiteUrl: `https://www.${companyDomain}`,
+  websiteUrl: companyWebsite,
 
   // ==========================================================
   // 02. CONTACT
@@ -75,7 +97,7 @@ const company = {
   whatsappNumber: contact.whatsappNumber,
   address: contact.address,
   defaultWhatsAppMessage: contact.defaultWhatsAppMessage,
-  socialLinks: [],
+  socialLinks: companyContent.socialLinks as ReadonlyArray<{ label: string; href: string }>,
 } as const;
 
 // ============================================================
@@ -83,27 +105,9 @@ const company = {
 // Search: EDIT BRAND COLOURS
 // ============================================================
 
+// Edited from the admin panel: content/brand/colors.json
 const branding = {
-  colors: {
-    primary: "#171717",
-    accent: "#bfd730",
-    accentStrong: "#9db514",
-    accentIcon: "#8fa30f",
-    accentText: "#738600",
-    background: "#f8fbfd",
-    surface: "#ffffff",
-    text: "#171717",
-    mutedText: "#5f666d",
-    border: "#171717",
-    darkSection: "#171717",
-    onDark: "#ffffff",
-    buttonPrimaryBackground: "#171717",
-    buttonPrimaryHoverBackground: "#000000",
-    buttonPrimaryText: "#ffffff",
-    buttonSecondaryBackground: "#ffffff",
-    buttonSecondaryText: "#171717",
-    checkerboard: "#eef1f3",
-  },
+  colors: brandColors,
 } as const;
 
 // ============================================================
@@ -112,45 +116,22 @@ const branding = {
 // Dimensions and replacement guidance: public/images/IMAGE-SPECS.md
 // ============================================================
 
+// Edited from the admin panel: content/brand/assets.json
 const brandImages = {
-  logoMain: {
-    src: "/images/brand/logo-main.png",
-    alt: "",
-  },
-  logoWhite: {
-    src: "/images/brand/logo-white.png",
-    alt: "",
-  },
-  logoFull: {
-    src: "/images/brand/logo-full.png",
-    alt: company.name,
-  },
-  favicon: {
-    src: "/images/brand/favicon.png",
-    alt: `${company.name} favicon`,
-  },
+  logoMain: { src: brandAssets.logoMain.src, alt: "" },
+  logoWhite: { src: brandAssets.logoWhite.src, alt: "" },
+  logoFull: { src: brandAssets.logoFull.src, alt: company.name },
+  favicon: { src: brandAssets.favicon.src, alt: `${company.name} favicon` },
 } as const;
 
 const pwaImages = {
-  icon192: {
-    src: "/images/brand/pwa-icon-192.png",
-    alt: `${company.name} 192 px app icon`,
-  },
-  icon512: {
-    src: "/images/brand/pwa-icon-512.png",
-    alt: `${company.name} 512 px app icon`,
-  },
-  maskable512: {
-    src: "/images/brand/pwa-maskable-512.png",
-    alt: `${company.name} maskable app icon`,
-  },
+  icon192: { src: brandAssets.icon192.src, alt: `${company.name} 192 px app icon` },
+  icon512: { src: brandAssets.icon512.src, alt: `${company.name} 512 px app icon` },
+  maskable512: { src: brandAssets.maskable512.src, alt: `${company.name} maskable app icon` },
 } as const;
 
 const socialImages = {
-  openGraph: {
-    src: "/images/social/social-og-image.jpg",
-    alt: `${company.name} professional podcast production Malaysia`,
-  },
+  openGraph: fill(brandAssets.socialImage),
 } as const;
 
 const heroImages = {
@@ -177,19 +158,10 @@ export const editableSite = {
   // Search: EDIT NAVIGATION
   // ==========================================================
   navigation: {
-    navbarLinks: [
-      { label: "Services", href: "#services" },
-      { label: "Packages", href: "#packages" },
-      { label: "Why Trulab", href: "#why-trulab" },
-      { label: "Process", href: "#process" },
-      { label: "FAQ", href: "#faq" },
-      { label: "Contact", href: "#contact" },
-    ],
-    toolLinks: [
-      { label: "QR Generator", href: "/qr-generator" },
-      { label: "BG Remover", href: "/background-remover" },
-    ],
-    mainCta: { label: "Book Consultation", href: "/#contact" },
+    // Edited from the admin panel: content/navigation.json
+    navbarLinks: fill(navigationContent.navbarLinks),
+    toolLinks: fill(navigationContent.toolLinks),
+    mainCta: fill(navigationContent.mainCta),
     accessibility: {
       homeSuffix: "home",
       toggleNavigation: "Toggle navigation",
@@ -203,16 +175,16 @@ export const editableSite = {
   // Edited from the admin panel: content/home/
   homepage: {
     hero: {
-      kicker: heroContent.kicker,
-      title: heroContent.title,
+      kicker: fill(heroContent.kicker),
+      title: fill(heroContent.title),
       description: fill(heroContent.description),
-      primaryCta: heroContent.primaryCta,
-      secondaryCta: heroContent.secondaryCta,
+      primaryCta: fill(heroContent.primaryCta),
+      secondaryCta: fill(heroContent.secondaryCta),
       image: heroImages.main,
     },
-    trustPills: heroContent.trustPills,
+    trustPills: fill(heroContent.trustPills),
     clientLogoMarquee: {
-      title: clientsContent.title,
+      title: fill(clientsContent.title),
       fallbackNamePrefix: "Client logo slot ",
       fallbackLabelPrefix: "Logo ",
       logos: clientImages,
@@ -235,8 +207,7 @@ export const editableSite = {
       ...fill(otherHomeContent.footer),
       whatsappLabel: "WhatsApp",
       rights: "All rights reserved.",
-      adminLink: { label: "Admin", href: "/keystatic" },
-      adminHomeLink: { label: "Ke Website", href: "/" },
+      adminLink: { label: "Admin", href: "/admin" },
     },
   },
 
@@ -253,12 +224,11 @@ export const editableSite = {
   packages: {
     section: fill(packagesContent.section),
     items: fill(packagesContent.items) as ReadonlyArray<ProductionPackage>,
-    notes: packagesContent.notes,
+    notes: fill(packagesContent.notes),
   },
 
   // ==========================================================
   // 08. FAQ
-  // Search: EDIT FAQ
   // Search: EDIT FAQ
   // Edited from the admin panel: content/faq.json
   // ==========================================================
@@ -270,52 +240,28 @@ export const editableSite = {
   // ==========================================================
   forms: {
     contact: {
-      fields: {
-        name: { label: "Name", placeholder: "" },
-        company: { label: "Company", placeholder: "" },
-        email: { label: "Email", placeholder: "" },
-        phone: { label: "Phone", placeholder: "" },
-        packageInterest: { label: "Package Interest", placeholder: "Select a package" },
-        message: { label: "Message", placeholder: "" },
-      },
+      // Wording is edited from the admin panel: content/forms/contact.json
+      fields: fill(contactFormContent.fields),
       // IDs are permanent and are stored in the legacy database `budget` column.
       additionalPackageOptions: [{ id: "others", label: "Others" }],
       emptyValue: "-",
-      submitLabel: "Book Consultation",
-      turnstileNotice: "Protected by Cloudflare Turnstile.",
-      turnstileMissing: "Anti-spam is not configured yet.",
-      turnstileRequired: "Please complete the anti-spam check before submitting.",
-      submitFallbackError: "Unable to submit your enquiry.",
-      unexpectedError: "Something went wrong. Please try again.",
-      success: "Thank you. Your enquiry has been saved and WhatsApp is opening now.",
-      whatsapp: {
-        introduction: `Hi ${company.name}, I'd like to book a podcast production consultation.`,
-        detailsHeading: "My details:",
-        projectLabel: "Project message",
-        closing: "Please let me know the next step. Thank you.",
-      },
-      apiMessages: {
-        invalidRequest: "Invalid request.",
-        submissionRejected: "Submission rejected.",
-        invalidFields: "Please check the required fields.",
-        antiSpamUnavailable: "Anti-spam verification is unavailable.",
-        antiSpamFailed: "Anti-spam verification failed. Please try again.",
-        storageUnavailable: "Lead storage is not configured.",
-        saveFailed: "Unable to save your enquiry. Please try again.",
-        submitFailed: "Unable to submit your enquiry. Please try again.",
-      },
+      ...fill({
+        submitLabel: contactFormContent.submitLabel,
+        turnstileNotice: contactFormContent.turnstileNotice,
+        turnstileMissing: contactFormContent.turnstileMissing,
+        turnstileRequired: contactFormContent.turnstileRequired,
+        submitFallbackError: contactFormContent.submitFallbackError,
+        unexpectedError: contactFormContent.unexpectedError,
+        success: contactFormContent.success,
+        whatsapp: contactFormContent.whatsapp,
+        apiMessages: contactFormContent.apiMessages,
+      }),
       notificationEmail: {
         fallbackFrom: "Website <onboarding@resend.dev>",
-        subjectPrefix: "New website lead",
-        heading: "New website enquiry",
-        customer: {
-          subject: `We received your enquiry | ${company.name}`,
-          heading: "Thank you for your enquiry",
-          introduction: `We’ve successfully received your enquiry. The ${company.name} team will review your project details and contact you shortly.`,
-          detailsHeading: "Your submitted details",
-          correctionNotice: "If any information below is incorrect, simply reply to this email and let us know.",
-          signOff: `Thank you,<br><br>Ismul Idzham<br>Managing Director<br><br>${company.name}<br><br>📞 ${company.phoneDisplay}<br>✉️ ${company.email}<br>🌐 <a href="${company.websiteUrl}">${company.websiteUrl}</a><br><br>We help brands, organisations, government bodies, SMEs, and creators<br>plan, record, edit, and publish premium podcasts.`,
-        },
+        // Wording is edited from the admin panel: content/forms/email.json
+        subjectPrefix: emailContent.team.subjectPrefix,
+        heading: emailContent.team.heading,
+        customer: fill(emailContent.customer),
         labels: {
           name: "Name",
           company: "Company",
@@ -332,15 +278,14 @@ export const editableSite = {
   // ==========================================================
   // 10. SEO
   // Search: EDIT SEO
-  // Search: EDIT SEO
   // Titles, description and keywords are edited from the admin panel: content/seo.json
   // ==========================================================
   seo: {
     defaultTitle: fill(seoContent.defaultTitle),
     titleTemplate: `%s | ${company.name}`,
-    homepageTitle: seoContent.homepageTitle,
+    homepageTitle: fill(seoContent.homepageTitle),
     description: fill(seoContent.description),
-    keywords: seoContent.keywords,
+    keywords: fill(seoContent.keywords),
     canonicalUrl: company.websiteUrl,
     locale: "en_MY",
     socialImageAlt: socialImages.openGraph.alt,
@@ -359,7 +304,7 @@ export const editableSite = {
       contactType: "consultation",
     },
     robots: {
-      disallow: ["/401", "/403", "/500", "/maintenance", "/keystatic"],
+      disallow: ["/401", "/403", "/500", "/maintenance", "/admin"],
     },
     sitemap: [
       { path: "", changeFrequency: "weekly", priority: 1 },
@@ -374,19 +319,7 @@ export const editableSite = {
   // ==========================================================
   tools: {
     qrGenerator: {
-      page: {
-        path: "/qr-generator",
-        title: "QR Generator",
-        description:
-          "Generate downloadable PNG, JPG, and SVG QR codes for campaign links, event pages, registration forms, and podcast URLs.",
-        socialDescription:
-          "Generate downloadable QR codes for campaign links, event pages, registration forms, and podcast URLs.",
-        socialImageAlt: `${company.name} QR generator utility`,
-        kicker: "Trulab utility",
-        heading: "Generate QR Codes for Production Links",
-        introduction:
-          "Create QR codes for proposals, registration pages, show notes, campaign URLs, and client-facing materials. Preview first, then download in the format you need.",
-      },
+      page: { path: "/qr-generator", ...fill(toolsContent.qrGenerator) },
       interface: {
         title: "QR Generator",
         description:
@@ -415,19 +348,7 @@ export const editableSite = {
       },
     },
     backgroundRemover: {
-      page: {
-        path: "/background-remover",
-        title: "Background Remover",
-        description:
-          `Remove image backgrounds and export production-ready PNG, WEBP, or JPEG assets with ${company.name}'s browser-based tool.`,
-        socialDescription:
-          `Remove image backgrounds and export production-ready PNG, WEBP, or JPEG assets with ${company.name}'s browser-based tool.`,
-        socialImageAlt: `${company.name} background remover utility`,
-        kicker: "Trulab utility",
-        heading: "Remove Backgrounds for Production Assets",
-        introduction:
-          "Prepare clean thumbnails, speaker profile images, product visuals, and campaign assets directly in the browser. Upload an image, remove the background, adjust export settings, and download.",
-      },
+      page: { path: "/background-remover", ...fill(toolsContent.backgroundRemover) },
       interface: {
         title: "Background Remover",
         description:
@@ -505,53 +426,15 @@ export const editableSite = {
   // Search: EDIT STATUS PAGES
   // ==========================================================
   statusPages: {
-    common: {
-      backToHomepage: "Back to homepage",
-      tryAgain: "Try again",
-    },
-    loading: {
-      title: `Loading ${company.name}.`,
-      description: "Preparing the page and production tools.",
-    },
-    error: {
-      code: "500",
-      title: "Something went wrong.",
-      description:
-        "The page could not finish loading. Try again, or return to the homepage if the issue continues.",
-    },
-    globalError: {
-      code: "500",
-      title: "Critical application error.",
-      description: "The application shell could not render. Try loading the site again.",
-    },
-    serverError: {
-      code: "500",
-      title: "Internal server error.",
-      description:
-        "The server could not complete this request. Please try again later or return to the homepage.",
-    },
-    forbidden: {
-      metadataTitle: "403 Forbidden",
-      metadataDescription: `Access to this ${company.name} page is restricted.`,
-      code: "403",
-      title: "Access is restricted.",
-      description: "You do not have permission to view this page.",
-    },
-    notFound: {
-      metadataTitle: "404 Not Found",
-      metadataDescription: `The page you are looking for could not be found on ${company.name}.`,
-      code: "404",
-      title: "Page not found.",
-      description:
-        `The page may have moved, expired, or been typed incorrectly. Return to the homepage to continue browsing ${company.name}.`,
-    },
-    maintenance: {
-      metadataTitle: "Maintenance",
-      metadataDescription: `${company.name} is temporarily offline for maintenance.`,
-      title: "Site maintenance in progress.",
-      description:
-        `${company.name} is temporarily offline while updates are being completed. Please check again shortly.`,
-    },
+    // Wording is edited from the admin panel: content/status-pages.json
+    common: fill(statusPagesContent.common),
+    loading: fill(statusPagesContent.loading),
+    error: { code: "500", ...fill(statusPagesContent.error) },
+    globalError: { code: "500", ...fill(statusPagesContent.globalError) },
+    serverError: { code: "500", ...fill(statusPagesContent.serverError) },
+    forbidden: { code: "403", ...fill(statusPagesContent.forbidden) },
+    notFound: { code: "404", ...fill(statusPagesContent.notFound) },
+    maintenance: fill(statusPagesContent.maintenance),
     api: {
       unauthorized: "Unauthorized",
       healthCheckUnavailable: "Supabase health check is not configured.",
@@ -567,10 +450,8 @@ export const editableSite = {
   marketing: {
     consent: {
       storageKey: "trulab_marketing_consent",
-      message:
-        `${company.name} uses optional marketing pixels to measure campaigns. You can accept or reject ad tracking.`,
-      rejectLabel: "Reject",
-      acceptLabel: "Accept",
+      // Wording is edited from the admin panel: content/cookie-banner.json
+      ...fill(cookieBannerContent),
       googleTagManagerTitle: "Google Tag Manager",
     },
   },

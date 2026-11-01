@@ -50,7 +50,7 @@ export default function MarketingPixels() {
     setConsent(nextConsent);
   }
 
-  if (!hasConfiguredPixel || pathname?.startsWith("/keystatic")) {
+  if (!hasConfiguredPixel || pathname?.startsWith("/admin")) {
     return null;
   }
 

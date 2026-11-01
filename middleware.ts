@@ -23,8 +23,8 @@ export function middleware(request: NextRequest) {
   const isAllowedPath =
     pathname === "/maintenance" ||
     pathname === "/403" ||
-    pathname === "/keystatic" ||
-    pathname.startsWith("/keystatic/") ||
+    pathname === "/admin" ||
+    pathname.startsWith("/admin/") ||
     pathname === "/robots.txt" ||
     pathname === "/sitemap.xml" ||
     pathname.startsWith("/_next") ||

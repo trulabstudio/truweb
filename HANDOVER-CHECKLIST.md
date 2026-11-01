@@ -14,4 +14,4 @@ npm install
 npm run dev
 ```
 
-Normal website updates begin in `lib/EDIT-SITE-HERE.ts`.
+Normal website updates are made in the `/admin` panel. See `MAINTENANCE.md`.

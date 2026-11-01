@@ -1,0 +1,20 @@
+{
+  "qrGenerator": {
+    "title": "QR Generator",
+    "description": "Generate downloadable PNG, JPG, and SVG QR codes for campaign links, event pages, registration forms, and podcast URLs.",
+    "socialDescription": "Generate downloadable QR codes for campaign links, event pages, registration forms, and podcast URLs.",
+    "socialImageAlt": "{company} QR generator utility",
+    "kicker": "Trulab utility",
+    "heading": "Generate QR Codes for Production Links",
+    "introduction": "Create QR codes for proposals, registration pages, show notes, campaign URLs, and client-facing materials. Preview first, then download in the format you need."
+  },
+  "backgroundRemover": {
+    "title": "Background Remover",
+    "description": "Remove image backgrounds and export production-ready PNG, WEBP, or JPEG assets with {company}'s browser-based tool.",
+    "socialDescription": "Remove image backgrounds and export production-ready PNG, WEBP, or JPEG assets with {company}'s browser-based tool.",
+    "socialImageAlt": "{company} background remover utility",
+    "kicker": "Trulab utility",
+    "heading": "Remove Backgrounds for Production Assets",
+    "introduction": "Prepare clean thumbnails, speaker profile images, product visuals, and campaign assets directly in the browser. Upload an image, remove the background, adjust export settings, and download."
+  }
+}

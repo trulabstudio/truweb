@@ -1,0 +1,51 @@
+{
+  "fields": {
+    "name": {
+      "label": "Name",
+      "placeholder": ""
+    },
+    "company": {
+      "label": "Company",
+      "placeholder": ""
+    },
+    "email": {
+      "label": "Email",
+      "placeholder": ""
+    },
+    "phone": {
+      "label": "Phone",
+      "placeholder": ""
+    },
+    "packageInterest": {
+      "label": "Package Interest",
+      "placeholder": "Select a package"
+    },
+    "message": {
+      "label": "Message",
+      "placeholder": ""
+    }
+  },
+  "submitLabel": "Book Consultation",
+  "turnstileNotice": "Protected by Cloudflare Turnstile.",
+  "turnstileMissing": "Anti-spam is not configured yet.",
+  "turnstileRequired": "Please complete the anti-spam check before submitting.",
+  "submitFallbackError": "Unable to submit your enquiry.",
+  "unexpectedError": "Something went wrong. Please try again.",
+  "success": "Thank you. Your enquiry has been saved and WhatsApp is opening now.",
+  "whatsapp": {
+    "introduction": "Hi {company}, I'd like to book a podcast production consultation.",
+    "detailsHeading": "My details:",
+    "projectLabel": "Project message",
+    "closing": "Please let me know the next step. Thank you."
+  },
+  "apiMessages": {
+    "invalidRequest": "Invalid request.",
+    "submissionRejected": "Submission rejected.",
+    "invalidFields": "Please check the required fields.",
+    "antiSpamUnavailable": "Anti-spam verification is unavailable.",
+    "antiSpamFailed": "Anti-spam verification failed. Please try again.",
+    "storageUnavailable": "Lead storage is not configured.",
+    "saveFailed": "Unable to save your enquiry. Please try again.",
+    "submitFailed": "Unable to submit your enquiry. Please try again."
+  }
+}
