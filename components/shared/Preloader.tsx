@@ -10,29 +10,15 @@ export default function Preloader() {
   const [isMounted, setIsMounted] = useState(true);
 
   useEffect(() => {
-    let frame: number | undefined;
-    let fallbackTimer: ReturnType<typeof setTimeout> | undefined;
+    // Reveal the page as soon as it is interactive, rather than waiting for every image and font.
     let unmountTimer: ReturnType<typeof setTimeout> | undefined;
-    let dismissed = false;
-
-    function dismiss() {
-      if (dismissed) return;
-      dismissed = true;
+    const frame = requestAnimationFrame(() => {
       setIsLeaving(true);
       unmountTimer = setTimeout(() => setIsMounted(false), 240);
-    }
-
-    if (document.readyState === "complete") {
-      frame = requestAnimationFrame(dismiss);
-    } else {
-      window.addEventListener("load", dismiss, { once: true });
-      fallbackTimer = setTimeout(dismiss, 1200);
-    }
+    });
 
     return () => {
-      window.removeEventListener("load", dismiss);
-      if (frame) cancelAnimationFrame(frame);
-      if (fallbackTimer) clearTimeout(fallbackTimer);
+      cancelAnimationFrame(frame);
       if (unmountTimer) clearTimeout(unmountTimer);
     };
   }, []);

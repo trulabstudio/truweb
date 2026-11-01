@@ -1,5 +1,6 @@
 export const adminText = {
   panelName: "Admin",
+  loading: "Loading",
   overview: "Overview",
   enquiries: "Enquiries",
   enquiriesDescription: "Messages submitted through the website contact form.",

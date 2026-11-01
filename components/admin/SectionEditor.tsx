@@ -31,6 +31,9 @@ function Card({ title, action, children }: { title: string; action?: ReactNode; 
 // A new image is not deployed yet, so previews use the local file rather than its final path.
 const localPreviews = new Map<string, string>();
 const previewSource = (path: unknown) => (typeof path === "string" ? localPreviews.get(path) ?? path : "");
+// Gallery tiles are small, so they use resized images instead of the full-size files.
+const thumbnailSource = (path: unknown) =>
+  typeof path === "string" ? localPreviews.get(path) ?? `/_next/image?url=${encodeURIComponent(path)}&w=384&q=75` : "";
 
 function ImageField({ field, value, onChange }: FieldProps & { field: Extract<Field, { kind: "image" }> }) {
   const [status, setStatus] = useState("");
@@ -150,7 +153,7 @@ function GalleryCard({ field, value, onChange }: FieldProps & { field: Extract<F
         {items.map((item, index) => (
           <button key={index} type="button" aria-label={`${adminText.editItem}: ${label(item)}`} onClick={() => setOpenIndex(index)} className="focus-ring group min-w-0 overflow-hidden rounded-2xl border border-trulab-border/10 bg-trulab-surface text-left transition hover:-translate-y-0.5 hover:shadow-lift">
             <span className="grid aspect-[375/146] place-items-center bg-trulab-bg p-2">
-              {imageKey && item[imageKey] ? <img src={previewSource(item[imageKey])} alt="" loading="lazy" className="h-full w-full object-contain" /> : <span className="text-xs text-trulab-muted">{adminText.noImage}</span>}
+              {imageKey && item[imageKey] ? <img src={thumbnailSource(item[imageKey])} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain" /> : <span className="text-xs text-trulab-muted">{adminText.noImage}</span>}
             </span>
             <span className="block truncate border-t border-trulab-border/10 px-3 py-2 text-sm font-semibold">{label(item)}</span>
           </button>
