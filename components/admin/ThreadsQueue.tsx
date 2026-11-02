@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Sparkles } from "lucide-react";
 import type { ThreadsPost } from "@/lib/threads/db";
 import { adminText } from "@/lib/admin/text";
 
 const text = adminText.threads;
-const dateFormat = new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kuala_Lumpur" });
+const dateFormat = new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", hourCycle: "h23", timeZone: "Asia/Kuala_Lumpur" });
 const primary = "focus-ring rounded-full bg-trulab-button-primary px-4 py-2 text-sm font-semibold text-trulab-button-primary-text transition hover:bg-trulab-button-primary-hover disabled:opacity-50";
 const secondary = "focus-ring rounded-full border border-trulab-border/10 bg-trulab-surface px-4 py-2 text-sm font-semibold transition hover:shadow-lift disabled:opacity-50";
 
@@ -76,7 +76,11 @@ export default function ThreadsQueue({ posts, canGenerate }: { posts: ThreadsPos
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
 
+  const running = useRef(false);
+
   async function generate() {
+    if (running.current) return;
+    running.current = true;
     setBusy(true);
     setMessage("");
     try {
@@ -87,6 +91,7 @@ export default function ThreadsQueue({ posts, canGenerate }: { posts: ThreadsPos
     } catch {
       setMessage(text.actionFailed);
     }
+    running.current = false;
     setBusy(false);
   }
 

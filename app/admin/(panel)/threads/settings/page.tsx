@@ -5,7 +5,7 @@ import ThreadsSetupNotice from "@/components/admin/ThreadsSetupNotice";
 import { isAdmin } from "@/lib/admin/auth";
 import { adminText } from "@/lib/admin/text";
 import { getSettings, ThreadsSetupError } from "@/lib/threads/db";
-import { accountSnapshot, currentFocus, topicSuggestions } from "@/lib/threads/engine";
+import { currentFocus, savedSnapshot, savedTopics } from "@/lib/threads/engine";
 import { bestHours } from "@/lib/threads/metrics";
 
 export const dynamic = "force-dynamic";
@@ -17,8 +17,8 @@ export default async function ThreadsSettingsPage() {
 
   let content;
   try {
-    const [settings, snapshot] = await Promise.all([getSettings(), accountSnapshot()]);
-    const [topics, focus] = await Promise.all([topicSuggestions(snapshot?.posts ?? []), currentFocus()]);
+    const [settings, snapshot, topics] = await Promise.all([getSettings(), savedSnapshot(), savedTopics()]);
+    const focus = await currentFocus(snapshot?.posts ?? []);
     content = <ThreadsSettingsForm initial={settings} hours={bestHours(snapshot?.posts ?? [], Date.now())} topics={topics} focus={focus} />;
   } catch (error) {
     if (!(error instanceof ThreadsSetupError)) throw error;

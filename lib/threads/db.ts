@@ -76,6 +76,19 @@ export async function setState(key: string, value: string | null) {
   });
 }
 
+/** Only one holder at a time. A lock left behind by a crashed run expires. */
+export async function acquireLock(key: string, ttlMs: number) {
+  const claim = () => rest<unknown[]>("threads_state?on_conflict=key", {
+    method: "POST",
+    prefer: "resolution=ignore-duplicates,return=representation",
+    body: JSON.stringify({ key, value: String(Date.now()) }),
+  });
+  if ((await claim()).length > 0) return true;
+  if (Date.now() - Number((await getState(key)) ?? 0) < ttlMs) return false;
+  await setState(key, null);
+  return (await claim()).length > 0;
+}
+
 export async function getSettings(): Promise<ThreadsSettings> {
   const stored = await getState("settings");
   return { ...defaultSettings, ...(stored ? JSON.parse(stored) : {}) };

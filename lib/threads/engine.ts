@@ -2,7 +2,7 @@ import { siteConfig } from "@/lib/site-config";
 import { generatePosts, generateReply, suggestTopics } from "./ai";
 import { accountPosts, createContainer, followerCount, postInsights, postReplies, publishContainer, recentAccountPosts, refreshToken, threadsConfigured } from "./api";
 import {
-  claimReply, getPost, getSettings, getState, insertPosts, leadCountsBySource, postsWithStatus, repliesWithStatus, rest, setState, updatePost, updateReply, type ThreadsPost,
+  acquireLock, claimReply, getPost, getSettings, getState, insertPosts, leadCountsBySource, postsWithStatus, repliesWithStatus, rest, setState, updatePost, updateReply, type ThreadsPost,
 } from "./db";
 import { chooseFocus, focusBrief, median, type AccountPost } from "./metrics";
 import { containsKeyword, fitsThreads, hasLink, looksComplete, planStages, upcomingSlots, type ThreadsSettings } from "./schedule";
@@ -30,6 +30,16 @@ function freeSlots(settings: ThreadsSettings, queue: ThreadsPost[], days: number
 
 export async function fillQueue(force = false) {
   if (!process.env.ANTHROPIC_API_KEY) return 0;
+  // A double click or a cron run at the same moment must not fill the same post times twice.
+  if (!(await acquireLock("generate_lock", 5 * MINUTE))) return 0;
+  try {
+    return await generateQueue(force);
+  } finally {
+    await setState("generate_lock", null);
+  }
+}
+
+async function generateQueue(force: boolean) {
   const settings = await getSettings();
   const queue = await postsWithStatus(QUEUED);
   const target = settings.postsPerDay * 3;
@@ -40,10 +50,10 @@ export async function fillQueue(force = false) {
   await stamp("last_generate");
 
   const position = Number((await getState("funnel_position")) ?? 0);
-  const focus = await currentFocus();
+  const snapshot = await accountSnapshot();
+  const focus = await currentFocus(snapshot?.posts ?? []);
   const stages = planStages(slots.length, settings.strategy === "auto" ? focus.mix : settings.mix, position);
   const [published, leads] = await Promise.all([postsWithStatus(["published"], "posted_at.desc", 50), leadCountsBySource()]);
-  const snapshot = await accountSnapshot();
   const winners = [
     ...[...published].filter((post) => leads.has(`threads-${post.id}`)).sort((a, b) => (leads.get(`threads-${b.id}`) ?? 0) - (leads.get(`threads-${a.id}`) ?? 0)).slice(0, 5).map((post) => post.text),
     ...topPosts(snapshot?.posts ?? [], 8).map((post) => post.text),
@@ -184,11 +194,16 @@ export async function followerHistory() {
   return JSON.parse((await getState("followers_history")) ?? "[]") as { day: string; count: number }[];
 }
 
-/** Account numbers for the admin pages, read at most every 6 hours. An old copy is used if Threads cannot be reached. */
+/** The saved account numbers, so admin pages never wait on Threads. The schedule keeps them fresh. */
+export async function savedSnapshot() {
+  const stored = await getState("account_snapshot");
+  return stored ? (JSON.parse(stored) as { at: number; posts: AccountPost[] }) : null;
+}
+
+/** Reads account numbers at most every 6 hours. An old copy is used if Threads cannot be reached. */
 export async function accountSnapshot() {
   if (!threadsConfigured()) return null;
-  const stored = await getState("account_snapshot");
-  const cached = stored ? (JSON.parse(stored) as { at: number; posts: AccountPost[] }) : null;
+  const cached = await savedSnapshot();
   if (cached && Date.now() - cached.at < 6 * HOUR) return cached;
   try {
     const [posts, followers] = await Promise.all([accountPosts(), followerCount()]);
@@ -203,11 +218,16 @@ export async function accountSnapshot() {
 }
 
 /** What the funnel should work on now, from the account's last 30 days and the panel's BOFU posts. */
-export async function currentFocus() {
-  const [snapshot, followers, published, leads] = await Promise.all([accountSnapshot(), getState("followers"), postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource()]);
+export async function currentFocus(posts: AccountPost[]) {
+  const [followers, published, leads] = await Promise.all([getState("followers"), postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource()]);
   const cutoff = Date.now() - 30 * 24 * HOUR;
   const offers = published.filter((post) => post.stage === "offer" && post.posted_at && Date.parse(post.posted_at) > cutoff).map((post) => ({ enquiries: leads.get(`threads-${post.id}`) ?? 0 }));
-  return chooseFocus(snapshot?.posts ?? [], Number(followers ?? 0), offers, Date.now());
+  return chooseFocus(posts, Number(followers ?? 0), offers, Date.now());
+}
+
+export async function savedTopics() {
+  const stored = await getState("topic_suggestions");
+  return stored ? (JSON.parse(stored) as { topics: { topic: string; views: number }[] }).topics : [];
 }
 
 /** Topics drawn from the account's strongest posts, refreshed weekly. Empty if they cannot be worked out. */
@@ -253,6 +273,12 @@ export async function runTick() {
       if (await elapsed("last_replies", 5 * MINUTE)) await step("comments", () => scanReplies(settings));
       await step("replies", () => advanceReplies(settings));
     }
+  }
+  if (threadsConfigured()) {
+    await step("account numbers", async () => {
+      const snapshot = await accountSnapshot();
+      await topicSuggestions(snapshot?.posts ?? []);
+    });
   }
   if (!settings.paused) await step("content", () => fillQueue());
   await setState("engine_error", errors.join(" · ").slice(0, 500) || null);

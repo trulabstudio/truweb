@@ -24,7 +24,7 @@ export const adminText = {
     setupBody: "In the Supabase SQL editor, run supabase/migrations/20261102120000_create_threads.sql if you have not yet, then supabase/migrations/20261102130000_threads_conversations.sql. Then reload this page.",
     generate: "Generate posts",
     generating: "Generating...",
-    generated: (count: number) => `${count} new ${count === 1 ? "post" : "posts"} added.`,
+    generated: (count: number) => (count === 0 ? "No new posts were added. The queue is already full or is being filled." : `${count} new ${count === 1 ? "post" : "posts"} added.`),
     empty: "The queue is empty. Generate posts to get started.",
     approve: "Approve",
     moveToDraft: "Move to draft",
@@ -65,7 +65,7 @@ export const adminText = {
     hourDetail: (views: string, posts: number) => `${views} median views · ${posts} posts`,
     accountPosts: "Top recent posts on your account",
     accountPostsHelp: "These include posts made outside this panel, so they have no funnel stage.",
-    accountUnavailable: "Account numbers cannot be loaded. Check THREADS_ACCESS_TOKEN and THREADS_USER_ID.",
+    accountUnavailable: "Account numbers appear here within a few minutes of the schedule running. If they do not, check THREADS_ACCESS_TOKEN and THREADS_USER_ID.",
     noData: "–",
     form: {
       funnel: "How your funnel works",

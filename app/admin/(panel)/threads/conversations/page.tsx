@@ -8,7 +8,7 @@ import { recentReplies, ThreadsSetupError } from "@/lib/threads/db";
 export const dynamic = "force-dynamic";
 
 const text = adminText.threads;
-const dateFormat = new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kuala_Lumpur" });
+const dateFormat = new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", hourCycle: "h23", timeZone: "Asia/Kuala_Lumpur" });
 const statusStyle: Record<string, string> = { done: "bg-trulab-accent/30", failed: "bg-red-100 text-red-800", ignored: "bg-trulab-bg text-trulab-muted" };
 
 export default async function ThreadsConversationsPage() {

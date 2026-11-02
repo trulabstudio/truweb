@@ -4,7 +4,7 @@ import ThreadsSetupNotice from "@/components/admin/ThreadsSetupNotice";
 import { isAdmin } from "@/lib/admin/auth";
 import { adminText } from "@/lib/admin/text";
 import { commentCountsByPost, getState, leadCountsBySource, postsWithStatus, ThreadsSetupError } from "@/lib/threads/db";
-import { accountSnapshot, followerHistory } from "@/lib/threads/engine";
+import { followerHistory, savedSnapshot } from "@/lib/threads/engine";
 import { bestHours, followerChange, funnelReport } from "@/lib/threads/metrics";
 
 export const dynamic = "force-dynamic";
@@ -21,8 +21,7 @@ export default async function ThreadsPerformancePage() {
 
   let content;
   try {
-    const snapshot = await accountSnapshot();
-    const [posts, leads, comments, followers, history] = await Promise.all([postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource(), commentCountsByPost(), getState("followers"), followerHistory()]);
+    const [snapshot, posts, leads, comments, followers, history] = await Promise.all([savedSnapshot(), postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource(), commentCountsByPost(), getState("followers"), followerHistory()]);
     const enquiries = (id: number) => leads.get(`threads-${id}`) ?? 0;
     const sum = (pick: (post: (typeof posts)[number]) => number) => posts.reduce((total, post) => total + pick(post), 0);
     const growth = followerChange(history, Date.now());

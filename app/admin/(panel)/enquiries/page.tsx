@@ -7,7 +7,7 @@ import { adminText } from "@/lib/admin/text";
 
 export const dynamic = "force-dynamic";
 
-const dateFormat = new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kuala_Lumpur" });
+const dateFormat = new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short", hourCycle: "h23", timeZone: "Asia/Kuala_Lumpur" });
 const actionClass = "focus-ring inline-flex items-center gap-2 rounded-full border border-trulab-border/10 bg-trulab-surface px-3.5 py-1.5 text-sm font-semibold transition hover:shadow-lift";
 const notice = "rounded-3xl border border-trulab-border/10 bg-trulab-surface p-5";
 
