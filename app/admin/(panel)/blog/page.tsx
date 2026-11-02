@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-import BlogEditor, { WriteDraftButton } from "@/components/admin/BlogEditor";
+import BlogEditor, { BlogModeSwitch, WriteDraftButton } from "@/components/admin/BlogEditor";
 import ThreadsPageFrame from "@/components/admin/ThreadsPageFrame";
 import { isAdmin } from "@/lib/admin/auth";
 import { adminText } from "@/lib/admin/text";
-import { allPosts } from "@/lib/blog/db";
+import { allPosts, getBlogMode } from "@/lib/blog/db";
 import { getState, ThreadsSetupError } from "@/lib/threads/db";
 
 export const dynamic = "force-dynamic";
@@ -15,9 +15,10 @@ export default async function AdminBlogPage() {
 
   let content;
   try {
-    const [posts, error] = await Promise.all([allPosts(), getState("blog_error")]);
+    const [posts, error, mode] = await Promise.all([allPosts(), getState("blog_error"), getBlogMode()]);
     content = (
       <>
+        <BlogModeSwitch initial={mode} />
         <WriteDraftButton canWrite={Boolean(process.env.ANTHROPIC_API_KEY)} />
         {error && <p role="alert" className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">{text.lastError(error)}</p>}
         {posts.length === 0 ? <p className="rounded-3xl border border-trulab-border/10 bg-trulab-surface p-5 text-trulab-muted">{text.empty}</p> : (

@@ -1,7 +1,7 @@
-import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { isAdmin } from "@/lib/admin/auth";
-import { BLOG_TAG, deleteBlogPost, updateBlogPost } from "@/lib/blog/db";
+import { refreshBlog as refresh } from "@/lib/blog/cache";
+import { deleteBlogPost, setBlogMode, updateBlogPost } from "@/lib/blog/db";
 import { writeDraft } from "@/lib/blog/engine";
 import { looksComplete } from "@/lib/threads/schedule";
 import { validSlug } from "@/lib/blog/markdown";
@@ -14,13 +14,6 @@ const failed = (error: unknown) => {
   console.error("Admin blog:", error instanceof Error ? error.message : error);
   const duplicate = error instanceof Error && /23505|duplicate/.test(error.message);
   return NextResponse.json({ error: duplicate ? "Another article already uses this web address." : "Could not complete this action. Please try again." }, { status: duplicate ? 409 : 502 });
-};
-const refresh = () => {
-  revalidateTag(BLOG_TAG);
-  // Pages are also cleared by path, in case one was built before it read any article.
-  revalidatePath("/blog");
-  revalidatePath("/blog/[slug]", "page");
-  revalidatePath("/sitemap.xml");
 };
 
 export async function POST() {
@@ -64,6 +57,18 @@ export async function DELETE(request: NextRequest) {
   try {
     await deleteBlogPost(id);
     refresh();
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return failed(error);
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  if (!(await isAdmin())) return denied();
+  const body = (await request.json().catch(() => null)) as { mode?: unknown } | null;
+  if (body?.mode !== "approve" && body?.mode !== "auto") return invalid("Invalid request.");
+  try {
+    await setBlogMode(body.mode);
     return NextResponse.json({ ok: true });
   } catch (error) {
     return failed(error);

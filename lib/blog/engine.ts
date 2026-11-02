@@ -1,12 +1,13 @@
 import { acquireLock, getState, setState } from "@/lib/threads/db";
 import { savedTopics } from "@/lib/threads/engine";
 import { writeArticle, searchTopics } from "./ai";
-import { allPosts, draftCount, insertPost } from "./db";
+import { refreshBlog } from "./cache";
+import { allPosts, draftCount, getBlogMode, insertPost } from "./db";
 
 const DAY = 86_400_000;
 const message = (error: unknown) => (error instanceof Error ? error.message : String(error)).slice(0, 500);
 
-/** Writes one draft and keeps the outcome for the panel. Used by the button and the weekly schedule. */
+/** Writes one article, as a draft or published depending on the mode. Used by the button and the weekly schedule. */
 export async function writeDraft() {
   if (!(await acquireLock("blog_lock", 10 * 60_000))) return null;
   try {
@@ -16,7 +17,10 @@ export async function writeDraft() {
     const article = await writeArticle([...searchTopics, ...threadsTopics], posts.map((post) => `${post.title} (${post.keyword ?? post.slug})`));
     // A clashing slug gets a suffix rather than failing after the article is already written.
     const slug = posts.some((post) => post.slug === article.slug) ? `${article.slug}-${Date.now().toString(36)}` : article.slug;
-    const [row] = await insertPost({ slug, title: article.title, description: article.description, body: article.body, keyword: article.keyword });
+    // In auto mode the article goes live straight away. It has already passed the length and completeness checks.
+    const live = (await getBlogMode()) === "auto";
+    const [row] = await insertPost({ slug, title: article.title, description: article.description, body: article.body, keyword: article.keyword, status: live ? "published" : "draft", published_at: live ? new Date().toISOString() : null });
+    if (live) refreshBlog();
     await setState("blog_error", null);
     await setState("blog_last_generate", String(Date.now()));
     return row;
@@ -28,7 +32,7 @@ export async function writeDraft() {
   }
 }
 
-/** One new draft a week, and none while an earlier draft is still waiting for approval. */
+/** One new article a week, and none while an earlier draft is still waiting for approval. */
 export async function blogTick() {
   if (!process.env.ANTHROPIC_API_KEY) return;
   const last = Number((await getState("blog_last_generate")) ?? 0);

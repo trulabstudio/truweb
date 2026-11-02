@@ -41,7 +41,7 @@ Customer messages from the contact form are listed under Enquiries.
 
 `/services/...` pages are English pages for people searching for a podcast producer. Their text is in `lib/content/service-pages.ts` and prices come from the packages. `/konsultasi` is the short Malay form that Threads replies and blog articles link to.
 
-The Malay blog lives at `/blog`. Run `supabase/migrations/20261103090000_create_blog.sql` once. The Threads schedule writes one draft a week with Claude when no draft is waiting. Nothing is published until it is approved under Website → Blog. Published articles are added to the sitemap automatically.
+The Malay blog lives at `/blog`. Run `supabase/migrations/20261103090000_create_blog.sql` once. The Threads schedule writes one article a week with Claude when no draft is waiting. Under Website → Blog, choose whether each article waits for approval or is published automatically. Published articles are added to the sitemap automatically.
 
 ## Threads
 

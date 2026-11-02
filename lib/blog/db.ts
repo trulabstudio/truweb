@@ -1,4 +1,4 @@
-import { rest } from "@/lib/threads/db";
+import { getState, rest, setState } from "@/lib/threads/db";
 
 export type BlogPost = {
   id: number;
@@ -40,8 +40,14 @@ export async function publishedPost(slug: string) {
 
 export const allPosts = () => rest<BlogPost[]>("blog_posts?order=status.asc,created_at.desc&limit=200");
 
-export const insertPost = (post: Pick<BlogPost, "slug" | "title" | "description" | "body" | "keyword">) =>
-  rest<BlogPost[]>("blog_posts", { method: "POST", prefer: "return=representation", body: JSON.stringify({ ...post, status: "draft" }) });
+export const insertPost = (post: Pick<BlogPost, "slug" | "title" | "description" | "body" | "keyword" | "status" | "published_at">) =>
+  rest<BlogPost[]>("blog_posts", { method: "POST", prefer: "return=representation", body: JSON.stringify(post) });
+
+export type BlogMode = "approve" | "auto";
+
+export const getBlogMode = async (): Promise<BlogMode> => ((await getState("blog_mode")) === "auto" ? "auto" : "approve");
+
+export const setBlogMode = (mode: BlogMode) => setState("blog_mode", mode);
 
 export async function updateBlogPost(id: number, patch: Partial<BlogPost>) {
   const rows = await rest<BlogPost[]>(`blog_posts?id=eq.${id}`, { method: "PATCH", prefer: "return=representation", body: JSON.stringify({ ...patch, updated_at: new Date().toISOString() }) });

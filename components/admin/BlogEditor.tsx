@@ -102,3 +102,30 @@ export default function BlogEditor({ post, siteUrl }: { post: BlogPost; siteUrl:
     </details>
   );
 }
+
+export function BlogModeSwitch({ initial }: { initial: "approve" | "auto" }) {
+  const [mode, setMode] = useState(initial);
+  const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
+
+  async function choose(next: "approve" | "auto") {
+    const previous = mode;
+    setMode(next);
+    const error = await send("PUT", "/api/admin/blog", { mode: next });
+    if (error) setMode(previous);
+    setStatus(error ? "error" : "saved");
+  }
+
+  return (
+    <fieldset className="grid gap-3 rounded-3xl border border-trulab-border/10 bg-trulab-surface p-5">
+      <legend className="px-1 font-semibold">{text.modeTitle}</legend>
+      {([["approve", text.modeApprove, text.modeApproveHelp], ["auto", text.modeAuto, text.modeAutoHelp]] as const).map(([value, label, help]) => (
+        <label key={value} className="flex cursor-pointer gap-3 rounded-2xl bg-trulab-bg p-3 text-sm">
+          <input type="radio" name="blog-mode" checked={mode === value} onChange={() => choose(value)} className="mt-1" />
+          <span><span className="block font-semibold">{label}</span><span className="text-trulab-muted">{help}</span></span>
+        </label>
+      ))}
+      {status === "saved" && <span role="status" className="text-sm">{text.modeSaved}</span>}
+      {status === "error" && <span role="alert" className="text-sm text-red-700">{text.failed}</span>}
+    </fieldset>
+  );
+}
