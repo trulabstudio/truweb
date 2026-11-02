@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json().catch(() => ({}))) as { src?: unknown };
-    if (!/bot|crawl|spider|preview|facebookexternalhit/i.test(request.headers.get("user-agent") ?? "")) await recordVisit(cleanLeadSource(body.src) !== "website");
+    if (!/bot|crawl|spider|preview|facebookexternalhit/i.test(request.headers.get("user-agent") ?? "")) await recordVisit(cleanLeadSource(body.src).startsWith("threads-"));
   } catch (error) {
     console.error("Visit not counted:", error instanceof Error ? error.message : error);
   }

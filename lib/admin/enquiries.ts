@@ -13,6 +13,7 @@ type Enquiry = {
   packageLabel: string;
   message: string;
   threadsPostId: string | null;
+  blogPostId: string | null;
   form: "konsultasi" | "website";
 };
 
@@ -69,6 +70,7 @@ export async function listEnquiries(page: number, search: string) {
     packageLabel: getPackageInterestLabel(row.budget ?? "") || (row.budget ?? ""),
     message: row.message,
     threadsPostId: row.source.match(/^threads-(\d+)$/)?.[1] ?? null,
+    blogPostId: row.source.match(/^blog-(\d+)$/)?.[1] ?? null,
     // The short form saves a fixed message, which tells the two forms apart without a database change.
     form: row.message === konsultasiContent.form.leadMessage ? "konsultasi" : "website",
   }));

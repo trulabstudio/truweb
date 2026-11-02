@@ -602,3 +602,22 @@ test("Threads learning keeps what works and tests new ideas", async () => {
   assert.deepEqual(improveTimes(hours, ["09:00", "15:00"]), ["15:00", "20:00"], "a weak hour moves, an untested one stays");
   assert.deepEqual(improveTimes(hours, ["12:00", "20:00"]), ["12:00", "20:00"]);
 });
+
+test("Blog articles render only safe, simple formatting", async () => {
+  const javascript = ts.transpileModule(read("lib/blog/markdown.ts"), {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const { parseArticle, slugify, validSlug, readingMinutes } = await import(
+    `data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`
+  );
+
+  const blocks = parseArticle("Pembuka **penting** di sini\nbaris dua.\n\n## Tajuk\n- satu\n- dua\n\n1. pertama\n2. kedua\n\n<script>alert(1)</script>");
+  assert.deepEqual(blocks.map((block) => block.type), ["p", "h2", "ul", "ol", "p"]);
+  assert.deepEqual(blocks[0].content, [{ text: "Pembuka ", bold: false }, { text: "penting", bold: true }, { text: " di sini baris dua.", bold: false }]);
+  assert.equal(blocks[2].items.length, 2);
+  assert.equal(blocks[4].content[0].text, "<script>alert(1)</script>", "markup stays as plain text");
+
+  assert.equal(slugify("Kos Buat Podcast di Malaysia 2026!"), "kos-buat-podcast-di-malaysia-2026");
+  assert.ok(validSlug("cara-buat-podcast") && !validSlug("Cara Buat") && !validSlug("a--b"));
+  assert.equal(readingMinutes("perkataan ".repeat(1000)), 5);
+});

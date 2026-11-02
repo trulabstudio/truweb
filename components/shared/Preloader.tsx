@@ -23,8 +23,9 @@ export default function Preloader() {
     };
   }, []);
 
-  // The landing page must show at once, because visitors from Threads leave if they wait.
-  if (!isMounted || pathname?.startsWith("/admin") || pathname === "/konsultasi") {
+  // Pages people land on from Threads or Google show at once, because visitors leave if they wait
+  // and Google measures how fast the main content appears.
+  if (!isMounted || ["/admin", "/konsultasi", "/blog", "/services"].some((path) => pathname?.startsWith(path))) {
     return null;
   }
 

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { blogTick } from "@/lib/blog/engine";
 import { runTick } from "@/lib/threads/engine";
 
 export const runtime = "nodejs";
@@ -11,7 +12,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
-    return NextResponse.json(await runTick());
+    const result = await runTick();
+    // The blog shares this schedule. It only writes once a week, so most runs return at once.
+    await blogTick().catch((error) => console.error("Blog draft:", error instanceof Error ? error.message : error));
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Threads cron:", error instanceof Error ? error.message : error);
     return NextResponse.json({ error: "Threads run failed" }, { status: 500 });

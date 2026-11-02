@@ -2,7 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import Container from "@/components/ui/Container";
+import { blogContent } from "@/lib/content/blog";
 import { footerContent } from "@/lib/content/home";
+import { servicePages } from "@/lib/content/service-pages";
 import { navLinks, toolLinks } from "@/lib/navigation";
 import { resolveNavigationHref } from "@/lib/navigation-utils";
 import { siteConfig } from "@/lib/site-config";
@@ -56,6 +58,13 @@ export default function Footer() {
             </a>
           </div>
         </div>
+      </Container>
+      {/* Links to the search pages, so Google and visitors can find them from every page. */}
+      <Container className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-trulab-on-dark/60">
+        {servicePages.map((page) => (
+          <Link key={page.slug} href={`/services/${page.slug}`} className="focus-ring rounded-md transition hover:text-trulab-on-dark">{page.metaTitle}</Link>
+        ))}
+        <Link href="/blog" className="focus-ring rounded-md transition hover:text-trulab-on-dark">{blogContent.metaTitle}</Link>
       </Container>
       <Container className="mt-8 border-t border-trulab-on-dark/10 pt-6">
         <p className="text-sm text-trulab-on-dark/44">{"©"} {new Date().getFullYear()} {siteConfig.name} — {siteConfig.divisionLine} {footerContent.rights}</p>

@@ -176,7 +176,7 @@ export function validateSettings(input: unknown) {
   };
 }
 
-/** Only known post sources are stored with an enquiry. */
+/** Only known sources, a Threads post or a blog article, are stored with an enquiry. */
 export function cleanLeadSource(value: unknown) {
-  return typeof value === "string" && /^threads-\d{1,18}$/.test(value) ? value : "website";
+  return typeof value === "string" && /^(threads|blog)-\d{1,18}$/.test(value) ? value : "website";
 }

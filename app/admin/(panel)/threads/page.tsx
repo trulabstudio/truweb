@@ -6,6 +6,7 @@ import { isAdmin } from "@/lib/admin/auth";
 import { adminText } from "@/lib/admin/text";
 import { commentCountsByPost, getState, landingVisits, leadCountsBySource, postsWithStatus, threadsLeadsSince, ThreadsSetupError } from "@/lib/threads/db";
 import { currentFocus, savedLearning, savedSnapshot, threadsAlerts } from "@/lib/threads/engine";
+import { draftCount } from "@/lib/blog/db";
 import { bestHours, funnelReport } from "@/lib/threads/metrics";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +37,8 @@ export default async function ThreadsDashboardPage() {
       savedSnapshot(), postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource(), commentCountsByPost(), getState("followers"), savedLearning(), threadsAlerts(),
       postsWithStatus(["draft"], "scheduled_at.asc", 100), postsWithStatus(["scheduled"], "scheduled_at.asc", 5), threadsLeadsSince(new Date(now - 28 * DAY).toISOString()), landingVisits(),
     ]);
+    // The blog table may not exist yet, which must not break the dashboard.
+    const blogDrafts = await draftCount().catch(() => 0);
     const focus = await currentFocus(snapshot?.posts ?? []);
     const enquiries = (id: number) => leads.get(`threads-${id}`) ?? 0;
     const leadsBetween = (from: number, to: number) => recentLeads.filter((lead) => {
@@ -53,6 +56,7 @@ export default async function ThreadsDashboardPage() {
     const needs = [
       ...alerts.map((alert) => ({ message: alert, href: "/admin/threads/queue" })),
       ...(drafts.length ? [{ message: text.draftsWaiting(drafts.length), href: "/admin/threads/queue" }] : []),
+      ...(blogDrafts ? [{ message: adminText.blog.draftsWaiting(blogDrafts), href: "/admin/blog" }] : []),
       ...(leadsBetween(7, 0) ? [{ message: text.newEnquiries(leadsBetween(7, 0)), href: "/admin/enquiries" }] : []),
     ];
     const kpis = [

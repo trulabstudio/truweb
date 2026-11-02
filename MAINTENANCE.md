@@ -37,6 +37,12 @@ In Vercel, add these variables to Production and redeploy:
 
 Customer messages from the contact form are listed under Enquiries.
 
+## Search pages and blog
+
+`/services/...` pages are English pages for people searching for a podcast producer. Their text is in `lib/content/service-pages.ts` and prices come from the packages. `/konsultasi` is the short Malay form that Threads replies and blog articles link to.
+
+The Malay blog lives at `/blog`. Run `supabase/migrations/20261103090000_create_blog.sql` once. The Threads schedule writes one draft a week with Claude when no draft is waiting. Nothing is published until it is approved under Website → Blog. Published articles are added to the sitemap automatically.
+
 ## Threads
 
 The Threads Dashboard (the first page after signing in) shows results and what the system is doing. Queue, Conversations and Settings under Threads generate, schedule and publish posts. BOFU posts get a tracked form link in a reply underneath. Comments on panel posts get an AI reply, or the form link if they contain the keyword, and comments with a link are ignored.

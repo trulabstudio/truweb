@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 import {
   ArrowUpRight, Building2, ChartNoAxesColumn, ListChecks, MessagesSquare, SlidersHorizontal, CircleHelp, ClipboardList, Cookie, FileWarning, Image as ImageIcon, Images, Inbox, LayoutDashboard,
-  LayoutTemplate, LogOut, Mail, Menu, Package, Palette, Phone, Rows3, Search, Shapes, Sparkles, Wrench, X, type LucideIcon,
+  LayoutTemplate, LogOut, Mail, Menu, Newspaper, Package, Palette, Phone, Rows3, Search, Shapes, Sparkles, Wrench, X, type LucideIcon,
 } from "lucide-react";
 import { confirmLeave } from "@/components/admin/unsaved";
 import { sections } from "@/lib/admin/schema";
@@ -138,6 +138,7 @@ export default function AdminShell({ logo, companyName, children }: { logo: stri
           ) : (
             <>
               <NavLink href="/admin" icon={LayoutDashboard} label={adminText.overview} active={pathname === "/admin"} onNavigate={close} />
+              <NavLink href="/admin/blog" icon={Newspaper} label={adminText.blog.nav} active={pathname === "/admin/blog"} onNavigate={close} />
               {groups.map((group) => (
                 <div key={group} className="mt-5 grid gap-1">
                   <p className="px-3 pb-1 text-xs font-semibold text-trulab-on-dark/40">{group}</p>
