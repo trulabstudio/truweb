@@ -23,7 +23,8 @@ export default function Preloader() {
     };
   }, []);
 
-  if (!isMounted || pathname?.startsWith("/admin")) {
+  // The landing page must show at once, because visitors from Threads leave if they wait.
+  if (!isMounted || pathname?.startsWith("/admin") || pathname === "/konsultasi") {
     return null;
   }
 

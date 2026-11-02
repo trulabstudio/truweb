@@ -93,7 +93,9 @@ export async function acquireLock(key: string, ttlMs: number) {
 export async function getSettings(): Promise<ThreadsSettings> {
   const stored = await getState("settings");
   const settings: ThreadsSettings = { ...defaultSettings, ...(stored ? JSON.parse(stored) : {}) };
-  return { ...settings, formLink: settings.formLink || `${siteConfig.url}/#contact` };
+    // The old default pointed at the long homepage form, which Threads readers did not fill in.
+  const oldDefault = settings.formLink === `${siteConfig.url}/#contact`;
+  return { ...settings, formLink: !settings.formLink || oldDefault ? `${siteConfig.url}/konsultasi` : settings.formLink };
 }
 
 export const saveSettings = (settings: ThreadsSettings) => setState("settings", JSON.stringify(settings));
@@ -162,3 +164,18 @@ export async function leadCountsBySource() {
 
 export const threadsLeadsSince = (since: string) =>
   rest<{ created_at: string }[]>(`leads?source=like.threads-*&created_at=gte.${since}&select=created_at&limit=5000`);
+
+export type VisitDays = Record<string, { all: number; threads: number }>;
+
+export async function landingVisits() {
+  return JSON.parse((await getState("landing_visits")) ?? "{}") as VisitDays;
+}
+
+/** Daily counts for the landing page. Two visits at the same instant can lose one, which is fine for a trend. */
+export async function recordVisit(fromThreads: boolean) {
+  const days = await landingVisits();
+  const day = new Date(Date.now() + 8 * 3_600_000).toISOString().slice(0, 10);
+  const today = days[day] ?? { all: 0, threads: 0 };
+  days[day] = { all: today.all + 1, threads: today.threads + (fromThreads ? 1 : 0) };
+  await setState("landing_visits", JSON.stringify(Object.fromEntries(Object.entries(days).sort().slice(-90))));
+}

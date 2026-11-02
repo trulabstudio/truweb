@@ -69,10 +69,12 @@ export default async function AdminEnquiries({ searchParams }: { searchParams: P
                   <MessageCircle size={15} aria-hidden />
                   {adminText.whatsapp} · {enquiry.phone}
                 </a>
-                <a href={`mailto:${enquiry.email}`} className={`${actionClass} min-w-0 break-all`}>
-                  <Mail size={15} aria-hidden className="shrink-0" />
-                  {enquiry.email}
-                </a>
+                {enquiry.email && (
+                  <a href={`mailto:${enquiry.email}`} className={`${actionClass} min-w-0 break-all`}>
+                    <Mail size={15} aria-hidden className="shrink-0" />
+                    {enquiry.email}
+                  </a>
+                )}
               </div>
             </article>
           ))}

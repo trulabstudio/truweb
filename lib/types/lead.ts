@@ -29,6 +29,7 @@ export type LeadInput = {
   packageId?: unknown;
   message?: unknown;
   source?: unknown;
+  form?: unknown;
   "cf-turnstile-response"?: unknown;
   website?: unknown;
 };

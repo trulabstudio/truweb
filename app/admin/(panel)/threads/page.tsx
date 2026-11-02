@@ -4,7 +4,7 @@ import ThreadsPageFrame from "@/components/admin/ThreadsPageFrame";
 import ThreadsSetupNotice from "@/components/admin/ThreadsSetupNotice";
 import { isAdmin } from "@/lib/admin/auth";
 import { adminText } from "@/lib/admin/text";
-import { commentCountsByPost, getState, leadCountsBySource, postsWithStatus, threadsLeadsSince, ThreadsSetupError } from "@/lib/threads/db";
+import { commentCountsByPost, getState, landingVisits, leadCountsBySource, postsWithStatus, threadsLeadsSince, ThreadsSetupError } from "@/lib/threads/db";
 import { currentFocus, savedLearning, savedSnapshot, threadsAlerts } from "@/lib/threads/engine";
 import { bestHours, funnelReport } from "@/lib/threads/metrics";
 
@@ -32,9 +32,9 @@ export default async function ThreadsDashboardPage() {
   let content;
   try {
     const now = Date.now();
-    const [snapshot, posts, leads, comments, followers, learning, alerts, drafts, scheduled, recentLeads] = await Promise.all([
+    const [snapshot, posts, leads, comments, followers, learning, alerts, drafts, scheduled, recentLeads, visits] = await Promise.all([
       savedSnapshot(), postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource(), commentCountsByPost(), getState("followers"), savedLearning(), threadsAlerts(),
-      postsWithStatus(["draft"], "scheduled_at.asc", 100), postsWithStatus(["scheduled"], "scheduled_at.asc", 5), threadsLeadsSince(new Date(now - 28 * DAY).toISOString()),
+      postsWithStatus(["draft"], "scheduled_at.asc", 100), postsWithStatus(["scheduled"], "scheduled_at.asc", 5), threadsLeadsSince(new Date(now - 28 * DAY).toISOString()), landingVisits(),
     ]);
     const focus = await currentFocus(snapshot?.posts ?? []);
     const enquiries = (id: number) => leads.get(`threads-${id}`) ?? 0;
@@ -42,6 +42,9 @@ export default async function ThreadsDashboardPage() {
       const age = (now - Date.parse(lead.created_at)) / DAY;
       return age >= to && age < from;
     }).length;
+    const since = new Date(now + 8 * 3_600_000 - 14 * DAY).toISOString().slice(0, 10);
+    const pageVisits = Object.entries(visits).filter(([day]) => day >= since).reduce((total, [, count]) => total + count.threads, 0);
+    const pageRate = pageVisits ? Math.round((leadsBetween(14, 0) / pageVisits) * 1000) / 10 : null;
     const report = funnelReport(posts.map((post) => ({ ...post, comments: comments.get(post.id) ?? 0, enquiries: enquiries(post.id) })), now);
     const progress = learning?.progress;
     const compared = progress ? (["views", "engagement", "followers"] as const).some((key) => progress.now[key] !== null && progress.before[key] !== null) : false;
@@ -112,7 +115,7 @@ export default async function ThreadsDashboardPage() {
 
         <section className={`${panel} p-5`}>
           <h2 className="font-semibold">{text.funnelSimple}</h2>
-          <ol className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <ol className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {report.map((row) => (
               <li key={row.stage} className="grid gap-1 rounded-2xl bg-trulab-bg p-4 text-sm">
                 <span className="font-semibold">{text.stages[row.stage]}</span>
@@ -121,6 +124,12 @@ export default async function ThreadsDashboardPage() {
                 <span><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${resultStyle[row.result]}`}>{text.funnelResults[row.result]}</span></span>
               </li>
             ))}
+            <li className="grid gap-1 rounded-2xl bg-trulab-bg p-4 text-sm">
+              <span className="font-semibold">{text.formPage}</span>
+              <span className="text-trulab-muted">{text.formPageMeasure}</span>
+              <span className="text-2xl font-semibold tabular-nums">{pageRate === null ? text.noData : `${pageRate}%`}</span>
+              <span className="text-xs text-trulab-muted">{text.formPageDetail(pageVisits, leadsBetween(14, 0))}</span>
+            </li>
           </ol>
         </section>
 

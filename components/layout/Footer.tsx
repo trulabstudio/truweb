@@ -5,7 +5,7 @@ import Container from "@/components/ui/Container";
 import { footerContent } from "@/lib/content/home";
 import { navLinks, toolLinks } from "@/lib/navigation";
 import { resolveNavigationHref } from "@/lib/navigation-utils";
-import { buildWhatsAppUrl, defaultWhatsAppMessage, siteConfig } from "@/lib/site-config";
+import { siteConfig } from "@/lib/site-config";
 
 export default function Footer() {
   return (
@@ -49,7 +49,8 @@ export default function Footer() {
             <a href={`mailto:${siteConfig.email}`} className="focus-ring rounded-full border border-trulab-on-dark/12 px-5 py-3 text-center text-sm font-semibold text-trulab-on-dark/82 transition hover:bg-trulab-on-dark/8">
               {siteConfig.email}
             </a>
-            <a href={buildWhatsAppUrl(defaultWhatsAppMessage)} target="_blank" rel="noreferrer" className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-trulab-accent px-5 py-3 text-sm font-semibold text-trulab-ink transition hover:bg-trulab-surface">
+            {/* Goes through the short form first, so every WhatsApp contact is saved as an enquiry. */}
+            <a href="/konsultasi" className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-trulab-accent px-5 py-3 text-sm font-semibold text-trulab-ink transition hover:bg-trulab-surface">
               <MessageCircle size={17} aria-hidden />
               {footerContent.whatsappLabel}
             </a>

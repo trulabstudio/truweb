@@ -7,7 +7,7 @@ import Container from "@/components/ui/Container";
 import Section from "@/components/ui/Section";
 import { contactContent } from "@/lib/content/home";
 import { contactFormContent } from "@/lib/content/pages";
-import { buildWhatsAppUrl, defaultWhatsAppMessage, siteConfig } from "@/lib/site-config";
+import { buildWhatsAppUrl, siteConfig } from "@/lib/site-config";
 import {
   getPackageInterestLabel,
   packageInterestOptions,
@@ -135,7 +135,7 @@ export default function ContactForm() {
           <h2 className="mt-5 max-w-xl text-3xl font-semibold leading-tight text-trulab-ink sm:text-5xl">{contactContent.title}</h2>
           <p className="mt-5 max-w-xl text-base leading-8 text-trulab-muted">{contactContent.description}</p>
           <div className="mt-8 grid max-w-xl gap-3">
-            <a href={buildWhatsAppUrl(defaultWhatsAppMessage)} target="_blank" rel="noreferrer" className="focus-ring inline-flex items-center gap-3 rounded-2xl border border-trulab-border/8 bg-trulab-surface px-4 py-3 text-sm font-semibold text-trulab-ink shadow-sm transition hover:border-trulab-border/14 hover:shadow-lift"><Phone size={17} aria-hidden />{siteConfig.phoneDisplay}</a>
+            <a href="/konsultasi" className="focus-ring inline-flex items-center gap-3 rounded-2xl border border-trulab-border/8 bg-trulab-surface px-4 py-3 text-sm font-semibold text-trulab-ink shadow-sm transition hover:border-trulab-border/14 hover:shadow-lift"><Phone size={17} aria-hidden />{siteConfig.phoneDisplay}</a>
             <a href={`mailto:${siteConfig.email}`} className="focus-ring inline-flex min-w-0 items-center gap-3 rounded-2xl border border-trulab-border/8 bg-trulab-surface px-4 py-3 text-sm font-semibold text-trulab-ink shadow-sm"><Mail size={17} aria-hidden /><span className="break-all">{siteConfig.email}</span></a>
             {siteConfig.address ? <p className="inline-flex min-w-0 items-start gap-3 rounded-2xl border border-trulab-border/8 bg-trulab-surface px-4 py-3 text-sm font-semibold text-trulab-ink shadow-sm"><MapPin size={17} className="mt-0.5 shrink-0" aria-hidden /><span className="break-words">{siteConfig.address}</span></p> : null}
           </div>

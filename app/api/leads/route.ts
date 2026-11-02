@@ -6,6 +6,7 @@ import {
   type LeadInput,
 } from "@/lib/types/lead";
 
+import { konsultasiContent } from "@/lib/content/konsultasi";
 import { cleanLeadSource } from "@/lib/threads/schedule";
 
 export const runtime = "nodejs";
@@ -21,13 +22,16 @@ export async function POST(request: NextRequest) {
     const body = await request.json() as LeadInput;
     if (clean(body.website, 200)) return NextResponse.json({ error: apiMessages.submissionRejected }, { status: 400 });
 
-    const packageId = clean(body.packageId, 60);
+    // The Threads landing page asks for less, so it has no email or message.
+    const short = body.form === "konsultasi";
+    const packageId = short ? "" : clean(body.packageId, 60);
     const packageLabel = getPackageInterestLabel(packageId);
     const lead = {
-      name: clean(body.name, 100), company: clean(body.company, 120), email: clean(body.email, 254).toLowerCase(),
-      phone: clean(body.phone, 30), packageId, message: clean(body.message, 2000),
+      name: clean(body.name, 100), company: clean(body.company, 120), email: short ? "" : clean(body.email, 254).toLowerCase(),
+      phone: clean(body.phone, 30), packageId, message: short ? konsultasiContent.form.leadMessage : clean(body.message, 2000),
     };
-    if (!lead.name || !lead.email || !lead.phone || !lead.message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email) || !allowedPackageIds.has(lead.packageId)) return NextResponse.json({ error: apiMessages.invalidFields }, { status: 422 });
+    const validEmail = short || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email);
+    if (!lead.name || !lead.phone || !lead.message || !validEmail || (short && !lead.company) || !allowedPackageIds.has(lead.packageId)) return NextResponse.json({ error: apiMessages.invalidFields }, { status: 422 });
 
     const turnstileSecret = process.env.TURNSTILE_SECRET;
     const token = clean(body["cf-turnstile-response"], 2048);
@@ -81,11 +85,12 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify(body),
       });
       const [notificationResponse, customerResponse] = await Promise.all([
-        sendEmail({ from, to: [notifyEmail], reply_to: lead.email, subject: `${notificationEmail.subjectPrefix}: ${lead.name}`, html: `<h2>${notificationEmail.heading}</h2>${detailsHtml}` }, `new-lead-${record.id}`),
-        sendEmail({ from, to: [lead.email], reply_to: notifyEmail, subject: notificationEmail.customer.subject, html: `<h2>${notificationEmail.customer.heading}</h2><p>Hi ${escapeHtml(lead.name)},</p><p>${notificationEmail.customer.introduction}</p><h3>${notificationEmail.customer.detailsHeading}</h3>${detailsHtml}<p>${notificationEmail.customer.correctionNotice}</p><p>${notificationEmail.customer.signOff}</p>` }, `lead-confirmation-${record.id}`),
+        sendEmail({ from, to: [notifyEmail], ...(lead.email ? { reply_to: lead.email } : {}), subject: `${notificationEmail.subjectPrefix}: ${lead.name}`, html: `<h2>${notificationEmail.heading}</h2>${detailsHtml}` }, `new-lead-${record.id}`),
+        // There is no address to confirm to when the short form was used.
+        !lead.email ? null : sendEmail({ from, to: [lead.email], reply_to: notifyEmail, subject: notificationEmail.customer.subject, html: `<h2>${notificationEmail.customer.heading}</h2><p>Hi ${escapeHtml(lead.name)},</p><p>${notificationEmail.customer.introduction}</p><h3>${notificationEmail.customer.detailsHeading}</h3>${detailsHtml}<p>${notificationEmail.customer.correctionNotice}</p><p>${notificationEmail.customer.signOff}</p>` }, `lead-confirmation-${record.id}`),
       ]);
       if (!notificationResponse.ok) console.error("Lead notification email failed", notificationResponse.status, await notificationResponse.text());
-      if (!customerResponse.ok) console.error("Lead confirmation email failed", customerResponse.status, await customerResponse.text());
+      if (customerResponse && !customerResponse.ok) console.error("Lead confirmation email failed", customerResponse.status, await customerResponse.text());
     }
     return NextResponse.json({ ok: true, id: record.id }, { status: 201 });
   } catch (error) {

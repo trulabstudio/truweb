@@ -33,14 +33,14 @@ function LogoTile({ name, src, alt, duplicate = false }: { name: string; src: st
   );
 }
 
-export default function LogoMarquee() {
+export default function LogoMarquee({ title = logoMarqueeContent.title }: { title?: string }) {
   const animationDuration = `${Math.max(logoMarqueeContent.logos.length * 5.3, 32)}s`;
 
   return (
     <section aria-labelledby="logo-marquee-title" className="py-8 sm:py-12">
       <Container>
         <p id="logo-marquee-title" className="mb-6 text-center text-sm font-semibold text-trulab-ink/54">
-          {logoMarqueeContent.title}
+          {title}
         </p>
       </Container>
       <div className="marquee-mask overflow-hidden">
