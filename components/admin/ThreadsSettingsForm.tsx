@@ -199,6 +199,7 @@ export default function ThreadsSettingsForm({ initial, hours, topics, focus }: {
           ))}
         </div>
         <Help>{text.timezone}</Help>
+        {auto && <Help>{text.autoTimes}</Help>}
         {suggested.length > 0 && suggested.join() !== [...settings.postTimes].sort().join() && (
           <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-trulab-bg px-4 py-3 text-sm">
             <span>{text.suggestedTimes(suggested.join(", "))}</span>

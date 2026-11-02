@@ -4,7 +4,7 @@ import ThreadsSetupNotice from "@/components/admin/ThreadsSetupNotice";
 import { isAdmin } from "@/lib/admin/auth";
 import { adminText } from "@/lib/admin/text";
 import { commentCountsByPost, getState, leadCountsBySource, postsWithStatus, ThreadsSetupError } from "@/lib/threads/db";
-import { followerHistory, savedSnapshot } from "@/lib/threads/engine";
+import { followerHistory, savedLearning, savedSnapshot } from "@/lib/threads/engine";
 import { bestHours, followerChange, funnelReport } from "@/lib/threads/metrics";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +21,7 @@ export default async function ThreadsPerformancePage() {
 
   let content;
   try {
-    const [snapshot, posts, leads, comments, followers, history] = await Promise.all([savedSnapshot(), postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource(), commentCountsByPost(), getState("followers"), followerHistory()]);
+    const [snapshot, posts, leads, comments, followers, history, learning] = await Promise.all([savedSnapshot(), postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource(), commentCountsByPost(), getState("followers"), followerHistory(), savedLearning()]);
     const enquiries = (id: number) => leads.get(`threads-${id}`) ?? 0;
     const sum = (pick: (post: (typeof posts)[number]) => number) => posts.reduce((total, post) => total + pick(post), 0);
     const growth = followerChange(history, Date.now());
@@ -39,12 +39,13 @@ export default async function ThreadsPerformancePage() {
       [text.metrics.published, posts.length.toLocaleString("en-MY")],
       [text.metrics.views, sum((post) => post.views).toLocaleString("en-MY")],
       [text.metrics.replies, sum((post) => post.replies).toLocaleString("en-MY")],
+      [text.metrics.reposts, sum((post) => post.reposts).toLocaleString("en-MY")],
       [text.metrics.enquiries, sum((post) => enquiries(post.id)).toLocaleString("en-MY")],
     ];
     const sorted = [...posts].sort((a, b) => enquiries(b.id) - enquiries(a.id));
     content = (
       <>
-        <section className="grid grid-cols-2 gap-3 md:grid-cols-5">
+        <section className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
           {metrics.map(([label, value]) => (
             <div key={label} className="rounded-3xl border border-trulab-border/10 bg-trulab-surface p-5">
               <p className="text-2xl font-semibold tabular-nums">{value}</p>
@@ -90,6 +91,54 @@ export default async function ThreadsPerformancePage() {
             </ol>
           </div>
         </section>
+        <section className={`${panel} p-5`}>
+          <h2 className="font-semibold">{text.learning}</h2>
+          <p className="mt-1 text-sm text-trulab-muted">{text.learningHelp}</p>
+          {learning === null ? <p className="mt-3 rounded-xl bg-trulab-bg px-3 py-2 text-sm">{text.learningEmpty}</p> : (
+            <>
+              <p className={`mt-3 rounded-xl px-3 py-2 text-sm ${learning.stuck ? "bg-red-100 text-red-800" : "bg-trulab-bg"}`}>{text.learningStatus(learning.stuck, learning.explore)}</p>
+              {learning.times && <p className="mt-2 rounded-xl bg-trulab-bg px-3 py-2 text-sm">{text.timesChanged(learning.times.from.join(", "), learning.times.to.join(", "), dateFormat.format(new Date(learning.times.at)))}</p>}
+              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <table className="w-full border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-trulab-border/10 text-left text-trulab-muted">
+                      <th className="py-2 pr-3 font-semibold">{text.funnelColumns.measure}</th>
+                      <th className="py-2 pl-3 text-right font-semibold">{text.funnelColumns.now}</th>
+                      <th className="py-2 pl-3 text-right font-semibold">{text.funnelColumns.before}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(["views", "engagement", "followers"] as const).map((key) => (
+                      <tr key={key} className="border-b border-trulab-border/10 last:border-0">
+                        <td className="py-2 pr-3">{text.progressRows[key]}</td>
+                        <td className="py-2 pl-3 text-right tabular-nums">{learning.progress.now[key] === null ? text.noData : number(learning.progress.now[key] as number)}</td>
+                        <td className="py-2 pl-3 text-right tabular-nums">{learning.progress.before[key] === null ? text.noData : number(learning.progress.before[key] as number)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <table className="w-full border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-trulab-border/10 text-left text-trulab-muted">
+                      <th className="py-2 pr-3 font-semibold">{text.formatColumns.format}</th>
+                      <th className="py-2 pl-3 text-right font-semibold">{text.formatColumns.posts}</th>
+                      <th className="py-2 pl-3 text-right font-semibold">{text.formatColumns.score}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...learning.formats].sort((a, b) => b.score - a.score).map((format) => (
+                      <tr key={format.id} className="border-b border-trulab-border/10 last:border-0">
+                        <td className="py-2 pr-3">{text.formatNames[format.id] ?? format.id}</td>
+                        <td className="py-2 pl-3 text-right tabular-nums">{format.posts}</td>
+                        <td className="py-2 pl-3 text-right">{text.formatScore(format.posts, format.score)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </section>
         {snapshot === null ? <p className={`${panel} p-5 text-trulab-muted`}>{text.accountUnavailable}</p> : (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <section className={`${panel} p-5`}>
@@ -112,7 +161,7 @@ export default async function ThreadsPerformancePage() {
                 {topPosts.map((post) => (
                   <li key={post.at} className="rounded-xl bg-trulab-bg px-3 py-2 text-sm">
                     <a href={post.link} target="_blank" rel="noreferrer" className="focus-ring line-clamp-2 hover:underline">{post.text || text.noData}</a>
-                    <span className="mt-1 block text-xs tabular-nums text-trulab-muted">{post.views.toLocaleString("en-MY")} {text.columns.views} · {post.likes.toLocaleString("en-MY")} {text.columns.likes} · {post.replies.toLocaleString("en-MY")} {text.columns.replies}</span>
+                    <span className="mt-1 block text-xs tabular-nums text-trulab-muted">{post.views.toLocaleString("en-MY")} {text.columns.views} · {post.likes.toLocaleString("en-MY")} {text.columns.likes} · {post.replies.toLocaleString("en-MY")} {text.columns.replies} · {(post.reposts ?? 0).toLocaleString("en-MY")} {text.columns.reposts}</span>
                   </li>
                 ))}
               </ol>
@@ -130,6 +179,7 @@ export default async function ThreadsPerformancePage() {
                   <th className={`${cell} font-semibold`}>{text.columns.views}</th>
                   <th className={`${cell} font-semibold`}>{text.columns.likes}</th>
                   <th className={`${cell} font-semibold`}>{text.columns.replies}</th>
+                  <th className={`${cell} font-semibold`}>{text.columns.reposts}</th>
                   <th className={`${cell} font-semibold`}>{text.columns.enquiries}</th>
                 </tr>
               </thead>
@@ -142,6 +192,7 @@ export default async function ThreadsPerformancePage() {
                     <td className={cell}>{post.views.toLocaleString("en-MY")}</td>
                     <td className={cell}>{post.likes.toLocaleString("en-MY")}</td>
                     <td className={cell}>{post.replies.toLocaleString("en-MY")}</td>
+                    <td className={cell}>{post.reposts.toLocaleString("en-MY")}</td>
                     <td className={`${cell} font-semibold`}>{enquiries(post.id)}</td>
                   </tr>
                 ))}

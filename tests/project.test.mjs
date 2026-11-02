@@ -556,7 +556,49 @@ test("Threads funnel results and best times are measured fairly", async () => {
   assert.equal(chooseFocus(recent(1000, 1), 1689, [], now).focus, "trust");
   assert.equal(chooseFocus(recent(1000, 50), 1689, [{ enquiries: 0 }], now).focus, "prospects");
   assert.equal(chooseFocus(recent(1000, 50), 1689, [{ enquiries: 1 }], now).focus, "steady");
+  assert.equal(chooseFocus(recent(1000, 50), 1689, [{ enquiries: 1 }], now, 3).focus, "followers", "views without new followers");
+  assert.equal(chooseFocus(recent(1000, 50), 1689, [{ enquiries: 1 }], now, 40).focus, "steady");
 
   assert.equal(followerChange([{ day: "2026-11-19", count: 10 }], now), null);
   assert.equal(followerChange([{ day: "2026-11-01", count: 10 }, { day: "2026-11-19", count: 25 }], now), 15);
+});
+
+test("Threads learning keeps what works and tests new ideas", async () => {
+  const javascript = ts.transpileModule(read("lib/threads/learning.ts"), {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const { formatScores, pickFormats, accountProgress, improveTimes } = await import(
+    `data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`
+  );
+
+  const now = Date.parse("2026-11-20T00:00:00Z");
+  const ago = (days) => new Date(now - days * 86_400_000).toISOString();
+  const post = (format, stage, views, daysAgo = 5) => ({ format, stage, views, likes: 0, replies: 0, reposts: 0, comments: 0, enquiries: 0, posted_at: ago(daysAgo) });
+  const scores = formatScores([
+    ...[1, 2, 3, 4].map(() => post("story", "attract", 1000)),
+    ...[1, 2, 3, 4].map(() => post("list", "attract", 100)),
+    post("opinion", "attract", 99999, 1),
+    post("opinion", "offer", 10),
+  ], now);
+  const score = (id) => scores.find((item) => item.id === id);
+  assert.ok(score("story").score > 1 && score("list").score < 1, "strong and weak formats separate");
+  assert.equal(score("opinion").posts, 1, "a post still collecting views is not judged");
+  assert.equal(score("oneliner").score, 1, "untested formats start as typical");
+
+  const exploit = pickFormats(Array(20).fill("attract"), scores, 0, () => 0.5);
+  assert.ok(exploit.every((item) => !item.experiment));
+  const tests = pickFormats(["attract", "attract", "attract"], scores, 1, () => 0);
+  assert.equal(new Set(tests.map((item) => item.format)).size, 3, "tests in one batch try different formats");
+  assert.ok(pickFormats(["offer"], scores, 1, () => 0).every((item) => item.format !== "oneliner"), "formats only go to stages they suit");
+
+  const account = (daysAgo, views) => ({ at: ago(daysAgo), views, likes: 1, replies: 0, text: "", link: "" });
+  const flat = [3, 4, 5, 6, 17, 18, 19, 20].map((day) => account(day, 100));
+  const history = [{ day: "2026-10-22", count: 100 }, { day: "2026-11-04", count: 110 }, { day: "2026-11-18", count: 115 }];
+  assert.equal(accountProgress(flat, history, now).stuck, true, "flat views and slower follower growth");
+  assert.equal(accountProgress([...flat.slice(0, 4).map((item) => ({ ...item, views: 200 })), ...flat.slice(4)], history, now).stuck, false);
+  assert.equal(accountProgress([], [], now).stuck, false, "no data is not a stall");
+
+  const hours = [{ hour: 20, posts: 6, medianViews: 300 }, { hour: 12, posts: 6, medianViews: 200 }, { hour: 9, posts: 6, medianViews: 50 }];
+  assert.deepEqual(improveTimes(hours, ["09:00", "15:00"]), ["15:00", "20:00"], "a weak hour moves, an untested one stays");
+  assert.deepEqual(improveTimes(hours, ["12:00", "20:00"]), ["12:00", "20:00"]);
 });

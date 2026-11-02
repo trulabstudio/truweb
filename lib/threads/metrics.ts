@@ -1,4 +1,5 @@
-export type AccountPost = { at: string; text: string; link: string; views: number; likes: number; replies: number };
+// Reposts count quotes too. Snapshots saved before they were tracked have none.
+export type AccountPost = { at: string; text: string; link: string; views: number; likes: number; replies: number; reposts?: number };
 export type HourStat = { hour: number; posts: number; medianViews: number };
 export type ReportPost = { stage: string; posted_at: string | null; views: number; likes: number; replies: number; comments: number; enquiries: number };
 
@@ -80,26 +81,32 @@ export function followerChange(history: { day: string; count: number }[], now: n
   return old && latest ? latest.count - old.count : null;
 }
 
-export type Focus = { focus: "reach" | "trust" | "prospects" | "steady"; mix: { attract: number; trust: number; offer: number }; target: number; actual: number };
+export type Focus = { focus: "reach" | "followers" | "trust" | "prospects" | "steady"; mix: { attract: number; trust: number; offer: number }; target: number; actual: number };
 
 const MIN_REACH = 100;
 const REACH_SHARE = 0.25;
 const ENGAGEMENT_TARGET = 1.5;
+// Followers gained in 14 days, as a share of current followers.
+const FOLLOW_SHARE = 0.01;
+const MIN_FOLLOW_GAIN = 5;
 const ENQUIRY_TARGET = 0.5;
 const STRATEGY_WINDOW = 30 * DAY;
 
 /**
- * Works on the weakest step first: no reach means nobody to convince, and no trust means offers are wasted.
+ * Works on the weakest step first: no reach means nobody to convince, views that bring no followers leave
+ * nobody to come back to, and no trust means offers are wasted.
  * The targets are starting points, and are shown in the panel so they can be questioned.
  */
-export function chooseFocus(posts: AccountPost[], followers: number, offers: { enquiries: number }[], now: number): Focus {
+export function chooseFocus(posts: AccountPost[], followers: number, offers: { enquiries: number }[], now: number, followerGain: number | null = null): Focus {
   const recent = posts.filter((post) => Date.parse(post.at) > now - STRATEGY_WINDOW && Date.parse(post.at) <= now - SETTLE);
   if (recent.length < 5) return { focus: "steady", mix: { attract: 4, trust: 2, offer: 1 }, target: 5, actual: recent.length };
   const views = median(recent.map((post) => post.views));
   const reachTarget = Math.max(MIN_REACH, Math.round(followers * REACH_SHARE));
   if (views < reachTarget) return { focus: "reach", mix: { attract: 5, trust: 2, offer: 1 }, target: reachTarget, actual: views };
+  const followTarget = Math.max(MIN_FOLLOW_GAIN, Math.round(followers * FOLLOW_SHARE));
+  if (followerGain !== null && followerGain < followTarget) return { focus: "followers", mix: { attract: 4, trust: 3, offer: 1 }, target: followTarget, actual: followerGain };
   const totalViews = recent.reduce((sum, post) => sum + post.views, 0);
-  const engagement = totalViews ? (recent.reduce((sum, post) => sum + post.likes + post.replies, 0) / totalViews) * 100 : 0;
+  const engagement = totalViews ? (recent.reduce((sum, post) => sum + post.likes + post.replies + (post.reposts ?? 0), 0) / totalViews) * 100 : 0;
   if (engagement < ENGAGEMENT_TARGET) return { focus: "trust", mix: { attract: 3, trust: 3, offer: 1 }, target: ENGAGEMENT_TARGET, actual: Math.round(engagement * 10) / 10 };
   const rate = offers.length ? offers.reduce((sum, post) => sum + post.enquiries, 0) / offers.length : 0;
   if (rate < ENQUIRY_TARGET) return { focus: "prospects", mix: { attract: 3, trust: 2, offer: 1 }, target: ENQUIRY_TARGET, actual: Math.round(rate * 10) / 10 };
@@ -108,6 +115,7 @@ export function chooseFocus(posts: AccountPost[], followers: number, offers: { e
 
 const FOCUS_BRIEF: Record<Focus["focus"], string> = {
   reach: "Too few people see the posts. Prioritise hooks and ideas that strangers would stop for and share.",
+  followers: "People see the posts but few follow. Give the account one clear, consistent point of view and show readers what they will keep getting from following.",
   trust: "People see the posts but rarely react. Prioritise useful, specific posts worth saving or answering.",
   prospects: "Reach and reactions are healthy but enquiries are low. Make the offer clearer and tie every post closer to a real business problem.",
   steady: "Keep a steady balance and keep testing different ideas.",

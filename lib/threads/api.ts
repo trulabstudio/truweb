@@ -42,9 +42,9 @@ type Insight = { name: string; values?: { value: number }[]; total_value?: { val
 const insightValue = (item?: Insight) => item?.total_value?.value ?? item?.values?.[0]?.value ?? 0;
 
 export async function postInsights(mediaId: string) {
-  const { data } = await call<{ data: Insight[] }>(`/v1.0/${mediaId}/insights`, { metric: "views,likes,replies,reposts" });
+  const { data } = await call<{ data: Insight[] }>(`/v1.0/${mediaId}/insights`, { metric: "views,likes,replies,reposts,quotes" });
   const metric = (name: string) => insightValue(data.find((item) => item.name === name));
-  return { views: metric("views"), likes: metric("likes"), replies: metric("replies"), reposts: metric("reposts") };
+  return { views: metric("views"), likes: metric("likes"), replies: metric("replies"), reposts: metric("reposts") + metric("quotes") };
 }
 
 export async function followerCount() {
@@ -74,7 +74,7 @@ export async function accountPosts() {
     results.forEach((result, index) => {
       if (result.status === "fulfilled") {
         const post = batch[index];
-        rows.push({ at: post.timestamp, text: (post.text ?? "").slice(0, 500), link: post.permalink ?? "", views: result.value.views, likes: result.value.likes, replies: result.value.replies });
+        rows.push({ at: post.timestamp, text: (post.text ?? "").slice(0, 500), link: post.permalink ?? "", views: result.value.views, likes: result.value.likes, replies: result.value.replies, reposts: result.value.reposts });
       }
     });
   }

@@ -4,9 +4,10 @@ import { alertEmailConfigured, emailOwner } from "./alerts";
 import { generatePosts, generateReply, suggestTopics } from "./ai";
 import { accountPosts, createContainer, followerCount, postInsights, postReplies, publishContainer, recentAccountPosts, refreshToken, threadsConfigured } from "./api";
 import {
-  acquireLock, claimReply, getPost, getSettings, getState, insertPosts, leadCountsBySource, postsWithStatus, repliesWithStatus, rest, setState, updatePost, updateReply, type ThreadsPost,
+  acquireLock, claimReply, commentCountsByPost, getPost, getSettings, getState, insertPosts, leadCountsBySource, postsWithStatus, repliesWithStatus, rest, saveSettings, setState, updatePost, updateReply, type ThreadsPost,
 } from "./db";
-import { chooseFocus, focusBrief, median, type AccountPost } from "./metrics";
+import { accountProgress, EXPLORE_NORMAL, EXPLORE_STUCK, formatScores, improveTimes, pickFormats, type FormatScore, type Progress } from "./learning";
+import { bestHours, chooseFocus, focusBrief, followerChange, median, type AccountPost } from "./metrics";
 import { aiErrorKind, containsKeyword, fitsThreads, hasLink, looksComplete, planStages, queueIsLow, trackedLink, upcomingSlots, type ThreadsSettings } from "./schedule";
 
 const MINUTE = 60_000;
@@ -62,6 +63,8 @@ async function generateQueue(force: boolean) {
   const snapshot = await accountSnapshot();
   const focus = await currentFocus(snapshot?.posts ?? []);
   const stages = planStages(slots.length, settings.strategy === "auto" ? focus.mix : settings.mix, position);
+  const learned = await learn(snapshot?.posts ?? []);
+  const plan = pickFormats(stages, learned.formats, learned.explore);
   const [published, leads] = await Promise.all([postsWithStatus(["published"], "posted_at.desc", 50), leadCountsBySource()]);
   const winners = [
     ...[...published].filter((post) => leads.has(`threads-${post.id}`)).sort((a, b) => (leads.get(`threads-${b.id}`) ?? 0) - (leads.get(`threads-${a.id}`) ?? 0)).slice(0, 5).map((post) => post.text),
@@ -71,22 +74,66 @@ async function generateQueue(force: boolean) {
   const proven = await topicSuggestions(snapshot?.posts ?? []);
   const middle = median(published.map((post) => post.views));
   const panelTopics = (keep: (views: number) => boolean) => [...new Set(published.filter((post) => post.topic && keep(post.views)).map((post) => post.topic as string))].slice(0, 8);
-  const posts = await generatePosts(stages, settings, [...earlier, ...queue.map((post) => post.text)], winners, {
-    brief: focusBrief(settings.strategy === "auto" ? focus.focus : "steady"),
+  const posts = await generatePosts(plan, settings, [...earlier, ...queue.map((post) => post.text)], winners, {
+    brief: `${focusBrief(settings.strategy === "auto" ? focus.focus : "steady")}${learned.stuck ? " The account has stopped growing, so take bolder angles than usual." : ""}`,
     topics: proven.map((item) => item.topic),
     goodTopics: published.length >= 6 ? panelTopics((views) => views > middle) : [],
     weakTopics: published.length >= 6 ? panelTopics((views) => views < middle) : [],
     weakest: [...(snapshot?.posts ?? [])].filter((post) => post.text).sort((a, b) => a.views - b.views).slice(0, 5).map((post) => post.text),
   });
   if (posts.length) {
-    await insertPosts(posts.map((post, index) => ({
+    const rows = await insertPosts(posts.map((post, index) => ({
       text: post.text, stage: post.stage, topic: post.topic,
       status: settings.mode === "auto" ? "scheduled" : "draft",
       scheduled_at: slots[index],
     })));
+    await rememberFormats(rows.map((row) => [row.id, posts.find((post) => post.text === row.text)?.format ?? ""]));
     await setState("funnel_position", String(position + stages.length));
   }
   return posts.length;
+}
+
+// Formats are kept in state rather than a column, so this needs no database change.
+async function postFormats() {
+  return JSON.parse((await getState("post_formats")) ?? "{}") as Record<string, string>;
+}
+
+async function rememberFormats(entries: [number, string][]) {
+  const known = Object.entries({ ...(await postFormats()), ...Object.fromEntries(entries.filter(([, format]) => format)) });
+  await setState("post_formats", JSON.stringify(Object.fromEntries(known.slice(-1000))));
+}
+
+export type Learning = { at: number; stuck: boolean; explore: number; formats: FormatScore[]; progress: Progress; times?: { at: number; from: string[]; to: string[] } };
+
+export async function savedLearning() {
+  const stored = await getState("learning");
+  return stored ? (JSON.parse(stored) as Learning) : null;
+}
+
+/** Scores formats on the panel's own results and checks whether the account is still growing. */
+async function learn(accountPosts: AccountPost[]) {
+  const [published, leads, comments, known, history, previous] = await Promise.all([
+    postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource(), commentCountsByPost(), postFormats(), followerHistory(), savedLearning(),
+  ]);
+  const now = Date.now();
+  const scores = formatScores(published.map((post) => ({ ...post, format: known[post.id], comments: comments.get(post.id) ?? 0, enquiries: leads.get(`threads-${post.id}`) ?? 0 })), now);
+  const progress = accountProgress(accountPosts, history, now);
+  const learning: Learning = { at: now, stuck: progress.stuck, explore: progress.stuck ? EXPLORE_STUCK : EXPLORE_NORMAL, formats: scores, progress, times: previous?.times };
+  await setState("learning", JSON.stringify(learning));
+  return learning;
+}
+
+/** Once a week in auto strategy, moves post times that have proven weak to stronger hours. */
+async function tuneTimes(settings: ThreadsSettings, posts: AccountPost[]) {
+  if (settings.strategy !== "auto" || posts.length === 0 || !(await elapsed("last_times", 7 * 24 * HOUR))) return;
+  await stamp("last_times");
+  const times = improveTimes(bestHours(posts, Date.now()), settings.postTimes);
+  if (times.join() === [...settings.postTimes].sort().join()) return;
+  const updated = { ...settings, postTimes: times };
+  await saveSettings(updated);
+  await rescheduleQueue(updated, false);
+  const learning = await savedLearning();
+  if (learning) await setState("learning", JSON.stringify({ ...learning, times: { at: Date.now(), from: settings.postTimes, to: times } }));
 }
 
 /** Moves queued posts onto the next free post times, keeping their order. */
@@ -240,10 +287,10 @@ export async function accountSnapshot() {
 
 /** What the funnel should work on now, from the account's last 30 days and the panel's BOFU posts. */
 export async function currentFocus(posts: AccountPost[]) {
-  const [followers, published, leads] = await Promise.all([getState("followers"), postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource()]);
+  const [followers, published, leads, history] = await Promise.all([getState("followers"), postsWithStatus(["published"], "posted_at.desc", 500), leadCountsBySource(), followerHistory()]);
   const cutoff = Date.now() - 30 * 24 * HOUR;
   const offers = published.filter((post) => post.stage === "offer" && post.posted_at && Date.parse(post.posted_at) > cutoff).map((post) => ({ enquiries: leads.get(`threads-${post.id}`) ?? 0 }));
-  return chooseFocus(posts, Number(followers ?? 0), offers, Date.now());
+  return chooseFocus(posts, Number(followers ?? 0), offers, Date.now(), followerChange(history, Date.now()));
 }
 
 export async function savedTopics() {
@@ -336,6 +383,11 @@ export async function runTick() {
     await step("account numbers", async () => {
       const snapshot = await accountSnapshot();
       await topicSuggestions(snapshot?.posts ?? []);
+      if (await elapsed("last_learn", HOUR)) {
+        await stamp("last_learn");
+        await learn(snapshot?.posts ?? []);
+      }
+      if (!settings.paused) await tuneTimes(settings, snapshot?.posts ?? []);
     });
   }
   if (!settings.paused) await step("content", () => fillQueue());

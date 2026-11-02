@@ -102,7 +102,7 @@ export const postsWithStatus = (statuses: string[], order = "scheduled_at.asc", 
   rest<ThreadsPost[]>(`threads_posts?status=in.(${statuses.join(",")})&order=${order}&limit=${limit}`);
 
 export const insertPosts = (posts: Pick<ThreadsPost, "text" | "stage" | "topic" | "status" | "scheduled_at">[]) =>
-  rest("threads_posts", { method: "POST", body: JSON.stringify(posts) });
+  rest<ThreadsPost[]>("threads_posts", { method: "POST", prefer: "return=representation", body: JSON.stringify(posts) });
 
 /** Changes a post only while it is in an expected status, so two runs cannot both act on it. */
 export async function updatePost(id: number, fromStatuses: string[], patch: Partial<ThreadsPost>) {
