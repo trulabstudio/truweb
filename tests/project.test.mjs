@@ -458,7 +458,7 @@ test("Threads scheduling, stages and settings behave safely", async () => {
   const javascript = ts.transpileModule(read("lib/threads/schedule.ts"), {
     compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
   }).outputText;
-  const { upcomingSlots, planStages, funnelCycle, hasLink, looksComplete, queueIsLow, aiErrorKind, containsKeyword, fitsThreads, validateSettings, cleanLeadSource, defaultSettings } = await import(
+  const { upcomingSlots, planStages, funnelCycle, hasLink, trackedLink, looksComplete, queueIsLow, aiErrorKind, containsKeyword, fitsThreads, validateSettings, cleanLeadSource, defaultSettings } = await import(
     `data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`
   );
 
@@ -493,6 +493,10 @@ test("Threads scheduling, stages and settings behave safely", async () => {
   assert.equal(aiErrorKind("400 Your credit balance is too low to access the API"), "credit");
   assert.equal(aiErrorKind("401 invalid x-api-key"), "key");
   assert.equal(aiErrorKind("Post generation stopped: refusal"), "other");
+  assert.equal(trackedLink("https://www.example.test/#contact", 7), "https://www.example.test/?src=threads-7#contact");
+  assert.equal(trackedLink("https://forms.example.test/a?x=1", 7), "https://forms.example.test/a?x=1&src=threads-7");
+  assert.ok(validateSettings({ ...defaultSettings, formLink: "borang kami" }).errors.length > 0, "form link must be an address");
+  assert.deepEqual(validateSettings({ ...defaultSettings, formLink: "https://www.example.test/#contact" }).errors, []);
   assert.equal(fitsThreads("a".repeat(500)), true);
   assert.equal(fitsThreads(`${"a".repeat(499)}😀`), false);
 

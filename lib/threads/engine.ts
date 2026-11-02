@@ -7,7 +7,7 @@ import {
   acquireLock, claimReply, getPost, getSettings, getState, insertPosts, leadCountsBySource, postsWithStatus, repliesWithStatus, rest, setState, updatePost, updateReply, type ThreadsPost,
 } from "./db";
 import { chooseFocus, focusBrief, median, type AccountPost } from "./metrics";
-import { aiErrorKind, containsKeyword, fitsThreads, hasLink, looksComplete, planStages, queueIsLow, upcomingSlots, type ThreadsSettings } from "./schedule";
+import { aiErrorKind, containsKeyword, fitsThreads, hasLink, looksComplete, planStages, queueIsLow, trackedLink, upcomingSlots, type ThreadsSettings } from "./schedule";
 
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
@@ -157,7 +157,7 @@ async function advanceReplies(settings: ThreadsSettings) {
       const post = await getPost(reply.post_id);
       const replyText = reply.kind === "conversation"
         ? await generateReply(reply.comment_text ?? "", post?.text ?? "", settings.keyword)
-        : settings.replyText.replace("{link}", `${siteConfig.url}/?src=threads-${reply.post_id}#contact`);
+        : settings.replyText.replace("{link}", trackedLink(settings.formLink, reply.post_id));
       if (replyText === null) {
         await updateReply(reply.reply_id, "container", { status: "ignored" });
         continue;

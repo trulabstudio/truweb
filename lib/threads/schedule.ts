@@ -8,6 +8,7 @@ export type ThreadsSettings = {
   theme: string;
   offer: string;
   keyword: string;
+  formLink: string;
   replyText: string;
   autoReply: boolean;
   mode: "approve" | "auto";
@@ -28,6 +29,7 @@ export const defaultSettings: ThreadsSettings = {
   theme: "Owners do not know what to say on a podcast",
   offer: "A free podcast consultation for your business",
   keyword: "PODCAST",
+  formLink: "",
   replyText: "Nak kami bantu rancang podcast untuk bisnes kau? Isi borang ni: {link}",
   autoReply: true,
   mode: "approve",
@@ -66,6 +68,21 @@ export function aiErrorKind(detail: string) {
   if (/authentication|x-api-key|api key|401/i.test(detail)) return "key";
   return "other";
 }
+
+/** Adds the post to the link, so the website form can record which post an enquiry came from. */
+export function trackedLink(link: string, postId: number | string) {
+  const url = new URL(link);
+  url.searchParams.set("src", `threads-${postId}`);
+  return url.toString();
+}
+
+const isWebLink = (value: string) => {
+  try {
+    return ["http:", "https:"].includes(new URL(value).protocol);
+  } catch {
+    return false;
+  }
+};
 
 export function hasLink(text: string) {
   return /https?:\/\/|www\.|\b[\p{L}\p{N}-]+\.(com|net|org|my|co|io|ly|me|app|link|gg|xyz|shop|site)\b/iu.test(text);
@@ -136,8 +153,10 @@ export function validateSettings(input: unknown) {
   if (!theme) errors.push("Theme is required.");
   if (!offer) errors.push("Offer is required.");
   if (!/^[\p{L}\p{N}]{2,30}$/u.test(keyword)) errors.push("Keyword must be one word.");
+  const formLink = text(source.formLink);
+  if (formLink && !isWebLink(formLink)) errors.push("The form link must be a full address starting with https://.");
   if (!replyText.includes("{link}")) errors.push("The reply must include {link}.");
-  if (!fitsThreads(replyText.replace("{link}", "x".repeat(70)))) errors.push("The reply is too long once the link is added.");
+  if (!fitsThreads(replyText.replace("{link}", "x".repeat(Math.max(70, formLink.length + 25))))) errors.push("The reply is too long once the link is added.");
   return {
     errors,
     settings: {
@@ -148,6 +167,7 @@ export function validateSettings(input: unknown) {
       theme,
       offer,
       keyword,
+      formLink,
       replyText,
       autoReply: source.autoReply === true,
       mode: source.mode === "auto" ? "auto" : "approve",

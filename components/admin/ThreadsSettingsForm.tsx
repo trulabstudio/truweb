@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { Check } from "lucide-react";
 import { suggestTimes, type Focus, type HourStat } from "@/lib/threads/metrics";
-import { funnelCycle, funnelPresets, type ThreadsSettings } from "@/lib/threads/schedule";
+import { funnelCycle, funnelPresets, trackedLink, type ThreadsSettings } from "@/lib/threads/schedule";
 import { adminText } from "@/lib/admin/text";
 
 const text = adminText.threads.form;
@@ -25,18 +26,24 @@ function Card({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function Suggestions({ label, items, onPick }: { label: string; items: { value: string; note?: string }[]; onPick: (value: string) => void }) {
+function Suggestions({ label, items, current, onPick }: { label: string; items: { value: string; note?: string }[]; current: string; onPick: (value: string) => void }) {
   return (
     <div>
       <p className="text-xs font-semibold text-trulab-muted">{label}</p>
-      <div className="mt-2 flex flex-wrap gap-2">
-        {items.map((item) => (
-          <button key={item.value} type="button" onClick={() => onPick(item.value)} className="focus-ring rounded-full border border-trulab-border/10 px-3 py-1.5 text-left text-xs font-medium transition hover:bg-trulab-bg">
-            {item.value}
-            {item.note && <span className="ml-1.5 font-normal text-trulab-muted">{item.note}</span>}
-          </button>
-        ))}
-      </div>
+      <ul className="mt-2 divide-y divide-trulab-border/10 overflow-hidden rounded-2xl border border-trulab-border/10">
+        {items.map((item) => {
+          const active = item.value === current;
+          return (
+            <li key={item.value}>
+              <button type="button" aria-pressed={active} onClick={() => onPick(item.value)} className={`focus-ring flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition ${active ? "bg-trulab-bg font-semibold" : "hover:bg-trulab-bg"}`}>
+                <span className="grid h-4 w-4 shrink-0 place-items-center">{active && <Check size={16} aria-hidden />}</span>
+                <span className="min-w-0 flex-1 leading-5">{item.value}</span>
+                {item.note && <span className="shrink-0 whitespace-nowrap text-xs font-normal tabular-nums text-trulab-muted">{item.note}</span>}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
@@ -98,6 +105,13 @@ export default function ThreadsSettingsForm({ initial, hours, topics, focus }: {
     }
   }
 
+  const previewLink = (() => {
+    try {
+      return trackedLink(settings.formLink, 123);
+    } catch {
+      return settings.formLink;
+    }
+  })();
   const auto = settings.strategy === "auto";
   const cycle = funnelCycle(auto ? focus.mix : settings.mix);
   const cycleOffers = cycle.filter((stage) => stage === "offer").length;
@@ -202,6 +216,7 @@ export default function ThreadsSettingsForm({ initial, hours, topics, focus }: {
         <Suggestions
           label={topics.length ? text.topPostSuggestions : text.suggestions}
           items={topics.length ? topics.map((item) => ({ value: item.topic, note: text.topicViews(item.views) })) : text.themeSuggestions.map((value) => ({ value }))}
+          current={settings.theme}
           onPick={(theme) => update({ theme })}
         />
         <label className="block text-sm font-semibold">
@@ -209,7 +224,7 @@ export default function ThreadsSettingsForm({ initial, hours, topics, focus }: {
           <input className="tool-input mt-2 block" value={settings.offer} onChange={(event) => update({ offer: event.target.value })} />
           <Help>{text.offerHelp}</Help>
         </label>
-        <Suggestions label={text.suggestions} items={text.offerSuggestions.map((value) => ({ value }))} onPick={(offer) => update({ offer })} />
+        <Suggestions label={text.suggestions} items={text.offerSuggestions.map((value) => ({ value }))} current={settings.offer} onPick={(offer) => update({ offer })} />
       </Card>
 
       <Card title={text.replies}>
@@ -219,10 +234,19 @@ export default function ThreadsSettingsForm({ initial, hours, topics, focus }: {
           <Help>{text.keywordHelp}</Help>
         </label>
         <label className="block text-sm font-semibold">
+          {text.formLink}
+          <input type="url" className="tool-input mt-2 block" value={settings.formLink} onChange={(event) => update({ formLink: event.target.value })} />
+          <Help>{text.formLinkHelp}</Help>
+        </label>
+        <label className="block text-sm font-semibold">
           {text.replyText}
           <textarea rows={3} className="tool-input mt-2 block leading-6" value={settings.replyText} onChange={(event) => update({ replyText: event.target.value })} />
           <Help>{text.replyHelp}</Help>
         </label>
+        <div className="rounded-2xl bg-trulab-bg px-4 py-3 text-sm leading-6">
+          <p className="text-xs font-semibold text-trulab-muted">{text.replyPreview}</p>
+          <p className="break-words">{settings.replyText.replace("{link}", previewLink)}</p>
+        </div>
         <label className="flex cursor-pointer items-center gap-3 text-sm font-semibold">
           <input type="checkbox" className="h-5 w-5" checked={settings.autoReply} onChange={(event) => update({ autoReply: event.target.checked })} />
           {text.autoReply}

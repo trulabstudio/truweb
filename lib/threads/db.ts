@@ -1,3 +1,4 @@
+import { siteConfig } from "@/lib/site-config";
 import { defaultSettings, type ThreadsSettings } from "./schedule";
 
 export type ThreadsPost = {
@@ -91,7 +92,8 @@ export async function acquireLock(key: string, ttlMs: number) {
 
 export async function getSettings(): Promise<ThreadsSettings> {
   const stored = await getState("settings");
-  return { ...defaultSettings, ...(stored ? JSON.parse(stored) : {}) };
+  const settings: ThreadsSettings = { ...defaultSettings, ...(stored ? JSON.parse(stored) : {}) };
+  return { ...settings, formLink: settings.formLink || `${siteConfig.url}/#contact` };
 }
 
 export const saveSettings = (settings: ThreadsSettings) => setState("settings", JSON.stringify(settings));
