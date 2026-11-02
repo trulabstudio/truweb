@@ -14,7 +14,7 @@ const ATTENTION = `Attention playbook:
 
 /** Plain writing: for trust posts and the blog. */
 const CLARITY = `Clarity playbook:
-- Plain words and short sentences, written the way you would say it to a friend. Explain complex ideas without complex sentences.
+- Plain words and short sentences, written the way you would explain it to a client in person: easy to follow, but still professional. Explain complex ideas without complex sentences.
 - Write for one specific reader with a real problem, not for everyone.
 - Edit by cutting. Remove every sentence that does not help the reader.
 - Explain why, not only what.`;
