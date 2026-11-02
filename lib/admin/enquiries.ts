@@ -1,3 +1,4 @@
+import { konsultasiContent } from "@/lib/content/konsultasi";
 import { getPackageInterestLabel } from "@/lib/types/lead";
 
 const PAGE_SIZE = 25;
@@ -12,6 +13,7 @@ type Enquiry = {
   packageLabel: string;
   message: string;
   threadsPostId: string | null;
+  form: "konsultasi" | "website";
 };
 
 type LeadRow = {
@@ -67,6 +69,18 @@ export async function listEnquiries(page: number, search: string) {
     packageLabel: getPackageInterestLabel(row.budget ?? "") || (row.budget ?? ""),
     message: row.message,
     threadsPostId: row.source.match(/^threads-(\d+)$/)?.[1] ?? null,
+    // The short form saves a fixed message, which tells the two forms apart without a database change.
+    form: row.message === konsultasiContent.form.leadMessage ? "konsultasi" : "website",
   }));
   return { enquiries, total, pageSize: PAGE_SIZE };
+}
+
+export async function deleteEnquiry(id: string) {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+  const response = await fetch(`${process.env.SUPABASE_URL}/rest/v1/leads?id=eq.${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error(`Supabase ${response.status} while deleting an enquiry`);
 }
