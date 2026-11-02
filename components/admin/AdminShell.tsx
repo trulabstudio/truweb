@@ -130,9 +130,9 @@ export default function AdminShell({ logo, companyName, children }: { logo: stri
           </div>
           {space === "threads" ? (
             <>
-              <NavLink href="/admin/threads" icon={ListChecks} label={adminText.threads.queue} active={pathname === "/admin/threads"} onNavigate={close} />
+              <NavLink href="/admin/threads" icon={ChartNoAxesColumn} label={adminText.threads.dashboard} active={pathname === "/admin/threads"} onNavigate={close} />
+              <NavLink href="/admin/threads/queue" icon={ListChecks} label={adminText.threads.queue} active={pathname === "/admin/threads/queue"} onNavigate={close} />
               <NavLink href="/admin/threads/conversations" icon={MessagesSquare} label={adminText.threads.conversations} active={pathname === "/admin/threads/conversations"} onNavigate={close} />
-              <NavLink href="/admin/threads/performance" icon={ChartNoAxesColumn} label={adminText.threads.performance} active={pathname === "/admin/threads/performance"} onNavigate={close} />
               <NavLink href="/admin/threads/settings" icon={SlidersHorizontal} label={adminText.threads.settings} active={pathname === "/admin/threads/settings"} onNavigate={close} />
             </>
           ) : (

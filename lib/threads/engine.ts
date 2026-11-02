@@ -419,3 +419,20 @@ export async function threadsHealth() {
     aiConfigured: Boolean(process.env.ANTHROPIC_API_KEY),
   };
 }
+
+/** Plain-language problems for the panel, worst first. */
+export async function threadsAlerts() {
+  const [queue, health, settings] = await Promise.all([postsWithStatus(QUEUED), threadsHealth(), getSettings()]);
+  return [
+    !health.threadsConfigured && alertsText.noThreads,
+    !health.aiConfigured && alertsText.noAi,
+    !health.cronRunning && alertsText.noCron,
+    health.aiError && aiAlert(health.aiError),
+    queueIsLow(queue.map((post) => post.scheduled_at), settings, Date.now()) && alertsText.queueLow,
+    settings.paused && alertsText.paused,
+    health.failedPosts > 0 && alertsText.failedPosts(health.failedPosts),
+    health.stuckPosts > 0 && alertsText.stuckPosts(health.stuckPosts),
+    health.failedReplies > 0 && alertsText.failedReplies(health.failedReplies),
+    health.engineError && alertsText.engine(health.engineError),
+  ].filter((alert): alert is string => Boolean(alert));
+}

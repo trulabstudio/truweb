@@ -159,3 +159,6 @@ export async function leadCountsBySource() {
   for (const { source } of rows) counts.set(source, (counts.get(source) ?? 0) + 1);
   return counts;
 }
+
+export const threadsLeadsSince = (since: string) =>
+  rest<{ created_at: string }[]>(`leads?source=like.threads-*&created_at=gte.${since}&select=created_at&limit=5000`);

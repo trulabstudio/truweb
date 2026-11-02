@@ -4,7 +4,6 @@ import type { Stage } from "./schedule";
 // Kept free of runtime imports so the tests can load it on its own.
 
 const DAY = 86_400_000;
-const MYT_HOURS = 8;
 // New posts are still collecting views, so judging them early would punish whatever was tried last.
 const SETTLE = 2 * DAY;
 const LEARN_WINDOW = 60 * DAY;

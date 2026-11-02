@@ -39,7 +39,7 @@ Customer messages from the contact form are listed under Enquiries.
 
 ## Threads
 
-Queue, Conversations, Performance and Settings under Threads in `/admin` generate, schedule and publish posts. BOFU posts get a tracked form link in a reply underneath. Comments on panel posts get an AI reply, or the form link if they contain the keyword, and comments with a link are ignored.
+The Threads Dashboard (the first page after signing in) shows results and what the system is doing. Queue, Conversations and Settings under Threads generate, schedule and publish posts. BOFU posts get a tracked form link in a reply underneath. Comments on panel posts get an AI reply, or the form link if they contain the keyword, and comments with a link are ignored.
 
 Setup:
 

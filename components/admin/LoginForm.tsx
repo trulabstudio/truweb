@@ -21,7 +21,7 @@ export default function LoginForm() {
         body: JSON.stringify({ password }),
       });
       if (response.ok) {
-        window.location.href = "/admin";
+        window.location.href = "/admin/threads";
         return;
       }
       setError(((await response.json()) as { error: string }).error);

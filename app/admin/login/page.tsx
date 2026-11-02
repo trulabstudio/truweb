@@ -8,7 +8,7 @@ import { adminText } from "@/lib/admin/text";
 import { siteConfig } from "@/lib/site-config";
 
 export default async function AdminLogin() {
-  if (await isAdmin()) redirect("/admin");
+  if (await isAdmin()) redirect("/admin/threads");
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <aside className="hidden flex-col justify-between bg-trulab-dark p-12 text-trulab-on-dark lg:flex">
