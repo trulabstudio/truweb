@@ -6,6 +6,7 @@ import { funnelCycle, funnelPresets, type ThreadsSettings } from "@/lib/threads/
 import { adminText } from "@/lib/admin/text";
 
 const text = adminText.threads.form;
+const alertText = adminText.threads.alertEmails;
 const stageNames = adminText.threads.stages;
 const stageStyle: Record<string, string> = {
   attract: "bg-trulab-bg text-trulab-ink",
@@ -47,6 +48,7 @@ export default function ThreadsSettingsForm({ initial, hours, topics, focus }: {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
+  const [alertStatus, setAlertStatus] = useState("");
   const update = (patch: Partial<ThreadsSettings>) => {
     setSettings({ ...settings, ...patch });
     setMessage("");
@@ -83,6 +85,17 @@ export default function ThreadsSettingsForm({ initial, hours, topics, focus }: {
       setMessage(adminText.threads.actionFailed);
     }
     setBusy(false);
+  }
+
+  async function testAlert() {
+    setAlertStatus(alertText.testing);
+    try {
+      const response = await fetch("/api/admin/threads/alerts", { method: "POST" });
+      const body = (await response.json()) as { error?: string };
+      setAlertStatus(response.ok ? alertText.sent : body.error ?? alertText.testFailed);
+    } catch {
+      setAlertStatus(alertText.testFailed);
+    }
   }
 
   const auto = settings.strategy === "auto";
@@ -228,6 +241,14 @@ export default function ThreadsSettingsForm({ initial, hours, topics, focus }: {
           <input type="checkbox" className="h-5 w-5" checked={settings.paused} onChange={(event) => update({ paused: event.target.checked })} />
           {text.paused}
         </label>
+      </Card>
+
+      <Card title={alertText.title}>
+        <Help>{alertText.help}</Help>
+        <div className="flex flex-wrap items-center gap-3">
+          <button type="button" onClick={testAlert} className="focus-ring rounded-full border border-trulab-border/10 px-4 py-2 text-sm font-semibold transition hover:shadow-lift">{alertText.test}</button>
+          <span role="status" className="text-sm font-medium text-trulab-muted">{alertStatus}</span>
+        </div>
       </Card>
 
       {errors.length > 0 && (

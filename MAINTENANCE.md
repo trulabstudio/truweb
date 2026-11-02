@@ -47,6 +47,8 @@ Setup:
 2. In Vercel, set `ANTHROPIC_API_KEY`, `THREADS_ACCESS_TOKEN`, `THREADS_USER_ID`, `THREADS_APP_SECRET` and `CRON_SECRET`.
 3. In Supabase SQL editor, run `supabase/examples/threads-cron.sql` after replacing its secret placeholder. This runs the schedule every minute on any Vercel plan.
 
+Problems are shown on the Queue page and emailed once to `LEAD_NOTIFICATION_EMAIL` through Resend. Settings has a button to send a test email.
+
 New posts need approval by default. Only run one automatic posting system on the account at a time.
 
 ## Code editing

@@ -5,7 +5,8 @@ import ThreadsSetupNotice from "@/components/admin/ThreadsSetupNotice";
 import { isAdmin } from "@/lib/admin/auth";
 import { adminText } from "@/lib/admin/text";
 import { getSettings, postsWithStatus, ThreadsSetupError } from "@/lib/threads/db";
-import { threadsHealth } from "@/lib/threads/engine";
+import { aiAlert, threadsHealth } from "@/lib/threads/engine";
+import { queueIsLow } from "@/lib/threads/schedule";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,8 @@ export default async function ThreadsQueuePage() {
       !health.threadsConfigured && text.alerts.noThreads,
       !health.aiConfigured && text.alerts.noAi,
       !health.cronRunning && text.alerts.noCron,
+      health.aiError && aiAlert(health.aiError),
+      queueIsLow(posts.filter((post) => post.status === "draft" || post.status === "scheduled").map((post) => post.scheduled_at), settings, Date.now()) && text.alerts.queueLow,
       settings.paused && text.alerts.paused,
       health.failedPosts > 0 && text.alerts.failedPosts(health.failedPosts),
       health.stuckPosts > 0 && text.alerts.stuckPosts(health.stuckPosts),

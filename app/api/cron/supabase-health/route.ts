@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { editableSite } from "@/lib/EDIT-SITE-HERE";
+import { reportStoppedSchedule } from "@/lib/threads/engine";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -47,6 +48,8 @@ export async function GET(request: NextRequest) {
         { status: 502 },
       );
     }
+
+    await reportStoppedSchedule().catch((error) => console.error("Threads schedule check failed", error));
 
     return NextResponse.json({
       ok: true,

@@ -458,7 +458,7 @@ test("Threads scheduling, stages and settings behave safely", async () => {
   const javascript = ts.transpileModule(read("lib/threads/schedule.ts"), {
     compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
   }).outputText;
-  const { upcomingSlots, planStages, funnelCycle, hasLink, looksComplete, containsKeyword, fitsThreads, validateSettings, cleanLeadSource, defaultSettings } = await import(
+  const { upcomingSlots, planStages, funnelCycle, hasLink, looksComplete, queueIsLow, aiErrorKind, containsKeyword, fitsThreads, validateSettings, cleanLeadSource, defaultSettings } = await import(
     `data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`
   );
 
@@ -486,6 +486,13 @@ test("Threads scheduling, stages and settings behave safely", async () => {
   assert.equal(looksComplete("Podcast bina kepercayaan sebelum jualan."), true);
   assert.equal(looksComplete("Kerja ni mudah kalau tahu caranya 😀"), true);
   for (const cut of ["Ramai owner rasa,", "Kau kena fikir pasal jualan dan", "Lepas tu kita buat...", 'Dia kata "jangan', "Contoh (bisnes kecil"]) assert.equal(looksComplete(cut), false, cut);
+  const clock = Date.parse("2026-11-02T00:00:00Z");
+  assert.equal(queueIsLow(["2026-11-02T01:00:00Z"], { postsPerDay: 2, paused: false }, clock), true);
+  assert.equal(queueIsLow(["2026-11-02T01:00:00Z", "2026-11-02T02:00:00Z"], { postsPerDay: 2, paused: false }, clock), false);
+  assert.equal(queueIsLow([], { postsPerDay: 2, paused: true }, clock), false);
+  assert.equal(aiErrorKind("400 Your credit balance is too low to access the API"), "credit");
+  assert.equal(aiErrorKind("401 invalid x-api-key"), "key");
+  assert.equal(aiErrorKind("Post generation stopped: refusal"), "other");
   assert.equal(fitsThreads("a".repeat(500)), true);
   assert.equal(fitsThreads(`${"a".repeat(499)}😀`), false);
 

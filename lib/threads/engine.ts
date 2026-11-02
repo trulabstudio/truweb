@@ -1,11 +1,13 @@
+import { adminText } from "@/lib/admin/text";
 import { siteConfig } from "@/lib/site-config";
+import { alertEmailConfigured, emailOwner } from "./alerts";
 import { generatePosts, generateReply, suggestTopics } from "./ai";
 import { accountPosts, createContainer, followerCount, postInsights, postReplies, publishContainer, recentAccountPosts, refreshToken, threadsConfigured } from "./api";
 import {
   acquireLock, claimReply, getPost, getSettings, getState, insertPosts, leadCountsBySource, postsWithStatus, repliesWithStatus, rest, setState, updatePost, updateReply, type ThreadsPost,
 } from "./db";
 import { chooseFocus, focusBrief, median, type AccountPost } from "./metrics";
-import { containsKeyword, fitsThreads, hasLink, looksComplete, planStages, upcomingSlots, type ThreadsSettings } from "./schedule";
+import { aiErrorKind, containsKeyword, fitsThreads, hasLink, looksComplete, planStages, queueIsLow, upcomingSlots, type ThreadsSettings } from "./schedule";
 
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
@@ -33,7 +35,12 @@ export async function fillQueue(force = false) {
   // A double click or a cron run at the same moment must not fill the same post times twice.
   if (!(await acquireLock("generate_lock", 5 * MINUTE))) return 0;
   try {
-    return await generateQueue(force);
+    const created = await generateQueue(force);
+    if (created > 0) await setState("ai_error", null);
+    return created;
+  } catch (error) {
+    await setState("ai_error", message(error));
+    throw error;
   } finally {
     await setState("generate_lock", null);
   }
@@ -44,7 +51,9 @@ async function generateQueue(force: boolean) {
   const queue = await postsWithStatus(QUEUED);
   const target = settings.postsPerDay * 3;
   const future = queue.filter((post) => Date.parse(post.scheduled_at) > Date.now());
-  if (!force && (future.length >= target || !(await elapsed("last_generate", 6 * HOUR)))) return 0;
+  // After a failure it tries sooner, so topped-up credit is noticed quickly.
+  const retryAfter = (await getState("ai_error")) ? 15 * MINUTE : 6 * HOUR;
+  if (!force && (future.length >= target || !(await elapsed("last_generate", retryAfter)))) return 0;
   const slots = freeSlots(settings, queue, 7).slice(0, force ? target : target - future.length);
   if (slots.length === 0) return 0;
   await stamp("last_generate");
@@ -137,8 +146,13 @@ async function advanceReplies(settings: ThreadsSettings) {
       await updateReply(reply.reply_id, "publishing", { status: "failed", error: message(error) });
     }
   }
-  for (const reply of await repliesWithStatus("pending")) {
+  let sent = 0;
+  let aiDown = false;
+  for (const reply of await repliesWithStatus("pending", 50)) {
+    // While Claude is unavailable, form links still go out and other comments wait their turn.
+    if (sent >= 5 || (aiDown && reply.kind === "conversation")) continue;
     if (!(await updateReply(reply.reply_id, "pending", { status: "container" }))) continue;
+    sent++;
     try {
       const post = await getPost(reply.post_id);
       const replyText = reply.kind === "conversation"
@@ -153,7 +167,14 @@ async function advanceReplies(settings: ThreadsSettings) {
       await updateReply(reply.reply_id, "container", { reply_text: replyText });
       await updateReply(reply.reply_id, "container", { container_id: id, container_at: new Date().toISOString() });
     } catch (error) {
-      await updateReply(reply.reply_id, "container", { status: "failed", error: message(error) });
+      if (reply.kind === "conversation" && aiErrorKind(message(error)) !== "other") {
+        aiDown = true;
+        sent--;
+        await setState("ai_error", message(error));
+        await updateReply(reply.reply_id, "container", { status: "pending" });
+      } else {
+        await updateReply(reply.reply_id, "container", { status: "failed", error: message(error) });
+      }
     }
   }
 }
@@ -246,6 +267,43 @@ export async function topicSuggestions(posts: AccountPost[]) {
   }
 }
 
+const alertsText = adminText.threads.alerts;
+
+export function aiAlert(detail: string) {
+  const kind = aiErrorKind(detail);
+  return kind === "credit" ? alertsText.aiCredit : kind === "key" ? alertsText.aiKey : alertsText.aiFailed(detail);
+}
+
+// Passing errors are common, so a failing step only emails once it has kept failing for this long.
+const STEP_ALERT_DELAY = 30 * MINUTE;
+
+/** Emails once when a problem starts. A problem that clears can email again if it returns. */
+async function sendAlerts(settings: ThreadsSettings, stepErrors: string[]) {
+  const [health, queue, seen] = await Promise.all([threadsHealth(), postsWithStatus(QUEUED), getState("alerts_seen")]);
+  const problems: { key: string; message: string; delay: number }[] = [];
+  if (health.aiError) problems.push({ key: `ai-${aiErrorKind(health.aiError)}`, message: aiAlert(health.aiError), delay: 0 });
+  if (queueIsLow(queue.map((post) => post.scheduled_at), settings, Date.now())) problems.push({ key: "queue", message: alertsText.queueLow, delay: 0 });
+  if (health.failedPosts) problems.push({ key: "failed-posts", message: alertsText.failedPosts(health.failedPosts), delay: 0 });
+  if (health.stuckPosts) problems.push({ key: "stuck-posts", message: alertsText.stuckPosts(health.stuckPosts), delay: 0 });
+  if (health.failedReplies) problems.push({ key: "failed-replies", message: alertsText.failedReplies(health.failedReplies), delay: 0 });
+  for (const error of stepErrors) problems.push({ key: `step-${error.split(":")[0]}`, message: alertsText.engine(error), delay: STEP_ALERT_DELAY });
+
+  const known = JSON.parse(seen ?? "{}") as Record<string, { since: number; sent: boolean }>;
+  const current = Object.fromEntries(problems.map(({ key }) => [key, known[key] ?? { since: Date.now(), sent: false }]));
+  const due = problems.filter(({ key, delay }) => !current[key].sent && Date.now() - current[key].since >= delay);
+  if (due.length && alertEmailConfigured()) {
+    await emailOwner(adminText.threads.alertEmails.subject, [...due.map((problem) => problem.message), `${siteConfig.url}/admin/threads`]);
+    for (const { key } of due) current[key].sent = true;
+  }
+  await setState("alerts_seen", Object.keys(current).length ? JSON.stringify(current) : null);
+}
+
+/** Runs from a separate daily job, because a stopped schedule cannot report itself. */
+export async function reportStoppedSchedule() {
+  if (!alertEmailConfigured() || !(await getState("last_tick"))) return;
+  if (Date.now() - Number(await getState("last_tick")) > HOUR) await emailOwner(adminText.threads.alertEmails.subject, [alertsText.noCron, `${siteConfig.url}/admin/threads`]);
+}
+
 export async function runTick() {
   const settings = await getSettings();
   await stamp("last_tick");
@@ -282,13 +340,16 @@ export async function runTick() {
   }
   if (!settings.paused) await step("content", () => fillQueue());
   await setState("engine_error", errors.join(" · ").slice(0, 500) || null);
+  // Generation failures are already kept as ai_error.
+  await step("alerts", () => sendAlerts(settings, errors.filter((error) => !error.startsWith("content:"))));
   return { errors };
 }
 
 export async function threadsHealth() {
-  const [lastTick, engineError, followers, failed, stuck, failedReplies] = await Promise.all([
+  const [lastTick, engineError, aiError, followers, failed, stuck, failedReplies] = await Promise.all([
     getState("last_tick"),
     getState("engine_error"),
+    getState("ai_error"),
     getState("followers"),
     postsWithStatus(["failed"], "scheduled_at.desc", 50),
     postsWithStatus(["publishing"], "scheduled_at.desc", 50),
@@ -297,6 +358,7 @@ export async function threadsHealth() {
   return {
     cronRunning: Date.now() - Number(lastTick ?? 0) < 10 * MINUTE,
     engineError,
+    aiError,
     followers: followers === null ? null : Number(followers),
     failedPosts: failed.length,
     stuckPosts: stuck.filter((post) => Date.now() - Date.parse(post.scheduled_at) > HOUR).length,

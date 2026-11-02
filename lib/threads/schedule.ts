@@ -56,6 +56,17 @@ export function looksComplete(text: string) {
   return Boolean(clean) && !UNFINISHED_ENDING.test(clean) && count('"') % 2 === 0 && count("(") === count(")") && count("“") === count("”");
 }
 
+/** Fewer posts waiting than one day needs, so the account is about to go quiet. */
+export function queueIsLow(scheduledAt: string[], settings: Pick<ThreadsSettings, "postsPerDay" | "paused">, now: number) {
+  return !settings.paused && scheduledAt.filter((at) => Date.parse(at) > now).length < settings.postsPerDay;
+}
+
+export function aiErrorKind(detail: string) {
+  if (/credit balance|billing|insufficient|quota/i.test(detail)) return "credit";
+  if (/authentication|x-api-key|api key|401/i.test(detail)) return "key";
+  return "other";
+}
+
 export function hasLink(text: string) {
   return /https?:\/\/|www\.|\b[\p{L}\p{N}-]+\.(com|net|org|my|co|io|ly|me|app|link|gg|xyz|shop|site)\b/iu.test(text);
 }
