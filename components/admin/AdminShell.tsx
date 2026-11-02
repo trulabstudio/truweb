@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 import {
-  ArrowUpRight, Building2, CircleHelp, ClipboardList, Cookie, FileWarning, Image as ImageIcon, Images, Inbox, LayoutDashboard,
+  ArrowUpRight, Building2, ChartNoAxesColumn, ListChecks, MessagesSquare, SlidersHorizontal, CircleHelp, ClipboardList, Cookie, FileWarning, Image as ImageIcon, Images, Inbox, LayoutDashboard,
   LayoutTemplate, LogOut, Mail, Menu, Package, Palette, Phone, Rows3, Search, Shapes, Sparkles, Wrench, X, type LucideIcon,
 } from "lucide-react";
 import { confirmLeave } from "@/components/admin/unsaved";
@@ -61,6 +61,11 @@ export default function AdminShell({ logo, companyName, children }: { logo: stri
   const [open, setOpen] = useState(false);
   const groups = [...new Set(sections.map((section) => section.group))];
   const close = () => setOpen(false);
+  // Enquiries is shared, so opening it keeps the space the user was already in.
+  const [lastSpace, setLastSpace] = useState<"website" | "threads">("website");
+  const space = pathname === "/admin/enquiries" ? lastSpace : pathname?.startsWith("/admin/threads") ? "threads" : "website";
+
+  useEffect(() => setLastSpace(space), [space]);
 
   useEffect(() => {
     if (!open) return;
@@ -106,17 +111,44 @@ export default function AdminShell({ logo, companyName, children }: { logo: stri
           </button>
         </div>
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 pb-6">
-          <NavLink href="/admin" icon={LayoutDashboard} label={adminText.overview} active={pathname === "/admin"} onNavigate={close} />
           <NavLink href="/admin/enquiries" icon={Inbox} label={adminText.enquiries} active={pathname === "/admin/enquiries"} onNavigate={close} />
-          {groups.map((group) => (
-            <div key={group} className="mt-5 grid gap-1">
-              <p className="px-3 pb-1 text-xs font-semibold text-trulab-on-dark/40">{group}</p>
-              {sections.filter((section) => section.group === group).map((section) => {
-                const href = `/admin/${section.key}`;
-                return <NavLink key={section.key} href={href} icon={sectionIcon(section.key)} label={section.label} active={pathname === href} onNavigate={close} />;
-              })}
-            </div>
-          ))}
+          <div className="my-3 grid grid-cols-2 gap-1 rounded-xl bg-trulab-on-dark/5 p-1">
+            {([["website", "/admin", adminText.spaces.website], ["threads", "/admin/threads", adminText.spaces.threads]] as const).map(([id, href, label]) => (
+              <Link
+                key={id}
+                href={href}
+                aria-current={space === id ? "true" : undefined}
+                onClick={(event) => {
+                  guard(event);
+                  if (!event.defaultPrevented) close();
+                }}
+                className={`focus-ring rounded-lg px-3 py-2 text-center text-sm font-semibold transition ${space === id ? "bg-trulab-accent text-trulab-ink" : "text-trulab-on-dark/60 hover:text-trulab-on-dark"}`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+          {space === "threads" ? (
+            <>
+              <NavLink href="/admin/threads" icon={ListChecks} label={adminText.threads.queue} active={pathname === "/admin/threads"} onNavigate={close} />
+              <NavLink href="/admin/threads/conversations" icon={MessagesSquare} label={adminText.threads.conversations} active={pathname === "/admin/threads/conversations"} onNavigate={close} />
+              <NavLink href="/admin/threads/performance" icon={ChartNoAxesColumn} label={adminText.threads.performance} active={pathname === "/admin/threads/performance"} onNavigate={close} />
+              <NavLink href="/admin/threads/settings" icon={SlidersHorizontal} label={adminText.threads.settings} active={pathname === "/admin/threads/settings"} onNavigate={close} />
+            </>
+          ) : (
+            <>
+              <NavLink href="/admin" icon={LayoutDashboard} label={adminText.overview} active={pathname === "/admin"} onNavigate={close} />
+              {groups.map((group) => (
+                <div key={group} className="mt-5 grid gap-1">
+                  <p className="px-3 pb-1 text-xs font-semibold text-trulab-on-dark/40">{group}</p>
+                  {sections.filter((section) => section.group === group).map((section) => {
+                    const href = `/admin/${section.key}`;
+                    return <NavLink key={section.key} href={href} icon={sectionIcon(section.key)} label={section.label} active={pathname === href} onNavigate={close} />;
+                  })}
+                </div>
+              ))}
+            </>
+          )}
         </nav>
         <div className="grid gap-1 border-t border-trulab-on-dark/10 p-3">
           <a href="/" target="_blank" rel="noreferrer" className="focus-ring flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-trulab-on-dark/60 transition hover:bg-trulab-on-dark/5 hover:text-trulab-on-dark">

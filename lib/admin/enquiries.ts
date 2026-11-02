@@ -11,6 +11,7 @@ type Enquiry = {
   phone: string;
   packageLabel: string;
   message: string;
+  threadsPostId: string | null;
 };
 
 type LeadRow = {
@@ -23,6 +24,7 @@ type LeadRow = {
   // The database keeps its historical `budget` column, which stores package IDs or old budget labels.
   budget: string | null;
   message: string;
+  source: string;
 };
 
 export const enquiriesConfigured = () => Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
@@ -35,7 +37,7 @@ export function whatsappNumber(phone: string) {
 
 export async function listEnquiries(page: number, search: string) {
   const query = new URLSearchParams({
-    select: "id,created_at,name,company,email,phone,budget,message",
+    select: "id,created_at,name,company,email,phone,budget,message,source",
     order: "created_at.desc",
     limit: String(PAGE_SIZE),
     offset: String((page - 1) * PAGE_SIZE),
@@ -64,6 +66,7 @@ export async function listEnquiries(page: number, search: string) {
     phone: row.phone,
     packageLabel: getPackageInterestLabel(row.budget ?? "") || (row.budget ?? ""),
     message: row.message,
+    threadsPostId: row.source.match(/^threads-(\d+)$/)?.[1] ?? null,
   }));
   return { enquiries, total, pageSize: PAGE_SIZE };
 }

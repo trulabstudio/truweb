@@ -453,3 +453,99 @@ test("admin link checks match the real homepage sections and routes", async () =
     assert.ok(existsSync(url(`app${route === "/" ? "" : route}/page.tsx`)), `${route} has no page`);
   }
 });
+
+test("Threads scheduling, stages and settings behave safely", async () => {
+  const javascript = ts.transpileModule(read("lib/threads/schedule.ts"), {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const { upcomingSlots, planStages, funnelCycle, hasLink, looksComplete, containsKeyword, fitsThreads, validateSettings, cleanLeadSource, defaultSettings } = await import(
+    `data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`
+  );
+
+  // 2 Nov 10:00 in Malaysia.
+  assert.deepEqual(upcomingSlots(new Date("2026-11-02T02:00:00Z"), ["09:00", "20:30"], 1), [
+    "2026-11-02T12:30:00.000Z", "2026-11-03T01:00:00.000Z", "2026-11-03T12:30:00.000Z",
+  ]);
+  // 3 Nov 00:30 in Malaysia is still 2 Nov in UTC.
+  assert.deepEqual(upcomingSlots(new Date("2026-11-02T16:30:00Z"), ["09:00"], 0), ["2026-11-03T01:00:00.000Z"]);
+
+  const plan = planStages(14, { attract: 8, trust: 4, offer: 2 });
+  assert.deepEqual(["attract", "trust", "offer"].map((stage) => plan.filter((item) => item === stage).length), [8, 4, 2]);
+  assert.deepEqual(planStages(2, { attract: 0, trust: 0, offer: 0 }), ["attract", "attract"]);
+  assert.deepEqual(funnelCycle({ attract: 4, trust: 2, offer: 1 }), ["attract", "trust", "attract", "attract", "trust", "attract", "offer"]);
+  assert.deepEqual(funnelCycle({ attract: 8, trust: 4, offer: 2 }), funnelCycle({ attract: 4, trust: 2, offer: 1 }));
+  // Filling one slot at a time must still reach the offer.
+  const oneByOne = Array.from({ length: 7 }, (_, position) => planStages(1, { attract: 4, trust: 2, offer: 1 }, position)[0]);
+  assert.deepEqual(oneByOne, funnelCycle({ attract: 4, trust: 2, offer: 1 }));
+
+  assert.equal(containsKeyword("nak PODCAST kedai saya", "podcast"), true);
+  assert.equal(containsKeyword("podcasting best", "podcast"), false);
+  assert.equal(hasLink("cuba https://spam.test"), true);
+  assert.equal(hasLink("tengok kedai.com sekarang"), true);
+  assert.equal(hasLink("Betul tu. Saya setuju, bos."), false);
+  assert.equal(looksComplete("Podcast bina kepercayaan sebelum jualan."), true);
+  assert.equal(looksComplete("Kerja ni mudah kalau tahu caranya 😀"), true);
+  for (const cut of ["Ramai owner rasa,", "Kau kena fikir pasal jualan dan", "Lepas tu kita buat...", 'Dia kata "jangan', "Contoh (bisnes kecil"]) assert.equal(looksComplete(cut), false, cut);
+  assert.equal(fitsThreads("a".repeat(500)), true);
+  assert.equal(fitsThreads(`${"a".repeat(499)}😀`), false);
+
+  assert.deepEqual(validateSettings(defaultSettings).errors, []);
+  assert.equal(defaultSettings.mode, "approve");
+  const invalid = (patch) => validateSettings({ ...defaultSettings, ...patch }).errors.length > 0;
+  assert.ok(invalid({ postTimes: ["09:00"] }), "time count must match");
+  assert.ok(invalid({ postTimes: ["09:00", "09:00"] }), "duplicate time");
+  assert.ok(invalid({ postTimes: ["25:00", "09:00"] }), "bad time");
+  assert.ok(invalid({ keyword: "two words" }), "keyword must be one word");
+  assert.ok(invalid({ replyText: "no link" }), "reply needs a link");
+  assert.ok(invalid({ mix: { attract: 0, trust: 0, offer: 0 } }), "empty mix");
+
+  assert.equal(cleanLeadSource("threads-12"), "threads-12");
+  assert.equal(cleanLeadSource("threads-12; drop"), "website");
+  assert.equal(cleanLeadSource(undefined), "website");
+});
+
+test("Threads funnel results and best times are measured fairly", async () => {
+  const javascript = ts.transpileModule(read("lib/threads/metrics.ts"), {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const { bestHours, suggestTimes, funnelReport, followerChange, chooseFocus } = await import(
+    `data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`
+  );
+
+  const account = (at, views) => ({ at, views, text: "", link: "", likes: 0, replies: 0 });
+  // 03:00 UTC is 11:00 in Malaysia. A viral post at another hour, or old posts, must not count.
+  const days = [1, 2, 3, 4, 5];
+  const hours = bestHours([
+    ...days.map((day) => account(`2026-10-0${day}T03:00:00Z`, day * 100)),
+    ...days.map((day) => account(`2026-10-0${day}T10:00:00Z`, day * 20)),
+    account("2026-10-01T05:00:00Z", 99999),
+    ...days.map((day) => account(`2025-07-0${day}T07:00:00Z`, 50000)),
+  ], Date.parse("2026-11-01T00:00:00Z"));
+  assert.deepEqual(hours.map((hour) => [hour.hour, hour.medianViews]), [[11, 300], [18, 60]]);
+  assert.deepEqual(suggestTimes(hours, 2), ["11:00", "18:00"]);
+  assert.deepEqual(suggestTimes(hours, 3), []);
+  assert.deepEqual(suggestTimes([{ hour: 1 }, { hour: 11 }, { hour: 19 }], 2), ["11:00", "19:00"], "no suggestions in the middle of the night");
+  assert.deepEqual(suggestTimes([{ hour: 11 }, { hour: 12 }, { hour: 18 }], 2), ["11:00", "18:00"]);
+
+  const now = Date.parse("2026-11-20T00:00:00Z");
+  const post = (daysAgo, stage, views, enquiries = 0) => ({ stage, views, enquiries, likes: 0, replies: 0, comments: 0, posted_at: new Date(now - daysAgo * 86_400_000).toISOString() });
+  const report = funnelReport([
+    post(3, "attract", 300), post(4, "attract", 300), post(5, "attract", 300),
+    post(20, "attract", 100), post(21, "attract", 100), post(22, "attract", 100),
+    post(1, "attract", 1), post(3, "offer", 50, 1),
+  ], now);
+  const row = (stage) => report.find((item) => item.stage === stage);
+  assert.equal(row("attract").result, "better");
+  assert.equal(row("attract").posts, 3, "posts still collecting views wait");
+  assert.equal(row("offer").result, "wait");
+
+  const recent = (views, likes = 0) => Array.from({ length: 6 }, (_, index) => ({ ...account(new Date(now - (index + 3) * 86_400_000).toISOString(), views), likes }));
+  assert.equal(chooseFocus([], 1000, [], now).focus, "steady", "too little data");
+  assert.equal(chooseFocus(recent(100), 1689, [], now).focus, "reach");
+  assert.equal(chooseFocus(recent(1000, 1), 1689, [], now).focus, "trust");
+  assert.equal(chooseFocus(recent(1000, 50), 1689, [{ enquiries: 0 }], now).focus, "prospects");
+  assert.equal(chooseFocus(recent(1000, 50), 1689, [{ enquiries: 1 }], now).focus, "steady");
+
+  assert.equal(followerChange([{ day: "2026-11-19", count: 10 }], now), null);
+  assert.equal(followerChange([{ day: "2026-11-01", count: 10 }, { day: "2026-11-19", count: 25 }], now), 15);
+});

@@ -6,6 +6,8 @@ import {
   type LeadInput,
 } from "@/lib/types/lead";
 
+import { cleanLeadSource } from "@/lib/threads/schedule";
+
 export const runtime = "nodejs";
 
 const allowedPackageIds = new Set<string>(["", ...packageInterestIds]);
@@ -60,7 +62,7 @@ export async function POST(request: NextRequest) {
         // The database keeps its historical `budget` column; new submissions store stable IDs.
         budget: lead.packageId || null,
         message: lead.message,
-        source: "website",
+        source: cleanLeadSource(body.source),
         user_agent: request.headers.get("user-agent")?.slice(0, 500) || null,
       }),
       cache: "no-store",

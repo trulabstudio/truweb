@@ -59,7 +59,7 @@ export default async function AdminEnquiries({ searchParams }: { searchParams: P
               <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
                 <div className="min-w-0">
                   <h2 className="font-semibold">{enquiry.name}</h2>
-                  <p className="text-sm text-trulab-muted">{enquiry.company || adminText.noCompany} · {enquiry.packageLabel || adminText.noPackage}</p>
+                  <p className="text-sm text-trulab-muted">{enquiry.company || adminText.noCompany} · {enquiry.packageLabel || adminText.noPackage}{enquiry.threadsPostId ? ` · ${adminText.threads.fromPost(enquiry.threadsPostId)}` : ""}</p>
                 </div>
                 <time dateTime={enquiry.createdAt} className="text-sm text-trulab-muted">{dateFormat.format(new Date(enquiry.createdAt))}</time>
               </div>

@@ -37,6 +37,18 @@ In Vercel, add these variables to Production and redeploy:
 
 Customer messages from the contact form are listed under Enquiries.
 
+## Threads
+
+Queue, Conversations, Performance and Settings under Threads in `/admin` generate, schedule and publish posts. BOFU posts get a tracked form link in a reply underneath. Comments on panel posts get an AI reply, or the form link if they contain the keyword, and comments with a link are ignored.
+
+Setup:
+
+1. In Supabase SQL editor, run `supabase/migrations/20261102120000_create_threads.sql`, then `supabase/migrations/20261102130000_threads_conversations.sql`.
+2. In Vercel, set `ANTHROPIC_API_KEY`, `THREADS_ACCESS_TOKEN`, `THREADS_USER_ID`, `THREADS_APP_SECRET` and `CRON_SECRET`.
+3. In Supabase SQL editor, run `supabase/examples/threads-cron.sql` after replacing its secret placeholder. This runs the schedule every minute on any Vercel plan.
+
+New posts need approval by default. Only run one automatic posting system on the account at a time.
+
 ## Code editing
 
 Developers only need `lib/EDIT-SITE-HERE.ts` for technical settings that are not in the panel, such as package option IDs, robots rules, the sitemap, structured data and the wording inside the QR Generator and Background Remover tools. Tracking IDs and credentials remain environment variables.
@@ -95,6 +107,10 @@ LEAD_FROM_EMAIL
 CRON_SECRET
 ADMIN_PASSWORD
 GITHUB_CONTENT_TOKEN
+ANTHROPIC_API_KEY
+THREADS_ACCESS_TOKEN
+THREADS_USER_ID
+THREADS_APP_SECRET
 MAINTENANCE_MODE
 MAINTENANCE_RETRY_AFTER
 FORBIDDEN_PATHS

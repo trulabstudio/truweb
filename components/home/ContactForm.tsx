@@ -99,6 +99,7 @@ export default function ContactForm() {
           ...form,
           "cf-turnstile-response": turnstileToken,
           website: "",
+          source: new URLSearchParams(window.location.search).get("src") ?? undefined,
         }),
       });
       const result = (await response.json()) as { error?: string };
