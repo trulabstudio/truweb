@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import MarketingPixels from "@/components/shared/MarketingPixels";
 import Preloader from "@/components/shared/Preloader";
 import { brandTheme, brandThemeRgb } from "@/lib/brand-theme";
@@ -106,6 +107,7 @@ export default function RootLayout({
         <Preloader />
         <MarketingPixels />
         {children}
+        <Analytics />
       </body>
     </html>
   );
