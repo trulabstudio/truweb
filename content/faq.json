@@ -4,7 +4,7 @@
   "items": [
     {
       "question": "What does {company} do?",
-      "answer": "{company} is a creative production studio in Malaysia. We produce podcasts, videos and photography, and handle graphic design, websites, digital marketing and branding. Podcasts are our speciality."
+      "answer": "{company} is a creative production studio in Malaysia. Our speciality is video podcasts: we record at your location on multiple cameras and edit each episode into a full video plus short clips. We also produce videos and photography, and handle design, websites, digital marketing and branding."
     },
     {
       "question": "Can you handle several services in one project?",
@@ -16,11 +16,11 @@
     },
     {
       "question": "Do you work with government agencies and corporate clients?",
-      "answer": "Yes. {company} is registered with MOF and works with government bodies, corporate teams, SMEs, brands and creators across Malaysia."
+      "answer": "Yes. {company} is registered with MOF and recognised by FINAS and FDAM. We work with government bodies, corporate teams, SMEs, brands and creators across Malaysia."
     },
     {
       "question": "Do you produce video podcasts and short clips?",
-      "answer": "Yes. We record video podcasts on multiple cameras and edit them into full episodes plus short clips for Instagram, TikTok, YouTube and LinkedIn."
+      "answer": "Yes. We record on 2 to 5 cameras with wireless mics and professional lighting. Then we edit a full episode, colour graded and subtitled with a custom thumbnail, plus short clips for social media. We also produce livestream podcasts."
     },
     {
       "question": "Can you build or redesign our website?",
@@ -32,7 +32,7 @@
     },
     {
       "question": "How do I book a consultation?",
-      "answer": "Use the consultation form on this website or contact {company} through WhatsApp. Tell us what you need and the team will respond with the right next step."
+      "answer": "Fill in the form on this page or message us on WhatsApp. The consultation is free. Tell us what you want to produce and when you need it, and we will suggest the right approach."
     }
   ]
 }

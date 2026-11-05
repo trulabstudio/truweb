@@ -1,45 +1,45 @@
 {
-  "kicker": "Services",
-  "title": "Everything your brand needs to be seen, heard and trusted.",
-  "description": "Instead of hiring a different vendor for every job, {company} plans, produces and delivers it all with one team, so your podcast, videos, photos, design and website look and sound like the same brand.",
+  "kicker": "Beyond podcasts",
+  "title": "One team for everything around your podcast.",
+  "description": "The same team also shoots your videos and photos, designs your graphics, builds your website, runs your social media and shapes your brand, so everything looks like it came from one place.",
   "featuredLink": {
-    "label": "See our podcast services",
+    "label": "See what our podcast production includes",
     "href": "#podcast"
   },
   "items": [
     {
       "title": "Podcast Production",
-      "description": "Our speciality. Video podcasts for brands, organisations and leaders, recorded at your location with multiple cameras, then edited into full episodes and short clips.",
+      "description": "Our speciality: video podcasts recorded at your location and edited into a full episode, short clips and a custom thumbnail.",
       "icon": "Mic2"
     },
     {
       "title": "Video Production",
-      "description": "Corporate videos, promos, event coverage and social content, planned, shot and edited by one team.",
+      "description": "Corporate videos, promos, event coverage and social content, from planning and filming to the final edit.",
       "icon": "Film"
     },
     {
       "title": "Photography",
-      "description": "Event, corporate, product and portrait photography, edited and delivered ready for print and social media.",
+      "description": "Event, corporate, product and portrait photos, edited and delivered ready for print, web and social media.",
       "icon": "Aperture"
     },
     {
       "title": "Graphic Design",
-      "description": "Social media posts, thumbnails, posters, presentations and print materials that match your brand.",
+      "description": "Social media posts, thumbnails, posters, presentations and print materials designed to match your brand.",
       "icon": "PenTool"
     },
     {
       "title": "Website Development",
-      "description": "Fast, mobile-friendly websites and landing pages built to explain your services and bring in enquiries.",
+      "description": "Mobile-friendly websites and landing pages that say clearly what you offer and make it easy for visitors to enquire.",
       "icon": "Globe"
     },
     {
       "title": "Digital Marketing",
-      "description": "Content planning, social media management and ad campaigns that put your content in front of the right people.",
+      "description": "Content planning, social media management and ads, using the videos, photos and designs we produce for you.",
       "icon": "Megaphone"
     },
     {
       "title": "Branding",
-      "description": "Logos, brand guidelines, colours and visual identity for new businesses and brands ready for a refresh.",
+      "description": "Logos, brand guidelines and visual identity for new businesses, and for existing brands ready for a refresh.",
       "icon": "Sparkles"
     }
   ]

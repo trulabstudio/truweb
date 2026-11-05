@@ -1,19 +1,19 @@
 {
   "kicker": "Creative production studio in Malaysia",
-  "title": "One creative team for podcasts, video and your brand.",
-  "description": "{company} handles podcasts, video production, photography, design, websites, marketing and branding, with podcasts as our speciality. Made for brands, organisations, government bodies, SMEs and creators.",
+  "title": "Video podcasts, plus video, photos, design and websites, all from one team.",
+  "description": "{company} brings the cameras, lights, mics and crew to your office, venue or event anywhere in Malaysia, then edits a full episode plus short clips. The same team handles video, photography, design, websites, marketing and branding for brands, organisations and government bodies.",
   "primaryCta": {
-    "label": "Book Consultation",
+    "label": "Book a Free Consultation",
     "href": "#contact"
   },
   "secondaryCta": {
-    "label": "View Services",
+    "label": "See All Services",
     "href": "#services"
   },
   "trustPills": [
-    "Podcast production",
-    "Video & photography",
-    "Design & branding",
-    "Websites & marketing"
+    "Podcast specialists",
+    "Anywhere in Malaysia",
+    "One team, every service",
+    "MOF registered"
   ]
 }

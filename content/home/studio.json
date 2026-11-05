@@ -1,37 +1,37 @@
 {
   "podcast": {
     "kicker": "Our speciality",
-    "title": "Podcast production, from planning to publish-ready clips.",
-    "description": "Podcasts are where {company} started and what we know best. We handle the whole production so your team only has to show up and talk.",
+    "title": "One recording. Content for every platform.",
+    "description": "{company} started with podcasts, and podcasts are still what we know best. We plan, record and edit, so your team only has to show up and talk. One session gives you a full episode plus short clips for every channel you post on.",
     "items": [
       {
         "title": "End-to-end Production",
-        "description": "End-to-end production support for interview, educational, promotional, and creator-led podcast formats.",
+        "description": "We plan the format, run the shoot and deliver the files for interview, educational, promotional and creator-led podcasts.",
         "icon": "Mic2"
       },
       {
         "title": "Video Podcast",
-        "description": "Professional video podcast workflows for brands and organisations that need a strong visual presence.",
+        "description": "Your podcast filmed as video, colour graded and subtitled, so it works on YouTube and social feeds as well as audio apps.",
         "icon": "Video"
       },
       {
         "title": "Multi-camera Recording",
-        "description": "Structured multi-angle recording for cleaner edits, better pacing, and more polished final episodes.",
+        "description": "2 to 5 cameras, so every speaker gets a clean angle and every short clip has a clean cut.",
         "icon": "Camera"
       },
       {
         "title": "Editing",
-        "description": "Audio cleanup, video editing, episode assembly, and delivery-ready exports for publishing channels.",
+        "description": "Audio clean-up, the full episode edit, colour grading, subtitles and a custom thumbnail, all ready to publish.",
         "icon": "Scissors"
       },
       {
         "title": "Shorts/Reels",
-        "description": "Repurpose long-form episodes into short social clips designed for LinkedIn, Instagram, TikTok, and YouTube.",
+        "description": "Your best moments cut into short videos with subtitles for TikTok, Instagram, YouTube and LinkedIn.",
         "icon": "Clapperboard"
       },
       {
         "title": "Livestream Podcast",
-        "description": "Live podcast production support for launches, panels, internal communications, and online events.",
+        "description": "Go live for launches, panels, internal communications and online events, with the same crew and camera setup.",
         "icon": "Radio"
       }
     ]

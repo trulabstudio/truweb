@@ -14,7 +14,7 @@ export default function Hero() {
               <span className="h-2 w-2 rounded-full bg-trulab-accent" />
               {heroContent.kicker}
             </span>
-            <h1 className="mt-5 max-w-3xl text-[2.5rem] font-semibold leading-[1.04] tracking-[-0.025em] text-trulab-ink sm:mt-6 sm:text-6xl lg:text-[4.35rem]">
+            <h1 className="mt-5 max-w-3xl text-[2.5rem] font-semibold leading-[1.04] tracking-[-0.025em] text-trulab-ink sm:mt-6 sm:text-6xl lg:text-[3.5rem]">
               {heroContent.title}
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-trulab-muted sm:mt-6 sm:text-lg sm:leading-8">
