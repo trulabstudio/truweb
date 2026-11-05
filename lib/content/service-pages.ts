@@ -20,11 +20,10 @@ export type ServicePage = {
 const howWeRecord = {
   heading: "Recorded wherever suits you",
   paragraphs: [
-    `${name} does not need you to come to a studio. We work in three ways, anywhere in Malaysia.`,
+    `${name} does not need you to come to a studio. We come to you, anywhere in Malaysia.`,
   ],
   bullets: [
     "At your location: we bring the cameras, microphones and lighting to your office, shop or venue.",
-    "Remote: guests record from where they are, and we handle the setup and the edit.",
     "We arrange everything: tell us what you need and we sort out the venue, set and schedule.",
   ],
 };
@@ -66,13 +65,13 @@ export const servicePages: ServicePage[] = [
       { question: "Can you record at our office?", answer: "Yes. On-location recording is included in our packages. We bring the full setup to your office or any venue you choose." },
       { question: "Do you work with government agencies?", answer: "Yes. We produce podcasts for companies, government bodies, SMEs and organisations across Malaysia." },
       { question: "Our leaders are not used to speaking on camera. Can you help?", answer: "Yes. We plan the questions and flow with you beforehand, so speakers talk about what they already know rather than reading a script." },
-      { question: "Can you produce a series instead of one episode?", answer: "Yes. Our Monthly Partnership covers regular recording sessions, a dedicated team and content planning support." },
+      { question: "Can you produce a series instead of one episode?", answer: "Yes. Our Monthly Partnership covers regular recording sessions, a dedicated team, photos, social media posts and content planning support." },
     ],
   },
   {
     slug: "video-podcast-production",
     metaTitle: "Video Podcast Production in Malaysia",
-    metaDescription: `Video podcast production in Malaysia by ${name}: multi-camera recording, lighting, editing and short clips, at your location or remote.`,
+    metaDescription: `Video podcast production in Malaysia by ${name}: multi-camera recording, lighting, editing and short clips, recorded at your location anywhere in Malaysia.`,
     kicker: "Video podcasts",
     title: "Video podcast production in Malaysia",
     intro: "Most people now watch podcasts on YouTube, Instagram and TikTok as much as they listen. We record your podcast on multiple cameras and edit it into a full episode plus short clips for every platform.",
@@ -102,7 +101,7 @@ export const servicePages: ServicePage[] = [
     faqs: [
       { question: "How many cameras do you use?", answer: "Two cameras for one speaker, three for two speakers and five for a panel of up to four." },
       { question: "Do we get short clips for social media?", answer: "Yes. Packages include 10 to 30 short-form videos with subtitles, depending on the package." },
-      { question: "Do we need our own studio?", answer: "No. We record at your location, remotely, or we arrange a venue for you." },
+      { question: "Do we need our own studio?", answer: "No. We record at your location, or we arrange a venue for you." },
     ],
   },
   {
@@ -132,7 +131,7 @@ export const servicePages: ServicePage[] = [
     showPackages: true,
     faqs: [
       { question: "What is the cheapest way to start a podcast?", answer: showPackages ? "Our Solo package, for one speaker, is the lowest-cost way to get a fully edited video podcast with short clips." : "A single-speaker setup is the lowest-cost way to get a fully edited video podcast with short clips." },
-      { question: "Is there a monthly option?", answer: "Yes. The Monthly Partnership is quoted to your schedule and includes regular recording sessions and content planning support." },
+      { question: "Is there a monthly option?", answer: "Yes. The Monthly Partnership is quoted to your schedule and includes regular recording sessions, photos, social media posts and content planning support." },
       { question: "Can you prepare a custom quote?", answer: "Yes. If none of the packages fit, we prepare a custom quotation." },
     ],
   },
