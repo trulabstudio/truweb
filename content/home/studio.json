@@ -39,17 +39,17 @@
   "foxdusk": {
     "name": "Foxdusk",
     "kicker": "Our own software",
-    "title": "Plan it with Hookdusk. Edit it with Foxdusk.",
-    "description": "We built two tools from our own production work, and both run on your own computer. Hookdusk plans your TikTok, Reels and Shorts: topics for your niche, hooks that stop the scroll and a script ready to film, in BM or English. Foxdusk AIOS turns the raw talking-head recording into a finished video with clean cuts, branded captions and motion graphics.",
+    "title": "Blank page to finished Reel, on your own computer.",
+    "description": "We built two apps from our own podcast and video production work. Hookdusk AIOS plans your TikTok, Reels and Shorts: scored topics, hooks and a timed script ready to film, in BM or English. Foxdusk AIOS turns your raw recording into a finished video on your Mac or Windows computer, with dead air removed, retakes flagged for your approval, branded captions and motion graphics.",
     "features": [
-      "Hookdusk: topics, hooks and scripts in BM or English",
-      "Hookdusk: content council and teleprompter",
-      "Foxdusk: free word-level transcription",
-      "Foxdusk: dead air and retakes cut for you",
-      "Foxdusk: branded captions and motion graphics",
-      "Both apps in English and Bahasa Melayu"
+      "Hookdusk: topics scored on hook and ease of filming",
+      "Hookdusk: 10 hooks and a timed script, ready to film",
+      "Hookdusk: BM santai, BM formal, Manglish or English",
+      "Foxdusk: free transcription, done on your computer",
+      "Foxdusk: cuts dead air, flags retakes for your OK",
+      "Foxdusk: branded captions and 9:16 Reels and Shorts"
     ],
-    "price": "Foxdusk RM 299 · Hookdusk RM 299 · both for RM 399. One-off, no subscription, 2 computers per licence.",
+    "price": "Foxdusk RM 299 · Hookdusk RM 299 · both for RM 399, save RM 199. One-off, no subscription, 2 computers per licence. Hookdusk needs a Claude or Codex plan; Foxdusk only for motion graphics.",
     "cta": {
       "label": "See both at foxdusk.com",
       "href": "https://www.foxdusk.com"
