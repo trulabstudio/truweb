@@ -45,7 +45,7 @@
   },
   "certifications": {
     "kicker": "Registrations & Industry Recognition",
-    "title": "Registered and recognised for corporate and government work.",
+    "title": "Structured for professional and corporate procurement conversations.",
     "items": [
       {
         "title": "MOF",
@@ -66,7 +66,7 @@
     "title": "Creative production that comes to you.",
     "paragraphs": [
       "Whether you are based in Kuala Lumpur, Selangor, Putrajaya, Johor, Penang, Sabah, Sarawak or anywhere across Malaysia, {company} brings the cameras, lights, microphones and crew to your office, venue or event.",
-      "Need a corporate podcast, a company video, event photography, a new website or a full brand identity? {company} works as your in-house creative team, without the cost of hiring one."
+      "Whether you need a corporate podcast, a company video, event photography, a new website or a full brand identity, {company} works as your in-house creative team without the cost of hiring one."
     ]
   },
   "contact": {
@@ -75,6 +75,6 @@
     "description": "Tell us what you want to produce, who it is for and when you need it. {company} will suggest the right approach and send you a quote."
   },
   "footer": {
-    "description": "Podcast production, video production, photography, design, websites, marketing and branding for brands, organisations, SMEs, creators and government bodies in Malaysia."
+    "description": "Professional podcast production, video production, photography, design, websites, marketing and branding for brands, organisations, SMEs, creators, and government bodies in Malaysia."
   }
 }
