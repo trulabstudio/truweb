@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Certifications from "@/components/home/Certifications";
 import ContactForm from "@/components/home/ContactForm";
+import Foxdusk from "@/components/home/Foxdusk";
 import FAQ from "@/components/home/FAQ";
 import Hero from "@/components/home/Hero";
 import LogoMarquee from "@/components/home/LogoMarquee";
+import PodcastServices from "@/components/home/PodcastServices";
 import Packages from "@/components/home/Packages";
 import Process from "@/components/home/Process";
 import RichSeo from "@/components/home/RichSeo";
@@ -11,6 +13,7 @@ import Services from "@/components/home/Services";
 import WhyTrulab from "@/components/home/WhyTrulab";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+import { showPackages } from "@/lib/content/packages";
 import { seoConfig } from "@/lib/seo-config";
 import { siteConfig } from "@/lib/site-config";
 
@@ -94,10 +97,12 @@ export default function Home() {
         <Hero />
         <LogoMarquee />
         <Services />
-        <Packages />
+        <PodcastServices />
+        {showPackages ? <Packages /> : null}
         <WhyTrulab />
         <Process />
         <Certifications />
+        <Foxdusk />
         <RichSeo />
         <FAQ />
         <ContactForm />

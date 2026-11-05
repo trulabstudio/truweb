@@ -21,7 +21,7 @@ export const formats: { id: string; stages: Stage[]; brief: string }[] = [
   { id: "opinion", stages: ["attract", "trust"], brief: "One sharp, slightly contrarian opinion, defended in two or three lines." },
   { id: "mistake", stages: ["attract", "trust", "offer"], brief: "One common mistake owners make, what it costs them, and what to do instead." },
   { id: "list", stages: ["attract", "trust", "offer"], brief: "A short numbered list of three practical points." },
-  { id: "behind", stages: ["trust", "offer"], brief: "Behind the scenes of how a podcast episode is planned or recorded. No invented clients." },
+  { id: "behind", stages: ["trust", "offer"], brief: "Behind the scenes of how a podcast episode, video shoot or design project is planned or produced. No invented clients." },
   { id: "compare", stages: ["attract", "trust", "offer"], brief: "A before and after, or this versus that, comparison." },
   { id: "oneliner", stages: ["attract"], brief: "One or two lines only: a punchy observation owners will recognise." },
   { id: "question", stages: ["attract", "trust"], brief: "A real question owners will want to answer from their own experience. This format ends with the question." },

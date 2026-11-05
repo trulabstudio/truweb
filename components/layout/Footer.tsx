@@ -5,6 +5,7 @@ import Container from "@/components/ui/Container";
 import { blogContent } from "@/lib/content/blog";
 import { footerContent } from "@/lib/content/home";
 import { servicePages } from "@/lib/content/service-pages";
+import { foxduskContent } from "@/lib/content/services";
 import { navLinks, toolLinks } from "@/lib/navigation";
 import { resolveNavigationHref } from "@/lib/navigation-utils";
 import { siteConfig } from "@/lib/site-config";
@@ -38,6 +39,9 @@ export default function Footer() {
                 {link.label}
               </Link>
             ))}
+            <a href={foxduskContent.cta.href} target="_blank" rel="noopener" className="focus-ring rounded-md transition hover:text-trulab-on-dark">
+              {foxduskContent.name}
+            </a>
             {siteConfig.socialLinks.map((link) => (
               <a key={link.href} href={link.href} target="_blank" rel="noreferrer" className="focus-ring rounded-md transition hover:text-trulab-on-dark">
                 {link.label}

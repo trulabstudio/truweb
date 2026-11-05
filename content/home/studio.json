@@ -1,0 +1,58 @@
+{
+  "podcast": {
+    "kicker": "Our speciality",
+    "title": "Podcast production, from planning to publish-ready clips.",
+    "description": "Podcasts are where {company} started and what we know best. We handle the whole production so your team only has to show up and talk.",
+    "items": [
+      {
+        "title": "End-to-end Production",
+        "description": "End-to-end production support for interview, educational, promotional, and creator-led podcast formats.",
+        "icon": "Mic2"
+      },
+      {
+        "title": "Video Podcast",
+        "description": "Professional video podcast workflows for brands and organisations that need a strong visual presence.",
+        "icon": "Video"
+      },
+      {
+        "title": "Multi-camera Recording",
+        "description": "Structured multi-angle recording for cleaner edits, better pacing, and more polished final episodes.",
+        "icon": "Camera"
+      },
+      {
+        "title": "Editing",
+        "description": "Audio cleanup, video editing, episode assembly, and delivery-ready exports for publishing channels.",
+        "icon": "Scissors"
+      },
+      {
+        "title": "Shorts/Reels",
+        "description": "Repurpose long-form episodes into short social clips designed for LinkedIn, Instagram, TikTok, and YouTube.",
+        "icon": "Clapperboard"
+      },
+      {
+        "title": "Livestream Podcast",
+        "description": "Live podcast production support for launches, panels, internal communications, and online events.",
+        "icon": "Radio"
+      }
+    ]
+  },
+  "foxdusk": {
+    "name": "Foxdusk",
+    "kicker": "Our own software",
+    "title": "Foxdusk: finish the edit before dusk.",
+    "description": "Foxdusk AIOS is the editing tool we built from our own production work. It turns a raw talking-head recording into a finished video on your own computer, for creators and marketing teams making Reels, Shorts, YouTube videos and podcasts.",
+    "features": [
+      "Free word-level transcription",
+      "Automatic dead-air trimming",
+      "Retake and stutter detection",
+      "Branded captions and motion graphics",
+      "9:16 reels, Shorts and showreels",
+      "Works in English and Bahasa Melayu"
+    ],
+    "price": "RM 299 one-off. No subscription, one licence for 2 computers.",
+    "cta": {
+      "label": "Visit foxdusk.com",
+      "href": "https://foxdusk.com"
+    }
+  }
+}

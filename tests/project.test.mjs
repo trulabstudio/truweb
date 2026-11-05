@@ -480,6 +480,9 @@ test("Threads scheduling, stages and settings behave safely", async () => {
 
   assert.equal(containsKeyword("nak PODCAST kedai saya", "podcast"), true);
   assert.equal(containsKeyword("podcasting best", "podcast"), false);
+  assert.equal(containsKeyword("nak konsultasi", "KONSULTASI, PODCAST"), true);
+  assert.equal(containsKeyword("PODCAST pls", "KONSULTASI, PODCAST"), true);
+  assert.equal(containsKeyword("nak video", "KONSULTASI, PODCAST"), false);
   assert.equal(hasLink("cuba https://spam.test"), true);
   assert.equal(hasLink("tengok kedai.com sekarang"), true);
   assert.equal(hasLink("Betul tu. Saya setuju, bos."), false);
@@ -507,6 +510,8 @@ test("Threads scheduling, stages and settings behave safely", async () => {
   assert.ok(invalid({ postTimes: ["09:00", "09:00"] }), "duplicate time");
   assert.ok(invalid({ postTimes: ["25:00", "09:00"] }), "bad time");
   assert.ok(invalid({ keyword: "two words" }), "keyword must be one word");
+  assert.ok(invalid({ keyword: "KONSULTASI, two words" }), "each keyword must be one word");
+  assert.ok(!invalid({ keyword: "KONSULTASI, PODCAST" }), "several keywords are allowed");
   assert.ok(invalid({ replyText: "no link" }), "reply needs a link");
   assert.ok(invalid({ mix: { attract: 0, trust: 0, offer: 0 } }), "empty mix");
 

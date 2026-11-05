@@ -7,6 +7,7 @@ import {
   packageNotes,
   packagesContent,
   productionPackages,
+  showPrices,
 } from "@/lib/content/packages";
 
 export default function Packages() {
@@ -36,9 +37,11 @@ export default function Packages() {
                 {item.number}
               </p>
               <h3 className="mt-5 text-2xl font-semibold uppercase tracking-tight">{item.name}</h3>
-              <p className={`mt-5 text-3xl font-semibold sm:text-4xl ${item.featured ? "text-trulab-accent" : ""}`}>
-                {item.price}{item.priceSuffix ? ` ${item.priceSuffix}` : ""}
-              </p>
+              {showPrices ? (
+                <p className={`mt-5 text-3xl font-semibold sm:text-4xl ${item.featured ? "text-trulab-accent" : ""}`}>
+                  {item.price}{item.priceSuffix ? ` ${item.priceSuffix}` : ""}
+                </p>
+              ) : null}
               <p className={`mt-4 min-h-14 text-sm leading-7 ${item.featured ? "text-trulab-on-dark/68" : "text-trulab-muted"}`}>
                 {item.description}
               </p>
@@ -78,7 +81,7 @@ export default function Packages() {
               <h3 className="mt-5 text-2xl font-semibold uppercase tracking-tight text-trulab-ink sm:text-3xl">
                 {item.name}
               </h3>
-              <p className="mt-5 text-3xl font-semibold text-trulab-ink sm:text-4xl">{item.price}{item.priceSuffix ? ` ${item.priceSuffix}` : ""}</p>
+              {showPrices ? <p className="mt-5 text-3xl font-semibold text-trulab-ink sm:text-4xl">{item.price}{item.priceSuffix ? ` ${item.priceSuffix}` : ""}</p> : null}
               <p className="mt-4 max-w-lg text-sm leading-7 text-trulab-muted">{item.description}</p>
               {item.closingText ? <p className="mt-5 text-base font-semibold text-trulab-ink">{item.closingText}</p> : null}
               <ButtonLink href={item.cta.href} className="mt-7">

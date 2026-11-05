@@ -20,6 +20,10 @@
       "label": "Package Interest",
       "placeholder": "Select a package"
     },
+    "serviceInterest": {
+      "label": "Service Interest",
+      "placeholder": "Select a service"
+    },
     "message": {
       "label": "Message",
       "placeholder": ""
@@ -33,7 +37,7 @@
   "unexpectedError": "Something went wrong. Please try again.",
   "success": "Thank you. Your enquiry has been saved and WhatsApp is opening now.",
   "whatsapp": {
-    "introduction": "Hi {company}, I'd like to book a podcast production consultation.",
+    "introduction": "Hi {company}, I'd like to book a free consultation.",
     "detailsHeading": "My details:",
     "projectLabel": "Project message",
     "closing": "Please let me know the next step. Thank you."

@@ -1,8 +1,8 @@
 {
   "qrGenerator": {
     "title": "QR Generator",
-    "description": "Generate downloadable PNG, JPG, and SVG QR codes for campaign links, event pages, registration forms, and podcast URLs.",
-    "socialDescription": "Generate downloadable QR codes for campaign links, event pages, registration forms, and podcast URLs.",
+    "description": "Generate downloadable PNG, JPG, and SVG QR codes for campaign links, event pages, registration forms, and website links.",
+    "socialDescription": "Generate downloadable QR codes for campaign links, event pages, registration forms, and website links.",
     "socialImageAlt": "{company} QR generator utility",
     "kicker": "Trulab utility",
     "heading": "Generate QR Codes for Production Links",

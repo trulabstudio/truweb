@@ -1,7 +1,7 @@
 type TextFormat = "link" | "webUrl" | "email" | "whatsapp" | "domain";
 
 // Keep in sync with the site: tests compare these with the rendered sections and routes.
-export const homepageAnchors = ["services", "packages", "why-trulab", "process", "faq", "contact"];
+export const homepageAnchors = ["services", "podcast", "foxdusk", "packages", "why-trulab", "process", "faq", "contact"];
 export const siteRoutes = ["/", "/qr-generator", "/background-remover"];
 const allowedTokens = ["{company}", "{phone}", "{email}", "{website}"];
 
@@ -166,6 +166,24 @@ const sectionHeading = {
   title: shortText("Title"),
 };
 const titled = (item: { title: string }) => item.title;
+const serviceIcon: Field = {
+  kind: "select",
+  label: "Icon",
+  options: [
+    { label: "Microphone", value: "Mic2" },
+    { label: "Video", value: "Video" },
+    { label: "Camera", value: "Camera" },
+    { label: "Scissors", value: "Scissors" },
+    { label: "Clapperboard", value: "Clapperboard" },
+    { label: "Radio", value: "Radio" },
+    { label: "Film", value: "Film" },
+    { label: "Camera lens", value: "Aperture" },
+    { label: "Pen", value: "PenTool" },
+    { label: "Globe", value: "Globe" },
+    { label: "Megaphone", value: "Megaphone" },
+    { label: "Sparkles", value: "Sparkles" },
+  ],
+};
 
 export type Section = {
   key: string;
@@ -185,6 +203,14 @@ export const sections: Section[] = [
     description: "Package names, prices and what each one includes.",
     path: "content/packages.json",
     fields: {
+      showSection: {
+        kind: "checkbox",
+        label: "Show the packages section (when off, packages are hidden everywhere and the contact form asks for a service instead)",
+      },
+      showPrices: {
+        kind: "checkbox",
+        label: "Show prices on the website (when off, packages show only what is included and a quote button)",
+      },
       section: {
         kind: "object",
         label: "Section heading",
@@ -289,11 +315,12 @@ export const sections: Section[] = [
     key: "services",
     label: "Services",
     group: "Homepage",
-    description: "The services listed on the homepage.",
+    description: "All the services listed on the homepage. The first one is shown large as the speciality.",
     path: "content/home/services.json",
     fields: {
       ...sectionHeading,
       description: longText("Description"),
+      featuredLink: link("Button on the first service"),
       items: {
         kind: "array",
         label: "Services",
@@ -303,19 +330,46 @@ export const sections: Section[] = [
           fields: {
             title: shortText("Service name"),
             description: longText("Description"),
-            icon: {
-              kind: "select",
-              label: "Icon",
-              options: [
-                { label: "Microphone", value: "Mic2" },
-                { label: "Video", value: "Video" },
-                { label: "Camera", value: "Camera" },
-                { label: "Scissors", value: "Scissors" },
-                { label: "Clapperboard", value: "Clapperboard" },
-                { label: "Radio", value: "Radio" },
-              ],
+            icon: serviceIcon,
+          },
+        },
+      },
+    },
+  },
+  {
+    key: "studio",
+    label: "Podcast Speciality & Foxdusk",
+    group: "Homepage",
+    description: "The podcast services section and the Foxdusk product section.",
+    path: "content/home/studio.json",
+    fields: {
+      podcast: {
+        kind: "object",
+        label: "Podcast services",
+        fields: {
+          ...sectionHeading,
+          description: longText("Description"),
+          items: {
+            kind: "array",
+            label: "Services",
+            itemLabel: titled,
+            item: {
+              kind: "object",
+              fields: { title: shortText("Service name"), description: longText("Description"), icon: serviceIcon },
             },
           },
+        },
+      },
+      foxdusk: {
+        kind: "object",
+        label: "Foxdusk",
+        fields: {
+          name: shortText("Product name", "Shown as the footer link."),
+          ...sectionHeading,
+          description: longText("Description"),
+          features: textList("Features", "Feature"),
+          price: shortText("Price line"),
+          cta: link("Button"),
         },
       },
     },
@@ -533,6 +587,7 @@ export const sections: Section[] = [
           email: formField("Email"),
           phone: formField("Phone"),
           packageInterest: formField("Package interest", true),
+          serviceInterest: formField("Service interest (used when the packages section is off)", true),
           message: formField("Message"),
         },
       },

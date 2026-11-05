@@ -8,7 +8,7 @@ const GUARD = `Apply these playbooks silently. Never name or quote any person, a
 /** Getting attention: for attract posts, and the content mix as a whole. */
 const ATTENTION = `Attention playbook:
 - The first line decides everything. Speak to one narrow reader (a Malaysian business owner) about something they already care about today, so it earns reach on its own without relying on followers.
-- Document, don't create. Write from the kind of work a podcast production team really does: preparing a nervous guest, planning an episode around a sales goal, what happens on a shoot day, turning one recording into many clips. Tell it as what the team sees and has learned, not as a lecture. Any example stays a clearly hypothetical scenario.
+- Document, don't create. Write from the kind of work a creative production team that specialises in podcasts really does: preparing a nervous guest, planning an episode around a sales goal, what happens on a shoot day, turning one recording into many clips. Tell it as what the team sees and has learned, not as a lecture. Any example stays a clearly hypothetical scenario.
 - Give before you ask. Most posts give something useful with nothing behind it, so the occasional ask is earned. When you do ask, make it honest, simple and in the same voice as the rest.
 - One strong idea per post. Vary hooks and angles from post to post; volume and variety beat polish.`;
 

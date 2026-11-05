@@ -14,6 +14,7 @@ import navigationContent from "../content/navigation.json";
 import servicesContent from "../content/home/services.json";
 import packagesContent from "../content/packages.json";
 import seoContent from "../content/seo.json";
+import studioContent from "../content/home/studio.json";
 import statusPagesContent from "../content/status-pages.json";
 import toolsContent from "../content/tools.json";
 import type { ProductionPackage } from "@/lib/content/packages";
@@ -58,7 +59,9 @@ const companyLegalName = companyContent.legalName;
 const companyDomain = companyContent.domain;
 const companyWebsite = `https://www.${companyDomain}`;
 
-type ServiceIcon = "Camera" | "Clapperboard" | "Mic2" | "Radio" | "Scissors" | "Video";
+export type ServiceIcon =
+  | "Aperture" | "Camera" | "Clapperboard" | "Film" | "Globe" | "Megaphone"
+  | "Mic2" | "PenTool" | "Radio" | "Scissors" | "Sparkles" | "Video";
 
 // Replaces the {company}, {phone}, {email} and {website} tokens used by the admin panel content.
 const tokens: Record<string, string> = {
@@ -195,6 +198,13 @@ export const editableSite = {
         Omit<(typeof servicesContent.items)[number], "icon"> & { icon: ServiceIcon }
       >,
     },
+    podcastServices: {
+      ...fill(studioContent.podcast),
+      items: fill(studioContent.podcast.items) as ReadonlyArray<
+        Omit<(typeof studioContent.podcast.items)[number], "icon"> & { icon: ServiceIcon }
+      >,
+    },
+    foxdusk: fill(studioContent.foxdusk),
     whyTrulab: fill(otherHomeContent.whyTrulab),
     process: {
       ...fill(otherHomeContent.process),
@@ -222,6 +232,8 @@ export const editableSite = {
   // Leave formLabel empty to generate "Name — Price" automatically.
   // ==========================================================
   packages: {
+    showSection: packagesContent.showSection,
+    showPrices: packagesContent.showPrices,
     section: fill(packagesContent.section),
     items: fill(packagesContent.items) as ReadonlyArray<ProductionPackage>,
     notes: fill(packagesContent.notes),
@@ -267,7 +279,7 @@ export const editableSite = {
           company: "Company",
           email: "Email",
           phone: "Phone",
-          packageInterest: "Package Interest",
+          packageInterest: "Interested In",
           message: "Message",
         },
         emptyValue: "-",
@@ -298,6 +310,12 @@ export const editableSite = {
         "Podcast Editing",
         "Multi-camera Recording",
         "Livestream Podcast Production",
+        "Video Production",
+        "Photography",
+        "Graphic Design",
+        "Website Development",
+        "Digital Marketing",
+        "Branding",
       ],
       areaServed: { code: "MY", name: "Malaysia" },
       availableLanguages: ["English", "Malay"],
@@ -323,7 +341,7 @@ export const editableSite = {
       interface: {
         title: "QR Generator",
         description:
-          "Convert campaign links, event pages, registration forms, and podcast URLs into downloadable QR codes.",
+          "Convert campaign links, event pages, registration forms, and website links into downloadable QR codes.",
         emptyError: "Enter a link first.",
         generateError: "Failed to generate QR code.",
         downloadError: "Failed to download QR code.",

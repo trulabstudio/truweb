@@ -1,37 +1,46 @@
 {
   "kicker": "Services",
-  "title": "Podcast production services built around professional delivery.",
-  "description": "From the first conversation to publish-ready exports, {company} supports the production details that help a podcast sound clear, look polished, and serve its audience.",
+  "title": "Everything your brand needs to be seen, heard and trusted.",
+  "description": "Instead of hiring a different vendor for every job, {company} plans, produces and delivers it all with one team, so your podcast, videos, photos, design and website look and sound like the same brand.",
+  "featuredLink": {
+    "label": "See our podcast services",
+    "href": "#podcast"
+  },
   "items": [
     {
       "title": "Podcast Production",
-      "description": "End-to-end production support for interview, educational, promotional, and creator-led podcast formats.",
+      "description": "Our speciality. Video podcasts for brands, organisations and leaders, recorded at your location with multiple cameras, then edited into full episodes and short clips.",
       "icon": "Mic2"
     },
     {
-      "title": "Video Podcast",
-      "description": "Professional video podcast workflows for brands and organisations that need a strong visual presence.",
-      "icon": "Video"
+      "title": "Video Production",
+      "description": "Corporate videos, promos, event coverage and social content, planned, shot and edited by one team.",
+      "icon": "Film"
     },
     {
-      "title": "Multi-camera Recording",
-      "description": "Structured multi-angle recording for cleaner edits, better pacing, and more polished final episodes.",
-      "icon": "Camera"
+      "title": "Photography",
+      "description": "Event, corporate, product and portrait photography, edited and delivered ready for print and social media.",
+      "icon": "Aperture"
     },
     {
-      "title": "Editing",
-      "description": "Audio cleanup, video editing, episode assembly, and delivery-ready exports for publishing channels.",
-      "icon": "Scissors"
+      "title": "Graphic Design",
+      "description": "Social media posts, thumbnails, posters, presentations and print materials that match your brand.",
+      "icon": "PenTool"
     },
     {
-      "title": "Shorts/Reels",
-      "description": "Repurpose long-form episodes into short social clips designed for LinkedIn, Instagram, TikTok, and YouTube.",
-      "icon": "Clapperboard"
+      "title": "Website Development",
+      "description": "Fast, mobile-friendly websites and landing pages built to explain your services and bring in enquiries.",
+      "icon": "Globe"
     },
     {
-      "title": "Livestream Podcast",
-      "description": "Live podcast production support for launches, panels, internal communications, and online events.",
-      "icon": "Radio"
+      "title": "Digital Marketing",
+      "description": "Content planning, social media management and ad campaigns that put your content in front of the right people.",
+      "icon": "Megaphone"
+    },
+    {
+      "title": "Branding",
+      "description": "Logos, brand guidelines, colours and visual identity for new businesses and brands ready for a refresh.",
+      "icon": "Sparkles"
     }
   ]
 }

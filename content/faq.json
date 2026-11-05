@@ -1,38 +1,38 @@
 {
   "kicker": "FAQ",
-  "title": "Questions before starting a podcast project.",
+  "title": "Questions before starting a project with us.",
   "items": [
     {
-      "question": "Do I need a studio to produce a podcast?",
-      "answer": "No. A professional podcast can be produced through a remote, on-location, or flexible recording workflow. {company} helps plan the setup based on your content goals, people, environment, and delivery needs."
+      "question": "What does {company} do?",
+      "answer": "{company} is a creative production studio in Malaysia. We produce podcasts, videos and photography, and handle graphic design, websites, digital marketing and branding. Podcasts are our speciality."
     },
     {
-      "question": "Can {company} record at our office or location?",
-      "answer": "Yes. Trulab can support on-location podcast recording for companies, organisations, brands, and teams that prefer to record at their own venue or selected location."
+      "question": "Can you handle several services in one project?",
+      "answer": "Yes. Many clients combine services, for example a podcast with short clips, event photography and social media posts, or a new brand identity with a website. One team handles all of it, so everything stays consistent."
     },
     {
-      "question": "Do you produce video podcasts?",
-      "answer": "Yes. Trulab produces video podcasts with structured camera, audio, lighting, editing, and delivery workflows for professional publishing."
+      "question": "Do I need a studio to produce a podcast or video?",
+      "answer": "No. We record at your office, venue or event, remotely, or in a location we arrange for you, anywhere in Malaysia."
     },
     {
-      "question": "Can you help with corporate podcasts?",
-      "answer": "Yes. Trulab supports corporate podcast projects in Malaysia for internal communications, thought leadership, education, brand storytelling, interviews, launches, and campaigns."
+      "question": "Do you work with government agencies and corporate clients?",
+      "answer": "Yes. {company} is registered with MOF and works with government bodies, corporate teams, SMEs, brands and creators across Malaysia."
     },
     {
-      "question": "Do you provide podcast editing?",
-      "answer": "Yes. Podcast editing can include audio cleanup, video editing, pacing, episode assembly, export preparation, and content formatting for publishing platforms."
+      "question": "Do you produce video podcasts and short clips?",
+      "answer": "Yes. We record video podcasts on multiple cameras and edit them into full episodes plus short clips for Instagram, TikTok, YouTube and LinkedIn."
     },
     {
-      "question": "Can you create Shorts and Reels from podcast episodes?",
-      "answer": "Yes. Trulab can repurpose podcast episodes into short-form clips for social media, helping each recording produce more usable content."
+      "question": "Can you build or redesign our website?",
+      "answer": "Yes. We build fast, mobile-friendly websites and landing pages, and can produce the photos, videos and copy that go on them."
     },
     {
-      "question": "Do you support livestream podcasts?",
-      "answer": "Yes. Trulab can support livestream podcast workflows for panels, launches, live interviews, brand sessions, and online events."
+      "question": "Can you manage our social media and marketing?",
+      "answer": "Yes. We plan content, manage social media and run ad campaigns, using the videos, photos and designs we produce for you."
     },
     {
       "question": "How do I book a consultation?",
-      "answer": "Use the consultation form on this website or contact {company} through WhatsApp. The form prepares your project details so the team can respond with the right next step."
+      "answer": "Use the consultation form on this website or contact {company} through WhatsApp. Tell us what you need and the team will respond with the right next step."
     }
   ]
 }

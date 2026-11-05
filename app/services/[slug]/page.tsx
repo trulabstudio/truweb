@@ -5,7 +5,7 @@ import { Check } from "lucide-react";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import Container from "@/components/ui/Container";
-import { productionPackages } from "@/lib/content/packages";
+import { productionPackages, showPackages, showPrices } from "@/lib/content/packages";
 import { servicePages, servicePageText as text } from "@/lib/content/service-pages";
 import { siteConfig } from "@/lib/site-config";
 
@@ -76,14 +76,14 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             </section>
           ))}
 
-          {page.showPackages && (
+          {showPackages && page.showPackages && (
             <section className="grid gap-4">
               <h2 className="text-2xl font-semibold">{text.packagesTitle}</h2>
               <div className="grid gap-3 sm:grid-cols-2">
                 {productionPackages.map((item) => (
                   <div key={item.id} className="grid content-start gap-2 rounded-3xl border border-trulab-border/8 bg-trulab-surface p-5">
                     <p className="font-semibold">{item.name}</p>
-                    <p className="text-2xl font-semibold">{item.price}</p>
+                    {showPrices && <p className="text-2xl font-semibold">{item.price}</p>}
                     <p className="text-sm text-trulab-muted">{item.description}</p>
                     {item.features.length > 0 && <p className="text-sm leading-6"><span className="font-semibold">{text.from}:</span> {item.features.join(", ")}</p>}
                   </div>

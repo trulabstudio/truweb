@@ -121,7 +121,7 @@ export const adminText = {
     noData: "–",
     form: {
       funnel: "How your funnel works",
-      funnelIntro: "Each post has one job. Readers move from noticing you, to trusting you, to asking about a podcast.",
+      funnelIntro: "Each post has one job. Readers move from noticing you, to trusting you, to asking about a podcast, video or branding project.",
       goal: "Goal",
       posts: "Posts",
       asks: "Asks readers to",
@@ -162,6 +162,7 @@ export const adminText = {
       themeHelp: "The problem your posts keep coming back to. Pick a suggestion or write your own.",
       themeSuggestions: [
         "Owners do not know what to say on a podcast",
+        "Businesses look different on every platform, so customers do not remember them",
         "Customers do not trust a business they have never heard speak",
         "Owners keep explaining the same things to every prospect",
         "Owners have no time to make content every day",
@@ -170,7 +171,9 @@ export const adminText = {
       offerText: "Your offer",
       offerHelp: "What readers get from your form. Only choose something you will really give.",
       offerSuggestions: [
+        "A free consultation for your business: podcasts, video and branding",
         "A free podcast consultation for your business",
+        "A free content plan for your business's next month",
         "A free list of 10 episode ideas for your business",
         "A free podcast plan for your first 3 episodes",
         "A free look around our studio",
@@ -182,7 +185,7 @@ export const adminText = {
       useTimes: "Use these times",
       replies: "Replies",
       keyword: "Keyword",
-      keywordHelp: "Anyone who comments this word gets your form link. Other comments get a normal reply, and comments with a link are ignored.",
+      keywordHelp: "Anyone who comments one of these words gets your form link. Separate several words with commas, for example KONSULTASI, PODCAST. Other comments get a normal reply, and comments with a link are ignored.",
       formLink: "Form link",
       formLinkHelp: "Where readers go. Leave it as the /konsultasi page, which is built for Threads readers. Enquiries can only be traced to a post when the link is on your website.",
       replyText: "Message with your form link",

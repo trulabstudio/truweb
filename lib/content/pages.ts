@@ -24,7 +24,7 @@ export const contactFormContent = {
     company: contact.fields.company.label,
     email: contact.fields.email.label,
     phone: contact.fields.phone.label,
-    packageInterest: contact.fields.packageInterest.label,
+    packageInterest: editableSite.packages.showSection ? contact.fields.packageInterest.label : contact.fields.serviceInterest.label,
     message: contact.fields.message.label,
   },
   placeholders: {
@@ -34,7 +34,7 @@ export const contactFormContent = {
     phone: contact.fields.phone.placeholder,
     message: contact.fields.message.placeholder,
   },
-  packageInterestPlaceholder: contact.fields.packageInterest.placeholder,
+  packageInterestPlaceholder: editableSite.packages.showSection ? contact.fields.packageInterest.placeholder : contact.fields.serviceInterest.placeholder,
   emptyValue: contact.emptyValue,
   submitLabel: contact.submitLabel,
   turnstileNotice: contact.turnstileNotice,

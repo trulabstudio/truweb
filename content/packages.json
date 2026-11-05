@@ -1,4 +1,6 @@
 {
+  "showSection": false,
+  "showPrices": false,
   "section": {
     "kicker": "Production packages",
     "title": "Choose the setup that fits your conversation.",

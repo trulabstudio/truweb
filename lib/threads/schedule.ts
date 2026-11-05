@@ -27,10 +27,10 @@ export const defaultSettings: ThreadsSettings = {
   strategy: "auto",
   mix: { attract: 4, trust: 2, offer: 1 },
   theme: "Owners do not know what to say on a podcast",
-  offer: "A free podcast consultation for your business",
-  keyword: "PODCAST",
+  offer: "A free consultation for your business: podcasts, video and branding",
+  keyword: "KONSULTASI, PODCAST",
   formLink: "",
-  replyText: "Nak kami bantu rancang podcast untuk bisnes kau? Isi borang ni: {link}",
+  replyText: "Nak kami bantu rancang podcast, video atau branding untuk bisnes kau? Isi borang ni: {link}",
   autoReply: true,
   mode: "approve",
   paused: false,
@@ -44,9 +44,13 @@ export function fitsThreads(text: string) {
   return text.trim().length > 0 && new TextEncoder().encode(text).length <= MAX_POST_BYTES;
 }
 
+/** The keyword setting may hold several words separated by commas, such as "KONSULTASI, PODCAST". */
+export const keywordList = (keyword: string) =>
+  keyword.split(",").map((word) => word.trim().toLocaleLowerCase()).filter(Boolean);
+
 export function containsKeyword(text: string, keyword: string) {
-  const word = keyword.trim().toLocaleLowerCase();
-  return Boolean(word) && text.toLocaleLowerCase().split(/[^\p{L}\p{N}]+/u).includes(word);
+  const words = text.toLocaleLowerCase().split(/[^\p{L}\p{N}]+/u);
+  return keywordList(keyword).some((word) => words.includes(word));
 }
 
 const UNFINISHED_ENDING = /(?:[,:;\-–—(]|\.\.\.|…|\b(?:dan|atau|tapi|sebab|kerana|yang|untuk|dengan|kalau|bila|macam|pada|kepada|dari|daripada|di|ke|the|and|or|but|to|of))$/iu;
@@ -152,7 +156,8 @@ export function validateSettings(input: unknown) {
   const replyText = text(source.replyText);
   if (!theme) errors.push("Theme is required.");
   if (!offer) errors.push("Offer is required.");
-  if (!/^[\p{L}\p{N}]{2,30}$/u.test(keyword)) errors.push("Keyword must be one word.");
+  const keywords = keyword.split(",").map((word) => word.trim());
+  if (keywords.length > 5 || !keywords.every((word) => /^[\p{L}\p{N}]{2,30}$/u.test(word))) errors.push("Each keyword must be one word. Separate up to 5 keywords with commas.");
   const formLink = text(source.formLink);
   if (formLink && !isWebLink(formLink)) errors.push("The form link must be a full address starting with https://.");
   if (!replyText.includes("{link}")) errors.push("The reply must include {link}.");

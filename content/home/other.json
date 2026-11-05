@@ -1,45 +1,45 @@
 {
   "whyTrulab": {
     "kicker": "Why Trulab",
-    "title": "A flexible production partner for serious podcast projects.",
-    "description": "Premium podcast production does not depend on visitors coming to a fixed studio. It depends on planning, technical control, clean capture, careful editing, and a workflow that fits the client.",
+    "title": "One team for your content, from the first idea to the final file.",
+    "description": "Working with a different vendor for every job means more briefing, more chasing and a brand that looks different everywhere. {company} plans, produces and delivers it all, so your content stays consistent and you only deal with one team.",
     "points": [
-      "Professional podcast production workflow from planning to final delivery.",
-      "Built for government bodies, SMEs, private companies, brands, creators, and organisations.",
-      "Flexible remote, on-location, and client-site recording workflows without requiring a studio visit.",
-      "Multi-camera video podcast capability for corporate and creator-led formats.",
-      "Content repurposing for Shorts/Reels and social distribution.",
-      "Clean audio, clean visuals, and clean storytelling for audience trust.",
-      "Suitable for corporate, educational, promotional, interview, and branded content podcasts."
+      "One team for podcasts, video, photography, design, websites, marketing and branding.",
+      "Built for government bodies, SMEs, private companies, brands, creators and organisations.",
+      "We come to you: on-location shoots at your office, venue or event, anywhere in Malaysia.",
+      "Multi-camera video and professional lighting for podcasts, corporate videos and events.",
+      "Every shoot turned into more content: short clips, photos and posts for social media.",
+      "Clean audio, clean visuals and a consistent look that builds trust with your audience.",
+      "Registered with MOF and recognised by FINAS and FDAM for corporate and government work."
     ]
   },
   "process": {
     "kicker": "Process",
-    "title": "A clear production process from consultation to content delivery.",
+    "title": "A clear process from first conversation to final delivery.",
     "items": [
       {
         "title": "Consultation",
-        "description": "Clarify goals, format, audience, production requirements, and delivery needs."
+        "description": "Understand your goals, audience, budget and what you need produced."
       },
       {
         "title": "Planning",
-        "description": "Shape episode structure, flow, talking points, schedule, and technical setup."
+        "description": "Shape the concept, script or talking points, schedule and technical setup."
       },
       {
-        "title": "Recording",
-        "description": "Capture audio and video through remote, on-location, or flexible workflows."
+        "title": "Production",
+        "description": "Shoot, record, photograph or design, on location, remotely or in a venue we arrange."
       },
       {
         "title": "Editing",
-        "description": "Refine pacing, clean audio, balance visuals, and prepare publish-ready assets."
+        "description": "Edit, colour grade, retouch and refine until every piece looks and sounds right."
       },
       {
         "title": "Delivery",
-        "description": "Export final files in the right formats for platforms, teams, and campaigns."
+        "description": "Export final files in the right formats for each platform, team and campaign."
       },
       {
-        "title": "Repurposing",
-        "description": "Turn the strongest moments into Shorts/Reels and supporting content assets."
+        "title": "Growth",
+        "description": "Turn the best moments into clips, posts and campaigns that keep your brand visible."
       }
     ]
   },
@@ -62,19 +62,19 @@
     ]
   },
   "coverage": {
-    "kicker": "Malaysia-wide production support",
-    "title": "A production workflow that adapts to your team.",
+    "kicker": "Malaysia-wide production",
+    "title": "Creative production that comes to you.",
     "paragraphs": [
-      "Whether you are based in Kuala Lumpur, Selangor, Putrajaya, Johor, Penang, Sabah, Sarawak or anywhere across Malaysia, {company} supports professional podcast projects for organisations that want high-quality audio, video, editing, and content delivery.",
-      "Whether you need a corporate podcast, a video podcast series, or editing for episodes you have already recorded, Trulab works as your podcast producer through remote, on-location, and flexible production workflows."
+      "Whether you are based in Kuala Lumpur, Selangor, Putrajaya, Johor, Penang, Sabah, Sarawak or anywhere across Malaysia, {company} brings the cameras, lights, microphones and crew to your office, venue or event.",
+      "Whether you need a corporate podcast, a company video, event photography, a new website or a full brand identity, {company} works as your in-house creative team without the cost of hiring one."
     ]
   },
   "contact": {
-    "kicker": "Start the workflow",
-    "title": "Book a Podcast Production Consultation",
-    "description": "Tell us what you want to produce, who it is for, and how you want to record. {company} will help shape the right production workflow for your team."
+    "kicker": "Start your project",
+    "title": "Book a Free Consultation",
+    "description": "Tell us what you want to produce, who it is for and when you need it. {company} will suggest the right approach and send you a quote."
   },
   "footer": {
-    "description": "Professional podcast production, video podcast, editing, Shorts/Reels, and livestream podcast workflows for brands, organisations, SMEs, creators, and government bodies in Malaysia."
+    "description": "Professional podcast production, video production, photography, design, websites, marketing and branding for brands, organisations, SMEs, creators, and government bodies in Malaysia."
   }
 }

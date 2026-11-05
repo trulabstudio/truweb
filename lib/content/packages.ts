@@ -17,6 +17,8 @@ export type ProductionPackage = {
   whatsappMessage: string;
 };
 
+export const showPackages: boolean = editableSite.packages.showSection;
+export const showPrices: boolean = showPackages && editableSite.packages.showPrices;
 export const packagesContent = editableSite.packages.section;
 export const productionPackages = editableSite.packages.items satisfies ReadonlyArray<ProductionPackage>;
 export const packageNotes = editableSite.packages.notes;

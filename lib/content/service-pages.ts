@@ -1,3 +1,4 @@
+import { showPackages, showPrices } from "@/lib/content/packages";
 import { siteConfig } from "@/lib/site-config";
 
 const name = siteConfig.name;
@@ -107,10 +108,12 @@ export const servicePages: ServicePage[] = [
   {
     slug: "podcast-production-cost-malaysia",
     metaTitle: "How Much Does Podcast Production Cost in Malaysia?",
-    metaDescription: `What it costs to produce a podcast in Malaysia, with ${name}'s package prices and what affects the price.`,
+    metaDescription: showPrices
+      ? `What it costs to produce a podcast in Malaysia, with ${name}'s package prices and what affects the price.`
+      : `What affects the cost of producing a podcast in Malaysia, and what ${name}'s packages include.`,
     kicker: "Podcast pricing",
     title: "How much does podcast production cost in Malaysia?",
-    intro: "The cost of a podcast depends mostly on how many people speak, how many cameras you need and how much content you want from each recording. Below are our current prices, so you can budget before you talk to anyone.",
+    intro: `The cost of a podcast depends mostly on how many people speak, how many cameras you need and how much content you want from each recording. ${showPrices ? "Below are our current prices, so you can budget before you talk to anyone." : showPackages ? "Below is what each package includes. Tell us what you need and we will send a quote." : "Tell us what you need and we will suggest the right setup and send a quote."}`,
     sections: [
       {
         heading: "What affects the price",
@@ -128,7 +131,7 @@ export const servicePages: ServicePage[] = [
     ],
     showPackages: true,
     faqs: [
-      { question: "What is the cheapest way to start a podcast?", answer: "Our Solo package, for one speaker, is the lowest-cost way to get a fully edited video podcast with short clips." },
+      { question: "What is the cheapest way to start a podcast?", answer: showPackages ? "Our Solo package, for one speaker, is the lowest-cost way to get a fully edited video podcast with short clips." : "A single-speaker setup is the lowest-cost way to get a fully edited video podcast with short clips." },
       { question: "Is there a monthly option?", answer: "Yes. The Monthly Partnership is quoted to your schedule and includes regular recording sessions and content planning support." },
       { question: "Can you prepare a custom quote?", answer: "Yes. If none of the packages fit, we prepare a custom quotation." },
     ],

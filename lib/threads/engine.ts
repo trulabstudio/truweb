@@ -203,7 +203,7 @@ async function advanceReplies(settings: ThreadsSettings) {
     try {
       const post = await getPost(reply.post_id);
       const replyText = reply.kind === "conversation"
-        ? await generateReply(reply.comment_text ?? "", post?.text ?? "", settings.keyword)
+        ? await generateReply(reply.comment_text ?? "", post?.text ?? "", settings.keyword.split(",")[0].trim())
         : settings.replyText.replace("{link}", trackedLink(settings.formLink, reply.post_id));
       if (replyText === null) {
         await updateReply(reply.reply_id, "container", { status: "ignored" });

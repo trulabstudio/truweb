@@ -1,14 +1,8 @@
 import { editableSite } from "@/lib/EDIT-SITE-HERE";
 
 type EditablePackage = (typeof editableSite.packages.items)[number];
-type AdditionalPackageOption =
-  (typeof editableSite.forms.contact.additionalPackageOptions)[number];
-
-type PackageId = EditablePackage["id"];
-type PackageInterestId = PackageId | AdditionalPackageOption["id"];
-
 export type PackageInterestOption = {
-  id: PackageInterestId;
+  id: string;
   label: string;
 };
 
@@ -41,21 +35,41 @@ function getPackageDisplayLabel(packageItem: EditablePackage) {
     return customLabel;
   }
 
+  if (!editableSite.packages.showPrices) return packageItem.name;
+
   return [packageItem.name, packageItem.price, packageItem.priceSuffix]
     .filter(Boolean)
     .join(" — ");
 }
 
-export const packageInterestOptions: ReadonlyArray<PackageInterestOption> = [
-  ...editableSite.packages.items.map((item) => ({
-    id: item.id,
-    label: getPackageDisplayLabel(item),
+const packageOptions: ReadonlyArray<PackageInterestOption> = editableSite.packages.items.map((item) => ({
+  id: item.id,
+  label: getPackageDisplayLabel(item),
+}));
+
+// Used instead of the packages when the packages section is turned off. IDs come from the
+// service names, so renaming a service in the admin panel starts a new ID.
+const serviceOptions: ReadonlyArray<PackageInterestOption> = [
+  ...editableSite.homepage.services.items.map((item) => ({
+    id: `service-${item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
+    label: item.title,
   })),
-  ...editableSite.forms.contact.additionalPackageOptions,
 ];
 
-export const packageInterestIds = packageInterestOptions.map((option) => option.id);
+const otherOptions: ReadonlyArray<PackageInterestOption> = editableSite.forms.contact.additionalPackageOptions;
+
+/** What the contact form offers right now. */
+export const packageInterestOptions: ReadonlyArray<PackageInterestOption> = [
+  ...(editableSite.packages.showSection ? packageOptions : serviceOptions),
+  ...otherOptions,
+];
+
+// Both lists stay valid, so a form opened before the switch changed still submits,
+// and enquiries saved under either list keep their label.
+const allOptions = [...packageOptions, ...serviceOptions, ...otherOptions];
+
+export const packageInterestIds = allOptions.map((option) => option.id);
 
 export function getPackageInterestLabel(id: string) {
-  return packageInterestOptions.find((option) => option.id === id)?.label || "";
+  return allOptions.find((option) => option.id === id)?.label || "";
 }

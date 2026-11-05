@@ -1,7 +1,7 @@
 {
-  "kicker": "Podcast production for professional teams",
-  "title": "Professional Podcasts, Produced Properly.",
-  "description": "{company} helps brands, organisations, government bodies, SMEs, and creators plan, record, edit, and publish polished podcasts without needing a fixed studio visit.",
+  "kicker": "Creative production studio in Malaysia",
+  "title": "One creative team for podcasts, video and your brand.",
+  "description": "{company} handles podcasts, video production, photography, design, websites, marketing and branding, with podcasts as our speciality. Made for brands, organisations, government bodies, SMEs and creators.",
   "primaryCta": {
     "label": "Book Consultation",
     "href": "#contact"
@@ -11,9 +11,9 @@
     "href": "#services"
   },
   "trustPills": [
-    "Remote recording",
-    "On-location setup",
-    "Multi-camera video",
-    "Editing & clips"
+    "Podcast production",
+    "Video & photography",
+    "Design & branding",
+    "Websites & marketing"
   ]
 }
