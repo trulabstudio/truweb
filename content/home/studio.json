@@ -6,32 +6,32 @@
     "items": [
       {
         "title": "End-to-end Production",
-        "description": "End-to-end production support for interview, educational, promotional, and creator-led podcast formats.",
+        "description": "From planning and talking points to recording, editing and publishing, for interview, educational, promotional and creator-led podcasts.",
         "icon": "Mic2"
       },
       {
         "title": "Video Podcast",
-        "description": "Professional video podcast workflows for brands and organisations that need a strong visual presence.",
+        "description": "Video podcasts that look as good as they sound, for brands and organisations that want to be seen as well as heard.",
         "icon": "Video"
       },
       {
         "title": "Multi-camera Recording",
-        "description": "Structured multi-angle recording for cleaner edits, better pacing, and more polished final episodes.",
+        "description": "Two to five cameras, so every speaker gets a clean angle and the edit keeps moving.",
         "icon": "Camera"
       },
       {
         "title": "Editing",
-        "description": "Audio cleanup, video editing, episode assembly, and delivery-ready exports for publishing channels.",
+        "description": "Audio clean-up, multi-camera editing, colour grading and exports ready for every platform you publish on.",
         "icon": "Scissors"
       },
       {
-        "title": "Shorts/Reels",
-        "description": "Repurpose long-form episodes into short social clips designed for LinkedIn, Instagram, TikTok, and YouTube.",
+        "title": "Shorts & Reels",
+        "description": "Every episode cut into short clips with subtitles for TikTok, Instagram, YouTube Shorts and LinkedIn.",
         "icon": "Clapperboard"
       },
       {
         "title": "Livestream Podcast",
-        "description": "Live podcast production support for launches, panels, internal communications, and online events.",
+        "description": "Live podcast production for launches, panels, town halls and online events.",
         "icon": "Radio"
       }
     ]
@@ -39,20 +39,20 @@
   "foxdusk": {
     "name": "Foxdusk",
     "kicker": "Our own software",
-    "title": "Foxdusk: finish the edit before dusk.",
-    "description": "Foxdusk AIOS is the editing tool we built from our own production work. It turns a raw talking-head recording into a finished video on your own computer, for creators and marketing teams making Reels, Shorts, YouTube videos and podcasts.",
+    "title": "Plan it with Hookdusk. Edit it with Foxdusk.",
+    "description": "We built two tools from our own production work, and both run on your own computer. Hookdusk plans your TikTok, Reels and Shorts: topics for your niche, hooks that stop the scroll and a script ready to film, in BM or English. Foxdusk AIOS turns the raw talking-head recording into a finished video with clean cuts, branded captions and motion graphics.",
     "features": [
-      "Free word-level transcription",
-      "Automatic dead-air trimming",
-      "Retake and stutter detection",
-      "Branded captions and motion graphics",
-      "9:16 reels, Shorts and showreels",
-      "Works in English and Bahasa Melayu"
+      "Hookdusk: topics, hooks and scripts in BM or English",
+      "Hookdusk: content council and teleprompter",
+      "Foxdusk: free word-level transcription",
+      "Foxdusk: dead air and retakes cut for you",
+      "Foxdusk: branded captions and motion graphics",
+      "Both apps in English and Bahasa Melayu"
     ],
-    "price": "RM 299 one-off. No subscription, one licence for 2 computers.",
+    "price": "Foxdusk RM 299 · Hookdusk RM 299 · both for RM 399. One-off, no subscription, 2 computers per licence.",
     "cta": {
-      "label": "Visit foxdusk.com",
-      "href": "https://foxdusk.com"
+      "label": "See both at foxdusk.com",
+      "href": "https://www.foxdusk.com"
     }
   }
 }
